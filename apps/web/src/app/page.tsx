@@ -26,6 +26,7 @@ export default function Home() {
           ></Image>
         </div>
       </div>
+      <h1 className="text-white text-[50px] font-bold font-poppins">Events</h1>
     </main>
   );
 }
