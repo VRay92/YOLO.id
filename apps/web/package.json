@@ -10,9 +10,14 @@
     "test": "npx cypress verify & cypress run --component"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.3",
+    "axios": "^1.6.8",
+    "dotenv": "^16.4.5",
     "next": "14.0.4",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-icons": "^5.1.0",
+    "react-redux": "^9.1.1"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -21,6 +26,7 @@
     "cypress": "^13.6.2",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
+    "tailwindcss": "^3.4.3",
     "typescript": "^5"
   }
 }
