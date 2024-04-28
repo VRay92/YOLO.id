@@ -1,11 +1,14 @@
+'use client';
 import * as React from 'react';
 import Image from 'next/image';
 import { SlMagnifier } from 'react-icons/sl';
 import { BsPersonCircle } from 'react-icons/bs';
 import { BsFillTicketPerforatedFill } from 'react-icons/bs';
 import { IoMenu } from 'react-icons/io5';
+import { useRouter } from 'next/navigation';
 
 export const Header = () => {
+  const router = useRouter();
   return (
     <nav className="fixed top-0 z-10 w-full ">
       {/* top navbar */}
@@ -26,7 +29,10 @@ export const Header = () => {
 
       <div className="flex h-[75px] md:h-[90px] bg-[#F40841]  justify-between">
         <div className="flex">
-          <div className="my-auto ml-20 mr-[121px] hidden md:block">
+          <div
+            className="my-auto ml-20 mr-[121px] hidden md:block cursor-pointer"
+            onClick={() => router.push('/')}
+          >
             <Image
               width={160}
               height={72}
@@ -58,7 +64,23 @@ export const Header = () => {
           <SlMagnifier className="" />
           <IoMenu />
         </div>
-        <div className="hidden my-auto mr-20 text-white md:flex font-poppins">
+
+        <div className="hidden gap-5 my-auto mr-20 text-white md:flex font-poppins">
+          <button
+            className="rounded-lg w-[7rem] h-[3rem] bg-transparent border-2 border-white text-white hover:bg-orange-500 hover:text-white hover:border-none"
+            onClick={() => router.push('/signup')}
+          >
+            Register
+          </button>
+          <button
+            className="rounded-lg w-[7rem] h-[3rem] bg-white border-2 border-white text-[#F40841] font-bold hover:bg-orange-500 hover:text-white hover:border-none"
+            onClick={() => router.push('/signin')}
+          >
+            Login
+          </button>
+        </div>
+
+        {/* <div className="hidden my-auto mr-20 text-white md:flex font-poppins">
           <div className="my-1 mr-3 text-4xl">
             <BsFillTicketPerforatedFill></BsFillTicketPerforatedFill>
           </div>
@@ -66,7 +88,7 @@ export const Header = () => {
           <div className="text-5xl">
             <BsPersonCircle></BsPersonCircle>
           </div>
-        </div>
+        </div> */}
       </div>
     </nav>
   );
