@@ -1,9 +1,12 @@
 'use client';
 import Image from 'next/image';
 import styles from './page.module.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Toptrending from '@/components/Toptrending';
 import Card from '@/components/Card';
+import { Carousel } from 'flowbite-react';
+import { initDropdowns } from 'flowbite';
+import { initCarousels } from 'flowbite';
 
 export default function Home() {
   const [category, setCategory] = useState('music');
@@ -128,8 +131,12 @@ export default function Home() {
     },
   ];
 
+  useEffect(() => {
+    initCarousels;
+  }, []);
+
   return (
-    <main className="w-full mt-[75px] md:mt-[120px]">
+    <main className="w-full mt-[75px] md:mt-[120px] bg-[#282828]">
       {/* desktop view hero section */}
 
       <div
@@ -143,20 +150,168 @@ export default function Home() {
           alt="hero"
           className="object-cover"
         ></Image>
+
+        {/* ------------------------------------IMAGE CAROUSEL----------------------------------------------- */}
+
         <div
           id="main-banner"
-          className="w-[960px] h-[480px] absolute left-[25%] bottom-[15%]"
+          className="w-[960px] h-[480px] absolute left-[25%] bottom-[15%] "
         >
-          {' '}
-          <Image
-            fill
-            sizes="100vw"
-            src="/anggun.png"
-            alt="hero"
-            className="object-cover rounded-lg"
-          ></Image>
+          <div
+            id="default-carousel"
+            className="relative w-[960px]"
+            data-carousel="slide"
+          >
+            {/* <!-- Carousel wrapper --> */}
+            <div className="relative h-56 overflow-hidden rounded-lg md:h-[480px]">
+              {/* <!-- Item 1 --> */}
+              <div
+                className="hidden duration-700 ease-in-out rounded-lg"
+                data-carousel-item
+              >
+                <img
+                  src="anggun.png"
+                  className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                  alt="..."
+                />
+              </div>
+              {/* <!-- Item 2 --> */}
+              <div
+                className="hidden duration-700 ease-in-out rounded-lg"
+                data-carousel-item
+              >
+                <img
+                  src="LiSa.jpg"
+                  className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                  alt="..."
+                />
+              </div>
+              {/* <!-- Item 3 --> */}
+              <div
+                className="hidden duration-700 ease-in-out rounded-lg"
+                data-carousel-item
+              >
+                <img
+                  src="dewa19.jpg"
+                  className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                  alt="..."
+                />
+              </div>
+              {/* <!-- Item 4 --> */}
+              <div
+                className="hidden duration-700 ease-in-out rounded-lg"
+                data-carousel-item
+              >
+                <img
+                  src="gedebagejazz.jpg"
+                  className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                  alt="..."
+                />
+              </div>
+              {/* <!-- Item 5 --> */}
+              <div
+                className="hidden duration-700 ease-in-out rounded-lg"
+                data-carousel-item
+              >
+                <img
+                  src="ultrabeach.jpg"
+                  className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                  alt="..."
+                />
+              </div>
+            </div>
+            {/* <!-- Slider indicators --> */}
+            <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
+              <button
+                type="button"
+                className="w-3 h-3 rounded-full"
+                aria-current="true"
+                aria-label="Slide 1"
+                data-carousel-slide-to="0"
+              ></button>
+              <button
+                type="button"
+                className="w-3 h-3 rounded-full"
+                aria-current="false"
+                aria-label="Slide 2"
+                data-carousel-slide-to="1"
+              ></button>
+              <button
+                type="button"
+                className="w-3 h-3 rounded-full"
+                aria-current="false"
+                aria-label="Slide 3"
+                data-carousel-slide-to="2"
+              ></button>
+              <button
+                type="button"
+                className="w-3 h-3 rounded-full"
+                aria-current="false"
+                aria-label="Slide 4"
+                data-carousel-slide-to="3"
+              ></button>
+              <button
+                type="button"
+                className="w-3 h-3 rounded-full"
+                aria-current="false"
+                aria-label="Slide 5"
+                data-carousel-slide-to="4"
+              ></button>
+            </div>
+            {/* <!-- Slider controls --> */}
+            <button
+              type="button"
+              className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+              data-carousel-prev
+            >
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                <svg
+                  className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 1 1 5l4 4"
+                  />
+                </svg>
+                <span className="sr-only">Previous</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+              data-carousel-next
+            >
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                <svg
+                  className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+                <span className="sr-only">Next</span>
+              </span>
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* ---------------------------------------------------------------------------------- */}
 
       {/* mobile view hero section */}
 
@@ -235,7 +390,7 @@ export default function Home() {
           </li>
         </ul>
       </div>
-      <div className="h-auto md:h-[400px] w-full bg-[#989898] mt-10 pt-4 relative pb-5">
+      <div className="max-w-[1920px] h-auto md:h-[400px] w-full bg-[#989898] mt-10 pt-4 relative pb-5">
         {/* top trending desktop title */}
         <h1 className="hidden text-5xl font-bold origin-right transform -rotate-90 md:absolute md:block -left-60">
           Top Trending
@@ -313,6 +468,7 @@ export default function Home() {
           ))}
         </div>
       )}
+      <div className="h-60 w-full">.</div>
     </main>
   );
 }

@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 export const Header = () => {
   const router = useRouter();
   return (
-    <nav className="fixed top-0 z-10 w-full ">
+    <nav className="fixed top-0 z-50 w-full max-w-[1920px] ">
       {/* top navbar */}
 
       <div className="hidden md:flex justify-end md:pr-16 h-[40px] bg-[#D9D9D9] py-2 ">
@@ -50,16 +50,26 @@ export const Header = () => {
           </div>
           {/* search bar */}
           <div className="hidden md:flex">
-            <span className="w-[50px] h-[40px] bg-white my-auto rounded-l-md">
-              <SlMagnifier className="m-auto my-2 text-2xl" />
+            <span className="w-[50px] h-[52px] bg-white mt-5 rounded-l-md">
+              <SlMagnifier className="m-auto my-3 text-2xl" />
             </span>
-            <input
-              type="text"
-              className="flex pl-10 my-auto  rounded-r-md w-[685px] h-[40px] bg-[#d9d9d9]"
-              placeholder="search here.."
-            />
+            <div className="relative w-[685px] h-[40px] mt-5">
+              <input
+                type="text"
+                id="floating_filled"
+                className="block rounded-r-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-[#d9d9d9] dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+              />
+              <label
+                htmlFor="floating_filled"
+                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+              >
+                search here..
+              </label>
+            </div>
           </div>
         </div>
+
         <div className="flex gap-4 my-auto mr-4 text-3xl text-white md:hidden">
           <SlMagnifier className="" />
           <IoMenu />

@@ -1,6 +1,6 @@
 export const Footer = () => {
   return (
-    <div className="h-[300px] w-full bg-black mt-60 text-white text-center pt-20">
+    <div className="h-[300px] w-full bg-black text-white text-center pt-20">
       <ul className="flex justify-center gap-4 mb-10">
         <li>
           <img src="instagram.png" alt="twitter" className="size-[40px]" />
