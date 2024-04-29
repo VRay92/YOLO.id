@@ -10,10 +10,15 @@ import { useRouter } from 'next/navigation';
 export const Header = () => {
   const router = useRouter();
   return (
+<<<<<<< HEAD
     <nav className="fixed top-0 z-10 w-full ">
       {/* top navbar */}
 
       <div className="hidden md:flex justify-end md:pr-16 h-[40px] bg-[#D9D9D9] py-2 ">
+=======
+    <nav className="w-full ">
+      <div className="flex justify-end pr-16 h-[40px] bg-[#D9D9D9] py-2 text-[#2c2c2c]">
+>>>>>>> main
         <span className="px-4">
           <h1>About YOLO</h1>
         </span>
