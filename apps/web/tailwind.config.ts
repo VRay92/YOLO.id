@@ -1,9 +1,11 @@
+const flowbite = require('flowbite-react/tailwind');
 /** @type {import('tailwindcss').Config} */
 import { Inter, Montserrat, Poppins, Playfair_Display } from 'next/font/google';
-const flowbite = require('flowbite-react/tailwind');
 
 module.exports = {
   content: [
+    '../../node_modules/flowbite-react/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../node_modules/flowbite/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -20,5 +22,5 @@ module.exports = {
       },
     },
   },
-  plugins: [flowbite.plugin()],
+  plugins: [require('flowbite/plugin'), flowbite.plugin(),],
 };
