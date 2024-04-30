@@ -16,6 +16,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        '2xl': '1600px',
+      },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],
         playfair: ['Playfair_Display', 'serif'],

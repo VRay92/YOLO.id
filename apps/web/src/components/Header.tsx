@@ -6,11 +6,29 @@ import { BsPersonCircle } from 'react-icons/bs';
 import { BsFillTicketPerforatedFill } from 'react-icons/bs';
 import { IoMenu } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
+import { initCarousels } from 'flowbite';
 
 export const Header = () => {
+  const [fixed, setFixed] = React.useState('');
   const router = useRouter();
+  React.useEffect(() => {
+    initCarousels;
+    function handleScroll() {
+      const scrollPosition = window.scrollY;
+      if (scrollPosition > 700) {
+        setFixed('fixed transition');
+      } else {
+        setFixed('');
+      }
+    }
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <nav className="fixed top-0 z-50 w-full max-w-[1920px] ">
+    <nav className={`${fixed} top-0 z-50 w-full max-w-[1920px] `}>
       {/* top navbar */}
 
       <div className="hidden md:flex justify-end md:pr-16 h-[40px] bg-[#D9D9D9] py-2 ">

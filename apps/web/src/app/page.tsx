@@ -136,7 +136,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="w-full mt-[75px] md:mt-[120px] bg-[#282828]">
+    <main className="w-full bg-[#282828]">
       {/* desktop view hero section */}
 
       <div
@@ -155,7 +155,7 @@ export default function Home() {
 
         <div
           id="main-banner"
-          className="w-[960px] h-[480px] absolute left-[25%] bottom-[15%] "
+          className="w-[960px] h-[480px] absolute left-[18%] 2xl:left-[25%] bottom-[15%] "
         >
           <div
             id="default-carousel"
