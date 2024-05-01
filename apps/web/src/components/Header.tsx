@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { initCarousels } from 'flowbite';
 import { useEffect } from 'react';
 
+
 export const Header = () => {
   const [fixed, setFixed] = React.useState('');
   const router = useRouter();
