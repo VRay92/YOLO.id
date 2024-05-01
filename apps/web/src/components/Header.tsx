@@ -7,25 +7,12 @@ import { BsFillTicketPerforatedFill } from 'react-icons/bs';
 import { IoMenu } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
 import { initCarousels } from 'flowbite';
+import { useEffect } from 'react';
+
 
 export const Header = () => {
   const [fixed, setFixed] = React.useState('');
   const router = useRouter();
-  React.useEffect(() => {
-    initCarousels;
-    function handleScroll() {
-      const scrollPosition = window.scrollY;
-      if (scrollPosition > 700) {
-        setFixed('fixed transition');
-      } else {
-        setFixed('');
-      }
-    }
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   return (
     <nav className={`${fixed} top-0 z-50 w-full max-w-[1920px] `}>
@@ -48,8 +35,10 @@ export const Header = () => {
       <div className="flex h-[75px] md:h-[90px] bg-[#F40841]  justify-between">
         <div className="flex">
           <div
-            className="my-auto ml-20 mr-[121px] hidden md:block cursor-pointer"
-            onClick={() => router.push('/')}
+            className="my-auto ml-20 mr-[121px] min-w-[160px] hidden md:block cursor-pointer"
+            onClick={() => {
+              router.push('/');
+            }}
           >
             <Image
               width={160}
@@ -71,7 +60,7 @@ export const Header = () => {
             <span className="w-[50px] h-[52px] bg-white mt-5 rounded-l-md">
               <SlMagnifier className="m-auto my-3 text-2xl" />
             </span>
-            <div className="relative w-[685px] h-[40px] mt-5">
+            <div className="relative w-[685px] h-[40px] mt-5 mr-20">
               <input
                 type="text"
                 id="floating_filled"

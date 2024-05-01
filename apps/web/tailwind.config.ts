@@ -4,8 +4,9 @@ import { Inter, Montserrat, Poppins, Playfair_Display } from 'next/font/google';
 
 module.exports = {
   content: [
-    '../../node_modules/flowbite-react/**/*.{js,ts,jsx,tsx,mdx}',
-    '../../node_modules/flowbite/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../node_modules/flowbite-react/**/*.{js,ts,jsx,tsx,mdx,mjs}',
+    '../../node_modules/flowbite/**/*.{js,ts,jsx,tsx,mdx,mjs}',
+    '../flowbite-react-app/node_modules/flowbite/dist/flowbite.min.js',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -25,5 +26,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require('flowbite/plugin'), flowbite.plugin(),],
+  plugins: [require('flowbite/plugin'), flowbite.plugin(), ({
+    charts: true,
+  })],
 };
