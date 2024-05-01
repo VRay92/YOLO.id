@@ -74,9 +74,16 @@ export default function Home() {
 
   const festival = [
     {
+      url: '/nelangsa.jpg',
+      date: '05 May 2024',
+      title: 'Sajian Spesial Bilal Indrajaya: Konser Nelangsa Kala Purnama',
+      price: 'Rp. 450.000,-',
+      username: 'Aksara Records',
+    },
+    {
       url: '/funrun.jpg',
       date: '12 May 2024',
-      title: 'Enchanting Anggun & Friends',
+      title: 'ESQ Fun Charity Run',
       price: 'Rp. 200.000,-',
       username: 'UAG University',
     },
@@ -97,7 +104,7 @@ export default function Home() {
     {
       url: '/momandbabyexpo.jpg',
       date: '3 May 2024',
-      title: 'GOPHORIA - Dewa19 Gorontalo',
+      title: 'Indonesia Mom and Baby Expo IMOBY Surabaya 2024',
       price: 'Rp. 20.000,-',
       username: 'PT. MYExpo Kreasi Indonesia',
     },
@@ -125,7 +132,7 @@ export default function Home() {
     {
       url: '/momandbabyexpo.jpg',
       date: '3 May 2024',
-      title: 'GOPHORIA - Dewa19 Gorontalo',
+      title: 'Indonesia Mom and Baby Expo IMOBY Surabaya 2024',
       price: 'Rp. 20.000,-',
       username: 'PT. MYExpo Kreasi Indonesia',
     },
@@ -150,163 +157,27 @@ export default function Home() {
           alt="hero"
           className="object-cover"
         ></Image>
-
-        {/* ------------------------------------IMAGE CAROUSEL----------------------------------------------- */}
-
-        <div
-          id="main-banner"
-          className="w-[960px] h-[480px] absolute left-[18%] 2xl:left-[25%] bottom-[15%] "
-        >
-          <div
-            id="default-carousel"
-            className="relative w-[960px]"
-            data-carousel="slide"
-          >
-            {/* <!-- Carousel wrapper --> */}
-            <div className="relative h-56 overflow-hidden rounded-lg md:h-[480px]">
-              {/* <!-- Item 1 --> */}
-              <div
-                className="hidden duration-700 ease-in-out rounded-lg"
-                data-carousel-item
-              >
-                <img
-                  src="anggun.png"
-                  className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                  alt="..."
-                />
-              </div>
-              {/* <!-- Item 2 --> */}
-              <div
-                className="hidden duration-700 ease-in-out rounded-lg"
-                data-carousel-item
-              >
-                <img
-                  src="LiSa.jpg"
-                  className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                  alt="..."
-                />
-              </div>
-              {/* <!-- Item 3 --> */}
-              <div
-                className="hidden duration-700 ease-in-out rounded-lg"
-                data-carousel-item
-              >
-                <img
-                  src="dewa19.jpg"
-                  className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                  alt="..."
-                />
-              </div>
-              {/* <!-- Item 4 --> */}
-              <div
-                className="hidden duration-700 ease-in-out rounded-lg"
-                data-carousel-item
-              >
-                <img
-                  src="gedebagejazz.jpg"
-                  className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                  alt="..."
-                />
-              </div>
-              {/* <!-- Item 5 --> */}
-              <div
-                className="hidden duration-700 ease-in-out rounded-lg"
-                data-carousel-item
-              >
-                <img
-                  src="ultrabeach.jpg"
-                  className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                  alt="..."
-                />
-              </div>
-            </div>
-            {/* <!-- Slider indicators --> */}
-            <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
-              <button
-                type="button"
-                className="w-3 h-3 rounded-full"
-                aria-current="true"
-                aria-label="Slide 1"
-                data-carousel-slide-to="0"
-              ></button>
-              <button
-                type="button"
-                className="w-3 h-3 rounded-full"
-                aria-current="false"
-                aria-label="Slide 2"
-                data-carousel-slide-to="1"
-              ></button>
-              <button
-                type="button"
-                className="w-3 h-3 rounded-full"
-                aria-current="false"
-                aria-label="Slide 3"
-                data-carousel-slide-to="2"
-              ></button>
-              <button
-                type="button"
-                className="w-3 h-3 rounded-full"
-                aria-current="false"
-                aria-label="Slide 4"
-                data-carousel-slide-to="3"
-              ></button>
-              <button
-                type="button"
-                className="w-3 h-3 rounded-full"
-                aria-current="false"
-                aria-label="Slide 5"
-                data-carousel-slide-to="4"
-              ></button>
-            </div>
-            {/* <!-- Slider controls --> */}
-            <button
-              type="button"
-              className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-              data-carousel-prev
-            >
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                <svg
-                  className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 1 1 5l4 4"
-                  />
-                </svg>
-                <span className="sr-only">Previous</span>
-              </span>
-            </button>
-            <button
-              type="button"
-              className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-              data-carousel-next
-            >
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                <svg
-                  className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m1 9 4-4-4-4"
-                  />
-                </svg>
-                <span className="sr-only">Next</span>
-              </span>
-            </button>
+        <div className="flex justify-center pt-14">
+          <div className="w-[960px] h-[500px]">
+            <Carousel>
+              <img
+                src="anggun.png"
+                alt="..."
+                className="object-cover h-[500px]"
+              />
+              <img
+                src="LiSa.jpg"
+                alt="..."
+                className="object-cover h-[500px]"
+              />
+              <img
+                src="dewa19.jpg"
+                alt="..."
+                className="object-cover h-[500px]"
+              />
+              <img src="gedebagejazz.jpg" alt="..." />
+              <img src="ultrabeach.jpg" alt="..." />
+            </Carousel>
           </div>
         </div>
       </div>

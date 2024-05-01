@@ -17,6 +17,7 @@ const EventDetailCustomer: React.FunctionComponent<
   IEventDetailCustomerProps
 > = (props) => {
   const [activeTab, setActiveTab] = useState('description');
+  const [fixed, setFixed] = useState('hidden');
   const descriptionRef = useRef<HTMLDivElement>(null);
   const ticketRef = useRef<HTMLDivElement>(null);
 
@@ -27,9 +28,44 @@ const EventDetailCustomer: React.FunctionComponent<
     setActiveTab(tab);
   };
 
+  React.useEffect(() => {
+    function handleScroll() {
+      const scrollPosition = window.scrollY;
+      if (scrollPosition > 700) {
+        setFixed('fixed');
+      } else {
+        setFixed('hidden');
+      }
+    }
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <div className="bg-white">
-      <div className="container hidden lg:block mx-auto py-8 pt-56">
+      <div
+        className={`bg-white shadow-xl w-full pl-40 h-[80px] flex ${fixed} top-0`}
+      >
+        <button
+          className={`text-xl font-semibold h-[80px] w-[180px] text-center  ${
+            activeTab === 'description' ? 'border-b-4 border-blue-500' : ''
+          }`}
+          onClick={() => setActiveTab('description')}
+        >
+          DESCRIPTION
+        </button>
+        <button
+          className={`text-xl font-semibold h-[80px] w-[180px] text-center  ${
+            activeTab === 'ticket' ? 'border-b-4 border-blue-500' : ''
+          }`}
+          onClick={() => setActiveTab('ticket')}
+        >
+          TICKET
+        </button>
+      </div>
+      <div className="container hidden lg:block mx-auto py-8 pt-20">
         <div className="flex mb-8">
           <div className="w-2/3">
             <Image
