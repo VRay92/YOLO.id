@@ -157,9 +157,7 @@ export default function Home() {
           alt="hero"
           className="object-cover"
         ></Image>
-        
-<!---------------------------------------- Carousel ----------------------------------------------->
-        
+
         <div className="flex justify-center pt-14">
           <div className="w-[960px] h-[500px]">
             <Carousel>
@@ -181,7 +179,6 @@ export default function Home() {
               <img src="gedebagejazz.jpg" alt="..." />
               <img src="ultrabeach.jpg" alt="..." />
             </Carousel>
-
           </div>
         </div>
       </div>
