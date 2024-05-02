@@ -11,39 +11,42 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  username       String    @unique
-  email          String    @unique
-  password       String
-  role           String    @default("customer")
-  referralCode   String    @unique
-  points         Int       @default(0)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  transactions   Transaction[]
-  reviews        Review[]
-  events         Event[]
+  id           Int           @id @default(autoincrement())
+  username     String        @unique
+  email        String        @unique
+  password     String
+  role         String        @default("customer")
+  referralCode String        @unique
+  points       Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+  reviews      Review[]
+  events       Event[]
 
   @@map("users")
 }
 
 model Event {
-  id               Int       @id @default(autoincrement())
-  title            String
-  description      String
-  location         String
-  startDate        DateTime
-  endDate          DateTime
-  price            Decimal   @default(0)
-  availableSeats   Int
-  isFree           Boolean   @default(true)
-  organizerId      Int
-  organizer        User      @relation(fields: [organizerId], references: [id])
-  transactions     Transaction[]
-  reviews          Review[]
-  categories       Category[]
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id             Int           @id @default(autoincrement())
+  title          String
+  imageUrl       String        @db.Text
+  description    String        @db.Text
+  location       String
+  startDate      DateTime
+  endDate        DateTime
+  time           DateTime
+  price          Decimal       @default(0)
+  availableSeats Int
+  isFree         Boolean       @default(true)
+  organizerId    Int
+  organizer      User          @relation(fields: [organizerId], references: [id])
+  transactions   Transaction[]
+  reviews        Review[]
+  categories     Category[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  maxticket      Int
 
   @@map("events")
 }
@@ -57,9 +60,10 @@ model Transaction {
   quantity       Int
   totalPrice     Decimal
   discountAmount Decimal  @default(0)
-  status         STATUS   // "pending", "paid", "cancelled", "success"
+  status         STATUS // "pending", "paid", "cancelled", "success"
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  receiptUrl     String
 
   @@index([userId])
   @@index([eventId])
@@ -67,10 +71,10 @@ model Transaction {
 }
 
 enum STATUS {
-pending
-paid
-cancelled
-success
+  pending
+  paid
+  cancelled
+  success
 }
 
 model Review {
@@ -80,9 +84,8 @@ model Review {
   eventId   Int
   event     Event    @relation(fields: [eventId], references: [id])
   rating    Int
-  comment   String?
+  comment   String?  @db.Text
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([eventId])
@@ -90,24 +93,22 @@ model Review {
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
-  name      String
-  events    Event[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id     Int     @id @default(autoincrement())
+  name   String
+  events Event[]
 
-   @@map("categories")
+  @@map("categories")
 }
 
 model Voucher {
-  id          Int      @id @default(autoincrement())
-  code        String   @unique
-  discount    Int
-  expiryDate  DateTime
-  maxUsage    Int
-  usedCount   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  discount   Int
+  expiryDate DateTime
+  maxUsage   Int
+  usedCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-   @@map("vouchers")
+  @@map("vouchers")
 }

@@ -9,7 +9,7 @@ interface ICobaProps {}
 
 const Coba: React.FunctionComponent<ICobaProps> = (props) => {
   return (
-    <div>
+    <div className="w-[800px]">
       <BarChart />
       <AreaChart />
       <Donut />
