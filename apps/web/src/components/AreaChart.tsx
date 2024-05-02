@@ -50,7 +50,7 @@ class AreaChart extends Component<IAreaChartProps, IAreaChartState> {
       series: [
         {
           name: 'Series 1',
-          data: [45, 52, 38, 45, 19, 23, 2],
+          data: [45, 52, 38, 100, 80, 23, 40],
         },
       ],
     };
