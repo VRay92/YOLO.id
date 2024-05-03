@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { BsPersonFill } from 'react-icons/bs';
@@ -11,15 +11,16 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
   const router = useRouter();
   const [active, setActive] = useState('');
   console.log(active);
+  console.log('path name', usePathname());
 
   return (
     <section className="w-[380px] space-y-5">
       <div
         className={`flex  text-white w-[380px] h-[75px] ${
-          active === 'profile' && 'bg-[#cacaca] text-[#282828]'
+          usePathname() === '/participant/profile' &&
+          'bg-[#cacaca] text-[#282828]'
         } rounded-lg align-middle items-center`}
         onClick={() => {
-          setActive('profile');
           router.push('/participant/profile');
         }}
       >
@@ -30,11 +31,12 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex  text-white w-[380px] h-[75px] ${
-          active === 'voucher' ? 'bg-[#cacaca] text-[#282828]' : ''
+          usePathname() === '/participant/voucher'
+            ? 'bg-[#cacaca] text-[#282828]'
+            : ''
         }
          rounded-lg align-middle items-center`}
         onClick={() => {
-          setActive('voucher');
           router.push('/participant/voucher');
         }}
       >
@@ -45,10 +47,11 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex  text-white w-[380px] h-[75px] ${
-          active === 'purchase' ? 'bg-[#cacaca] text-[#282828]' : ''
+          usePathname() === '/participant/purchased-event'
+            ? 'bg-[#cacaca] text-[#282828]'
+            : ''
         } rounded-lg align-middle items-center`}
         onClick={() => {
-          setActive('purchase');
           router.push('/participant/purchased-event');
         }}
       >
@@ -59,7 +62,8 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex  text-white w-[380px] h-[75px] ${
-          active === 'review' && 'bg-[#cacaca] text-[#282828]'
+          usePathname() === '/participant/review' &&
+          'bg-[#cacaca] text-[#282828]'
         } rounded-lg align-middle items-center`}
         onClick={() => {
           setActive('review');

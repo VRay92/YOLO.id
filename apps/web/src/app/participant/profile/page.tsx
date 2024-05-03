@@ -1,5 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import Sidebar from '@/components/Sidebar';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { BsPersonFill } from 'react-icons/bs';
@@ -14,111 +15,98 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
 
   return (
     <div className="bg-[#282828] flex">
-      <aside className="space-y-5 bg-[#282828] cursor-pointer mx-12 mt-28">
-        <div
-          className={`flex  text-white w-[380px] h-[75px] ${
-            active === 'profile' && 'bg-[#cacaca] text-[#282828]'
-          } rounded-lg align-middle items-center`}
-          onClick={() => {
-            setActive('profile');
-            router.push('/participant/profile');
-          }}
-        >
-          <span className="mx-4">
-            <BsPersonFill size={30}></BsPersonFill>
-          </span>
-          <h1 className="">Profile</h1>
-        </div>
-        <div
-          className={`flex  text-white w-[380px] h-[75px] ${
-            active === 'voucher' ? 'bg-[#cacaca] text-[#282828]' : ''
-          }
-         rounded-lg align-middle items-center`}
-          onClick={() => {
-            setActive('voucher');
-            router.push('/participant/voucher');
-          }}
-        >
-          <span className="mx-4">
-            <h1 className="text-2xl">%</h1>
-          </span>
-          <h1 className="">Vouchers</h1>
-        </div>
-        <div
-          className={`flex  text-white w-[380px] h-[75px] ${
-            active === 'purchase' ? 'bg-[#cacaca] text-[#282828]' : ''
-          } rounded-lg align-middle items-center`}
-          onClick={() => {
-            setActive('purchase');
-            router.push('/participant/purchased-event');
-          }}
-        >
-          <span className="mx-4">
-            <BsTicketPerforatedFill size={30}></BsTicketPerforatedFill>
-          </span>
-          <h1 className="">Purchased Events</h1>
-        </div>
-        <div
-          className={`flex  text-white w-[380px] h-[75px] ${
-            active === 'review' && 'bg-[#cacaca] text-[#282828]'
-          } rounded-lg align-middle items-center`}
-          onClick={() => {
-            setActive('review');
-            router.push('/participant/review');
-          }}
-        >
-          <span className="mx-4">
-            <GoStarFill size={30}></GoStarFill>
-          </span>
-          <h1 className="">Review and Rating</h1>
-        </div>
-      </aside>
-      <section className="w-[1225px] h-[710px] rounded-lg  my-14 relative">
+      {/* desktop view */}
+      <div className="mx-12 mt-28">
+        <Sidebar></Sidebar>
+      </div>
+
+      <section className=" w-full md:w-[1225px] md:h-[710px] rounded-none md:rounded-lg  md:my-14 relative">
         <Image
           fill
           sizes="100vw"
           src="/background.jpg"
           alt="hero"
-          className="object-cover rounded-lg"
+          className="object-cover rounded-none md:rounded-lg hidden md:block"
         ></Image>
-        <h1 className="relative text-3xl text-black mt-16 ml-16">Profile</h1>
-        <div className="relative ml-16 mt-10 flex">
-          <div id="left-container" className="border-gray-400">
+
+        <Image
+          fill
+          sizes="100vw"
+          src="/background2.jpg"
+          alt="hero"
+          className="rounded-none md:rounded-lg block md:hidden w-fit"
+        ></Image>
+        <div className="rounded-full h-[220px] w-[220px] relative mt-20 mx-auto block md:hidden">
+          <Image
+            fill
+            sizes="100vw"
+            src="/profile.webp"
+            alt="hero"
+            className="object-cover rounded-full "
+          ></Image>
+        </div>
+        <h1 className="relative font-semibold text-center md:text-left text-3xl text-black mt-16 md:ml-16">
+          Profile
+        </h1>
+        <div className="relative ml-4 mr-4 md:ml-16 md:mr-0 mt-10 flex w-full md:flex-row flex-col ">
+          <div id="left-container" className="border-gray-400 flex flex-col">
             <h1>Name</h1>
             <input
               type="text"
-              className="w-[350px] h-[50px] rounded-lg border-gray-200"
+              className="mr-8 md:w-[350px] h-[50px] rounded-lg border-gray-200 mb-4"
             />
             <h1>Gender</h1>
-            <input
-              type="text"
-              className="w-[350px] h-[50px] rounded-lg border-gray-200"
-            />
+            <div className="mb-4">
+              <input
+                type="radio"
+                id="male"
+                value="male"
+                name="gender"
+                className="mr-4"
+              />
+              <label htmlFor="male" className="mr-4 md:mr-10">
+                Male
+              </label>
+              <input
+                type="radio"
+                id="female"
+                value="female"
+                name="gender"
+                className="ml-10 mr-4"
+              />
+              <label htmlFor="female">Female</label>
+            </div>
+
             <h1>Birthdate</h1>
             <input
-              type="text"
-              className="w-[350px] h-[50px] rounded-lg border-gray-200"
+              type="date"
+              className="mr-8 md:w-[350px] h-[50px] rounded-lg border-gray-200"
             />
           </div>
-          <div id="right-container" className="ml-16 w-[400px]">
+          <div
+            id="right-container"
+            className=" md:ml-16  mr-8 md:mr-16 flex flex-col"
+          >
             <h1>Email address</h1>
             <input
               type="text"
-              className="w-[350px] h-[50px] rounded-lg border-gray-200"
+              className="w-auto md:w-[350px] h-[50px] rounded-lg border-gray-200 mb-2"
             />
             <h1>Password</h1>
             <input
               type="text"
-              className="w-[350px] h-[50px] rounded-lg border-gray-200"
+              className="w-auto md:w-[350px] h-[50px] rounded-lg border-gray-200"
             />
             <h1>Confirm password</h1>
             <input
               type="text"
-              className="w-[350px] h-[50px] rounded-lg border-gray-200"
+              className="w-auto md:w-[350px] h-[50px] rounded-lg border-gray-200"
             />
-            <button className="w-[20rem] h-[3rem] rounded-2xl bg-red-600 text-white mt-10">
-              change data
-            </button>
+            <div>
+              <button className="w-full md:w-[350px] h-[3rem] rounded-2xl bg-red-600 text-white mt-10">
+                change data
+              </button>
+            </div>
           </div>
           <div className="rounded-full h-[220px] w-[220px] relative">
             <Image
@@ -126,11 +114,13 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
               sizes="100vw"
               src="/profile.webp"
               alt="hero"
-              className="object-cover rounded-full"
+              className="object-cover rounded-full hidden md:block"
             ></Image>
           </div>
         </div>
       </section>
+
+      {/* mobile view */}
     </div>
   );
 };
