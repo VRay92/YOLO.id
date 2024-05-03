@@ -32,7 +32,6 @@ model Event {
   title          String
   imageUrl       String        @db.Text
   description    String        @db.Text
-  location       String
   startDate      DateTime
   endDate        DateTime
   time           DateTime
@@ -41,6 +40,8 @@ model Event {
   isFree         Boolean       @default(true)
   organizerId    Int
   organizer      User          @relation(fields: [organizerId], references: [id])
+  locationId     Int
+  location       Location          @relation(fields: [locationId], references: [id])
   transactions   Transaction[]
   reviews        Review[]
   categories     Category[]
@@ -98,6 +99,14 @@ model Category {
   events Event[]
 
   @@map("categories")
+}
+
+model Location {
+  id     Int     @id @default(autoincrement())
+  name   String
+  events Event[]
+
+  @@map("locations")
 }
 
 model Voucher {

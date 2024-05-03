@@ -2,36 +2,46 @@ import React, { Component } from 'react';
 import Chart from 'react-apexcharts';
 
 interface IDonutProps {
-  // Define props here if needed
+
 }
 
 interface IDonutState {
-  options: {};
+  options: {
+    labels: string[];
+    legend: {
+      labels: {
+        colors: string;
+      };
+    };
+  };
   series: number[];
-  labels: string[];
 }
 
 class Donut extends Component<IDonutProps, IDonutState> {
-  constructor(props: any) {
+  constructor(props: IDonutProps) {
     super(props);
-
     this.state = {
-      options: {},
+      options: {
+        labels: ['A', 'B', 'C', 'D', 'E'],
+        legend: {
+          labels: {
+            colors: '#f3f4f6', // text-gray-100
+          },
+        },
+      },
       series: [44, 55, 41, 17, 15],
-      labels: ['A', 'B', 'C', 'D', 'E'],
     };
   }
 
   render() {
     return (
-      <div className="donut">
-        <Chart
-          options={this.state.options}
-          series={this.state.series}
-          type="donut"
-          width="380"
-        />
-      </div>
+      <Chart
+        options={this.state.options}
+        series={this.state.series}
+        type="donut"
+        width="100%"
+        height="350"
+      />
     );
   }
 }
