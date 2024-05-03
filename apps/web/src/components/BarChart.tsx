@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Chart from 'react-apexcharts';
 
-// Define the interface for component props
 interface IBarChartProps {
-  // Define props here if needed
+
 }
 
 interface IBarChartState {
@@ -17,18 +16,8 @@ class BarChart extends Component<IBarChartProps, IBarChartState> {
     this.state = {
       options: {
         chart: {
-          background: '#f4f4f4', // Corrected the typo
           foreColor: '#333',
         },
-        series: [
-          {
-            name: 'Population',
-            data: [
-              8550405, 3971883, 2720546, 2296224, 1567442, 1563025, 1469845,
-              1394928, 1300092, 1026908,
-            ],
-          },
-        ],
         xaxis: {
           categories: [
             'New York',
@@ -42,9 +31,16 @@ class BarChart extends Component<IBarChartProps, IBarChartState> {
             'Dallas',
             'San Jose',
           ],
+          labels: {
+            style: {
+              colors: '#f3f4f6', // text-gray-100
+            },
+          },
         },
         plotOptions: {
-          bar: { horizontal: false },
+          bar: {
+            horizontal: false,
+          },
         },
         fill: {
           colors: ['#f44336'],
@@ -59,6 +55,13 @@ class BarChart extends Component<IBarChartProps, IBarChartState> {
           offsetY: 20,
           style: {
             fontSize: '25px',
+          },
+        },
+        yaxis: {
+          labels: {
+            style: {
+              colors: '#f3f4f6', // text-gray-100
+            },
           },
         },
       },
@@ -80,8 +83,7 @@ class BarChart extends Component<IBarChartProps, IBarChartState> {
         options={this.state.options}
         series={this.state.series}
         type="bar"
-        height="450"
-        width="100%"
+        height="350"
       />
     );
   }

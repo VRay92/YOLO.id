@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Chart from 'react-apexcharts';
 
-// Define the interface for component props
 interface IAreaChartProps {
-  // Define props here if needed
+
 }
 
 interface IAreaChartState {
@@ -30,9 +29,23 @@ class AreaChart extends Component<IAreaChartProps, IAreaChartState> {
             '06 Jan',
             '07 Jan',
           ],
+          labels: {
+            style: {
+              colors: '#f3f4f6', // text-gray-100
+            },
+          },
+        },
+        yaxis: {
+          labels: {
+            style: {
+              colors: '#f3f4f6', // text-gray-100
+            },
+          },
         },
         plotOptions: {
-          bar: { horizontal: false },
+          bar: {
+            horizontal: false,
+          },
         },
         fill: {
           type: 'gradient',
@@ -62,8 +75,7 @@ class AreaChart extends Component<IAreaChartProps, IAreaChartState> {
         options={this.state.options}
         series={this.state.series}
         type="area"
-        height="450"
-        width="100%"
+        height="350"
       />
     );
   }
