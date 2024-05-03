@@ -12,7 +12,6 @@ interface ICardProps {
 const Card: React.FunctionComponent<ICardProps> = (props) => {
   const router = useRouter();
   return (
-
     <div
       className="2xl:h-[380px] 2xl:w-[380px] rounded-xl shadow-xl bg-[#d9d9d9] cursor-pointer"
       onClick={() => router.push('/event_detail_cu')}
