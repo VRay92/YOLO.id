@@ -11,7 +11,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
   const router = useRouter();
   const [active, setActive] = useState('');
   console.log(active);
-  console.log('path name', usePathname());
+
 
   return (
     <section className="w-[380px] space-y-5">
@@ -31,6 +31,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex  text-white w-[380px] h-[75px] ${
+
           usePathname() === '/participant/voucher'
             ? 'bg-[#cacaca] text-[#282828]'
             : ''
@@ -47,11 +48,13 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex  text-white w-[380px] h-[75px] ${
+
           usePathname() === '/participant/purchased-event'
             ? 'bg-[#cacaca] text-[#282828]'
             : ''
         } rounded-lg align-middle items-center`}
         onClick={() => {
+
           router.push('/participant/purchased-event');
         }}
       >
@@ -64,6 +67,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
         className={`flex  text-white w-[380px] h-[75px] ${
           usePathname() === '/participant/review' &&
           'bg-[#cacaca] text-[#282828]'
+
         } rounded-lg align-middle items-center`}
         onClick={() => {
           setActive('review');

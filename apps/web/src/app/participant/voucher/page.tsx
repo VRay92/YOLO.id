@@ -7,6 +7,7 @@ import { BsTicketPerforatedFill } from 'react-icons/bs';
 import { GoStarFill } from 'react-icons/go';
 import Sidebar from '@/components/Sidebar';
 
+
 interface IVoucherProps {}
 
 const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {

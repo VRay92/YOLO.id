@@ -15,6 +15,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
 
   return (
     <div className="bg-[#282828] flex">
+
       {/* desktop view */}
       <div className="mx-12 mt-28">
         <Sidebar></Sidebar>
@@ -26,6 +27,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
           sizes="100vw"
           src="/background.jpg"
           alt="hero"
+
           className="object-cover rounded-none md:rounded-lg hidden md:block"
         ></Image>
 
@@ -100,6 +102,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
             <h1>Confirm password</h1>
             <input
               type="text"
+
               className="w-auto md:w-[350px] h-[50px] rounded-lg border-gray-200"
             />
             <div>
@@ -107,6 +110,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
                 change data
               </button>
             </div>
+
           </div>
           <div className="rounded-full h-[220px] w-[220px] relative">
             <Image
@@ -121,6 +125,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
       </section>
 
       {/* mobile view */}
+
     </div>
   );
 };

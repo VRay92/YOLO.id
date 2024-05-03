@@ -13,6 +13,7 @@ const Purchasedevent: React.FunctionComponent<IPurchasedeventProps> = (
   props,
 ) => {
   const router = useRouter();
+
   // const [active, setActive] = useState('purchase');
 
   return (

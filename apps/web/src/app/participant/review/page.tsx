@@ -7,6 +7,7 @@ import { BsTicketPerforatedFill } from 'react-icons/bs';
 import { GoStarFill } from 'react-icons/go';
 import Sidebar from '@/components/Sidebar';
 
+
 interface IReviewProps {}
 
 const Review: React.FunctionComponent<IReviewProps> = (props) => {
@@ -15,6 +16,7 @@ const Review: React.FunctionComponent<IReviewProps> = (props) => {
 
   return (
     <div className="bg-[#282828] flex">
+
       <div className="mx-12 mt-28">
         <Sidebar></Sidebar>
       </div>
