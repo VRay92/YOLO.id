@@ -15,19 +15,17 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
 
   return (
     <div className="bg-[#282828] flex">
-
       {/* desktop view */}
-      <div className="mx-12 mt-28">
+      <div className="mx-12 mt-28 hidden md:block">
         <Sidebar></Sidebar>
       </div>
 
-      <section className=" w-full md:w-[1225px] md:h-[710px] rounded-none md:rounded-lg  md:my-14 relative">
+      <section className=" w-full md:h-[710px] rounded-none md:mr-16 md:rounded-lg  md:my-14 relative">
         <Image
           fill
           sizes="100vw"
           src="/background.jpg"
           alt="hero"
-
           className="object-cover rounded-none md:rounded-lg hidden md:block"
         ></Image>
 
@@ -55,7 +53,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
             <h1>Name</h1>
             <input
               type="text"
-              className="mr-8 md:w-[350px] h-[50px] rounded-lg border-gray-200 mb-4"
+              className="mr-8 2xl:w-[350px] h-[50px] rounded-lg border-gray-200 mb-4"
             />
             <h1>Gender</h1>
             <div className="mb-4">
@@ -65,6 +63,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
                 value="male"
                 name="gender"
                 className="mr-4"
+                checked
               />
               <label htmlFor="male" className="mr-4 md:mr-10">
                 Male
@@ -82,7 +81,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
             <h1>Birthdate</h1>
             <input
               type="date"
-              className="mr-8 md:w-[350px] h-[50px] rounded-lg border-gray-200"
+              className="mr-8  md:w-[350px] h-[50px] rounded-lg border-gray-200"
             />
           </div>
           <div
@@ -92,7 +91,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
             <h1>Email address</h1>
             <input
               type="text"
-              className="w-auto md:w-[350px] h-[50px] rounded-lg border-gray-200 mb-2"
+              className="w-auto  md:w-[350px] h-[50px] rounded-lg border-gray-200 mb-2"
             />
             <h1>Password</h1>
             <input
@@ -102,15 +101,13 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
             <h1>Confirm password</h1>
             <input
               type="text"
-
-              className="w-auto md:w-[350px] h-[50px] rounded-lg border-gray-200"
+              className="w-auto  md:w-[350px] h-[50px] rounded-lg border-gray-200"
             />
             <div>
-              <button className="w-full md:w-[350px] h-[3rem] rounded-2xl bg-red-600 text-white mt-10">
+              <button className="w-full  md:w-[350px] h-[3rem] rounded-2xl bg-red-600 text-white mt-10">
                 change data
               </button>
             </div>
-
           </div>
           <div className="rounded-full h-[220px] w-[220px] relative">
             <Image
@@ -125,7 +122,6 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
       </section>
 
       {/* mobile view */}
-
     </div>
   );
 };

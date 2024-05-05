@@ -7,9 +7,11 @@ import Card from '@/components/Card';
 import { Carousel } from 'flowbite-react';
 import { initDropdowns } from 'flowbite';
 import { initCarousels } from 'flowbite';
+import { Dropdown } from 'flowbite';
 
 export default function Home() {
   const [category, setCategory] = useState('music');
+  const [city, setCity] = useState('Jakarta');
 
   const music = [
     {
@@ -202,14 +204,29 @@ export default function Home() {
           id="main-banner"
           className="w-[343px] h-[200px] absolute left-[8%] bottom-[15%]"
         >
-          {' '}
-          <Image
-            fill
-            sizes="100vw"
-            src="/anggun.png"
-            alt="hero"
-            className="object-cover rounded-lg"
-          ></Image>
+          <Carousel>
+            <img
+              src="anggun.png"
+              alt="..."
+              className="object-cover rounded-lg"
+            />
+            <img src="LiSa.jpg" alt="..." className="object-cover rounded-lg" />
+            <img
+              src="dewa19.jpg"
+              alt="..."
+              className="object-cover rounded-lg"
+            />
+            <img
+              src="gedebagejazz.jpg"
+              alt="..."
+              className="object-cover rounded-lg"
+            />
+            <img
+              src="ultrabeach.jpg"
+              alt="..."
+              className="object-cover rounded-lg"
+            />
+          </Carousel>
         </div>
       </div>
 
@@ -310,7 +327,7 @@ export default function Home() {
       {/* music card */}
 
       {category === 'music' && (
-        <div className="grid grid-cols-4 grid-rows-2 gap-10 mx-20 mt-20">
+        <div className="flex overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:grid-rows-2 gap-10 mx-4 md:mx-20 mt-20">
           {music.map((val, idx) => (
             <Card
               key={idx}
@@ -327,7 +344,7 @@ export default function Home() {
       {/* festival card */}
 
       {category === 'festival' && (
-        <div className="grid grid-cols-4 grid-rows-2 gap-10 mx-20 mt-20">
+        <div className="flex overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:grid-rows-2 gap-10 mx-4 md:mx-20 mt-20">
           {festival.map((val, idx) => (
             <Card
               key={idx}
@@ -340,6 +357,12 @@ export default function Home() {
           ))}
         </div>
       )}
+      <div className="flex">
+        <h1 className="text-white text-[40px] font-bold font-poppins ml-5 md:mx-16 mt-4 md:mt-10">
+          Popular in
+        </h1>
+      </div>
+
       <div className="h-60 w-full">.</div>
     </main>
   );
