@@ -11,45 +11,99 @@ datasource db {
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  username     String        @unique
-  email        String        @unique
-  password     String
-  role         String        @default("customer")
-  referralCode String        @unique
-  points       Int           @default(0)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  transactions Transaction[]
-  reviews      Review[]
-  events       Event[]
-
+  id                Int          @id @default(autoincrement())
+  username          String       @unique
+  email             String       @unique
+  password          String
+  role              Role
+  referralCode      String?      @unique
+  referredBy        User?        @relation("ReferralRelation", fields: [referredById], references: [id])
+  referredById      Int?
+  referrals         User[]       @relation("ReferralRelation")
+  points            UserPoint[]
+  voucher           UserVoucher[]
+  transactions      Transaction[]
+  reviews           Review[]
+  events            Event[]     
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  verificationToken String?
+  otp               String?
+  isVerified        Boolean      @default(false) 
+  age             Int?
+  gender          String?
   @@map("users")
 }
 
+enum Role {
+  customer
+  organizer
+}
+
+model UserPoint {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  points    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("user_points")
+}
+
+model UserVoucher {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  discount  Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  transaction  Transaction[]
+
+  @@map("user_vouchers")
+}
+
 model Event {
-  id             Int           @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   title          String
-  imageUrl       String        @db.Text
-  description    String        @db.Text
+  imageUrl       String         @db.Text
+  description    String         @db.Text
   startDate      DateTime
   endDate        DateTime
   time           DateTime
-  price          Decimal       @default(0)
   availableSeats Int
-  isFree         Boolean       @default(true)
+  isFree         Boolean        @default(true)
   organizerId    Int
-  organizer      User          @relation(fields: [organizerId], references: [id])
+  organizer      User           @relation(fields: [organizerId], references: [id])
   locationId     Int
-  location       Location          @relation(fields: [locationId], references: [id])
+  location       Location       @relation(fields: [locationId], references: [id])
   transactions   Transaction[]
   reviews        Review[]
   categories     Category[]
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  maxticket      Int
+  ticketTypes    EventTicketType[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  maxTicket      Int
+  promotion Promotion[]
 
   @@map("events")
+}
+
+model TicketType {
+  id      Int    @id @default(autoincrement())
+  name    String
+  events  EventTicketType[]
+}
+
+model EventTicketType {
+  event       Event     @relation(fields: [eventId], references: [id])
+  eventId     Int
+  ticketType  TicketType @relation(fields: [ticketTypeId], references: [id])
+  ticketTypeId Int
+  price       Decimal
+  quantity    Int
+
+  @@id([eventId, ticketTypeId])
 }
 
 model Transaction {
@@ -61,14 +115,31 @@ model Transaction {
   quantity       Int
   totalPrice     Decimal
   discountAmount Decimal  @default(0)
-  status         STATUS // "pending", "paid", "cancelled", "success"
+  status         STATUS
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   receiptUrl     String
+  userVoucherId      Int?
+  voucher        UserVoucher? @relation(fields: [userVoucherId], references: [id])
 
   @@index([userId])
   @@index([eventId])
   @@map("transactions")
+}
+
+model Promotion {
+  id         Int       @id @default(autoincrement())
+  event      Event     @relation(fields: [eventId], references: [id])
+  eventId    Int
+  code       String    @unique
+  discount   Int
+  expiryDate DateTime
+  maxUsage   Int
+  usedCount  Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@map("promotions")
 }
 
 enum STATUS {
@@ -109,15 +180,8 @@ model Location {
   @@map("locations")
 }
 
-model Voucher {
-  id         Int      @id @default(autoincrement())
-  code       String   @unique
-  discount   Int
-  expiryDate DateTime
-  maxUsage   Int
-  usedCount  Int      @default(0)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@map("vouchers")
+model InvalidToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now())
 }

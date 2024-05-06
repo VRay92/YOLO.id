@@ -9,17 +9,50 @@ import { useRouter } from 'next/navigation';
 import { initCarousels } from 'flowbite';
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { setUser } from '@/lib/features/userSlice';
+import axios from 'axios';
 
 export const Header = () => {
   const router = useRouter();
-  const blockpages = ['/signin', '/signup'];
+  const isLoggedIn = useAppSelector((state) => state.userReducer.isLoggedIn);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const keepLogin = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        console.log('Token from local storage:', token);
+        if (token) {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log('KeepLogin response:', response.data);
+          if (response.data.success) {
+            const user = response.data.data;
+            const { username, email, role, token } = user;
+            dispatch(setUser({ username, email, role, token, isLoggedIn: true }));
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    keepLogin();
+  }, [dispatch]);
+
+  useEffect(() => {
+    console.log('Redux isLoggedIn:', isLoggedIn);
+  }, [isLoggedIn]);
 
   return (
-    <nav
-      className={`w-full max-w-[1920px] ${
-        blockpages.includes(usePathname()) ? 'hidden' : 'block'
-      }`}
-    >
+    <nav className={`w-full max-w-[1920px] $`}>
       {/* top navbar */}
 
       <div className="hidden md:flex justify-end md:pr-16 h-[40px] bg-[#D9D9D9] py-2 ">

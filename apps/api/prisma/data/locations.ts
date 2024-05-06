@@ -513,4 +513,5 @@ export const locations = [
   { name: 'Kabupaten Intan Jaya' },
   { name: 'Kabupaten Deiyai' },
   { name: 'Kota Jayapura' },
+  { name: 'Online' },
 ];
