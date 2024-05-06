@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 40px;
+            color: #333;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h3 {
+            color: #444;
+        }
+        h4 {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        a {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background-color: #28a745;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        a:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <img src="https://drive.google.com/uc?export=view&id=1GFIV-hTQ766nF6Jz1xoRx_yZXTEoN16O" alt="Logo" style="max-width: 100px; margin-bottom: 20px;">
+        <h3>Welcome, {{username}}!</h3>
+        <h4>Your OTP : {{otp}}</h4>
+        <a href="{{link}}" target="_blank">Verify Your Email</a>
+    </center>
+</body>
+</html>
