@@ -2,8 +2,11 @@ import express, { json, urlencoded, Express, Request, Response, NextFunction } f
 import cors from 'cors';
 import { PORT } from './config';
 import { AuthRouter } from './routers/auth.router';
+import { OrganizerRouter } from './routers/organizer.router';
+import { EventRouter } from './routers/event.router';
 import { CustomerRouter } from './routers/customer.router';
 import { authMiddleware, authorizeCustomer, authorizeOrganizer } from './middleware/protectedRoute';
+
 
 export default class App {
   private app: Express;
@@ -33,13 +36,15 @@ export default class App {
 
   private routes(): void {
     const authRouter = new AuthRouter();
-    const customerRouter = new CustomerRouter();
-    // const organizerRouter = new OrganizerRouter();
-
-
+    
+ const customerRouter = new CustomerRouter();
+    const organizerRouter = new OrganizerRouter();
+    const eventRouter = new EventRouter();
+    // this.app.use('/api/organizer', organizerRouter.getRouter());
+    this.app.use('/api/event', eventRouter.getRouter());
     this.app.use('/api/auth', authRouter.getRouter());
     this.app.use('/api/customer', authMiddleware, authorizeCustomer, customerRouter.getRouter());
-    // this.app.use('/api/organizer', authMiddleware, authorizeOrganizer, organizerRouter.getRouter());
+
   }
 
   public start(): void {

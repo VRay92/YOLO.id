@@ -11,27 +11,28 @@ datasource db {
 }
 
 model User {
-  id                Int          @id @default(autoincrement())
-  username          String       @unique
-  email             String       @unique
+  id                Int           @id @default(autoincrement())
+  username          String        @unique
+  email             String        @unique
   password          String
   role              Role
-  referralCode      String?      @unique
-  referredBy        User?        @relation("ReferralRelation", fields: [referredById], references: [id])
+  referralCode      String?       @unique
+  referredBy        User?         @relation("ReferralRelation", fields: [referredById], references: [id])
   referredById      Int?
-  referrals         User[]       @relation("ReferralRelation")
+  referrals         User[]        @relation("ReferralRelation")
   points            UserPoint[]
   voucher           UserVoucher[]
   transactions      Transaction[]
   reviews           Review[]
-  events            Event[]     
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+  events            Event[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
   verificationToken String?
   otp               String?
-  isVerified        Boolean      @default(false) 
-  age             Int?
-  gender          String?
+  isVerified        Boolean       @default(false)
+  age               Int?
+  gender            String?
+
   @@map("users")
 }
 
@@ -52,74 +53,75 @@ model UserPoint {
 }
 
 model UserVoucher {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  discount  Int
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  transaction  Transaction[]
+  id          Int           @id @default(autoincrement())
+  user        User          @relation(fields: [userId], references: [id])
+  userId      Int
+  discount    Int
+  expiresAt   DateTime
+  createdAt   DateTime      @default(now())
+  transaction Transaction[]
 
   @@map("user_vouchers")
 }
 
 model Event {
-  id             Int            @id @default(autoincrement())
+  id             Int               @id @default(autoincrement())
   title          String
-  imageUrl       String         @db.Text
-  description    String         @db.Text
+  imageUrl       String            @db.Text
+  description    String            @db.Text
   startDate      DateTime
   endDate        DateTime
-  time           DateTime
+  time           String
   availableSeats Int
-  isFree         Boolean        @default(true)
+  isFree         Boolean           @default(true)
   organizerId    Int
-  organizer      User           @relation(fields: [organizerId], references: [id])
-  locationId     Int
-  location       Location       @relation(fields: [locationId], references: [id])
+  organizer      User?             @relation(fields: [organizerId], references: [id])
+  location       String
+  cityId         Int
+  city           City?             @relation(fields: [cityId], references: [id])
   transactions   Transaction[]
   reviews        Review[]
   categories     Category[]
   ticketTypes    EventTicketType[]
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
   maxTicket      Int
-  promotion Promotion[]
+  promotion      Promotion[]
 
   @@map("events")
 }
 
 model TicketType {
-  id      Int    @id @default(autoincrement())
-  name    String
-  events  EventTicketType[]
+  id     Int               @id @default(autoincrement())
+  name   String
+  events EventTicketType[]
 }
 
 model EventTicketType {
-  event       Event     @relation(fields: [eventId], references: [id])
-  eventId     Int
-  ticketType  TicketType @relation(fields: [ticketTypeId], references: [id])
+  event        Event      @relation(fields: [eventId], references: [id])
+  eventId      Int
+  ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
   ticketTypeId Int
-  price       Decimal
-  quantity    Int
+  price        Decimal
+  quantity     Int
 
   @@id([eventId, ticketTypeId])
 }
 
 model Transaction {
-  id             Int      @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   userId         Int
-  user           User     @relation(fields: [userId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
   eventId        Int
-  event          Event    @relation(fields: [eventId], references: [id])
+  event          Event        @relation(fields: [eventId], references: [id])
   quantity       Int
   totalPrice     Decimal
-  discountAmount Decimal  @default(0)
+  discountAmount Decimal      @default(0)
   status         STATUS
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
   receiptUrl     String
-  userVoucherId      Int?
+  userVoucherId  Int?
   voucher        UserVoucher? @relation(fields: [userVoucherId], references: [id])
 
   @@index([userId])
@@ -128,16 +130,16 @@ model Transaction {
 }
 
 model Promotion {
-  id         Int       @id @default(autoincrement())
-  event      Event     @relation(fields: [eventId], references: [id])
+  id         Int      @id @default(autoincrement())
+  event      Event    @relation(fields: [eventId], references: [id])
   eventId    Int
-  code       String    @unique
+  code       String   @unique
   discount   Int
   expiryDate DateTime
   maxUsage   Int
-  usedCount  Int       @default(0)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  usedCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("promotions")
 }
@@ -172,12 +174,12 @@ model Category {
   @@map("categories")
 }
 
-model Location {
+model City {
   id     Int     @id @default(autoincrement())
   name   String
   events Event[]
 
-  @@map("locations")
+  @@map("cities")
 }
 
 model InvalidToken {

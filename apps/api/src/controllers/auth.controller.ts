@@ -373,18 +373,18 @@ export class AuthController {
   async checkEmailToken(req: Request, res: Response) {
     try {
       const { token } = req.params;
-  
+
       // Cari user berdasarkan token verifikasi email
       const user = await prisma.user.findFirst({
         where: {
           verificationToken: token,
         },
       });
-  
+
       if (!user) {
         return res.status(400).json({ success: false });
       }
-  
+
       return res.status(200).json({ success: true });
     } catch (error) {
       console.error('Error in checkEmailToken:', error);
@@ -395,9 +395,9 @@ export class AuthController {
   async checkResetToken(req: Request, res: Response) {
     try {
       const { token } = req.params;
-  
+
       const isTokenValid = await validateForgotPasswordToken(token);
-  
+
       return res.status(200).json({ isValid: isTokenValid });
     } catch (error) {
       console.error('Error in checkResetToken:', error);
