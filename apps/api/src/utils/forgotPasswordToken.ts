@@ -18,17 +18,14 @@ export async function validateForgotPasswordToken(
     where: { token },
   });
 
-  // If the token is found in invalid tokens, return false
   if (invalidToken) {
     return false;
   }
 
-  // Verify and decode the token
   const decodedToken = verify(token, process.env.TOKEN_KEY || 'secret');
   const { exp } = decodedToken as { exp: number };
   const currentTime = Math.floor(Date.now() / 1000);
 
-  // Check if the token has expired
   if (exp < currentTime) {
     return false;
   }

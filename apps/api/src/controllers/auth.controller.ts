@@ -8,7 +8,7 @@ import { validationResult } from 'express-validator';
 import {
   invalidateForgotPasswordToken,
   validateForgotPasswordToken,
-} from '@/middleware/forgotPasswordToken';
+} from '@/utils/forgotPasswordToken';
 
 export class AuthController {
   async registerUser(req: Request, resp: Response) {
