@@ -12,3 +12,9 @@ config({ path: resolve(__dirname, `../${envFile}.local`), override: true });
 
 export const PORT = process.env.PORT || 8000;
 export const DATABASE_URL = process.env.DATABASE_URL || '';
+export const TOKEN_KEY = process.env.TOKEN_KEY;
+export const MAX_FORGOT_PASSWORD = process.env.MAX_FORGOT_PASSWORD;
+export const MAIL_SENDER = process.env.MAIL_SENDER;
+export const MAIL_APP_PASSWORD = process.env.MAIL_APP_PASSWORD;
+export const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SERVER_KEY || "Mid-server-PnejxS9VCtaJuyASxNL8CTc5";
+export const MIDTRANS_CLIENT_KEY = process.env.MIDTRANS_CLIENT_KEY;
