@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE `users` ADD COLUMN `age` INTEGER NULL,
-    ADD COLUMN `gender` VARCHAR(191) NULL;

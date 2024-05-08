@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client';
-import { locations } from './data/locations';
+import { cities } from './data/cities';
 import { categories } from './data/categories';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  for (const location of locations) {
-    await prisma.location.create({ data: location });
+  for (const city of cities) {
+    await prisma.city.create({ data: city });
   }
   for (const category of categories) {
     await prisma.category.create({ data: category });

@@ -8,6 +8,8 @@ import { Carousel } from 'flowbite-react';
 import { initDropdowns } from 'flowbite';
 import { initCarousels } from 'flowbite';
 import { Dropdown } from 'flowbite';
+import { Princess_Sofia } from 'next/font/google';
+import { type } from 'os';
 
 export default function Home() {
   const [category, setCategory] = useState('music');
@@ -23,11 +25,11 @@ export default function Home() {
     },
 
     {
-      url: '/LiSa.jpg',
+      url: '/LiSa2.webp',
       date: '28 Dec 2024',
       title: 'Live is Smile Always',
       price: 'Rp. 830.000,-',
-      username: 'Ultra Beach Bali',
+      username: 'FLASHBACK motion',
     },
     {
       url: '/anggun.png',

@@ -13,13 +13,13 @@ const Card: React.FunctionComponent<ICardProps> = (props) => {
   const router = useRouter();
   return (
     <div
-      className="2xl:h-[380px] 2xl:w-[380px] rounded-xl shadow-xl bg-[#d9d9d9] cursor-pointer"
+      className="2xl:h-[380px] rounded-xl shadow-xl bg-[#d9d9d9] cursor-pointer"
       onClick={() => router.push('/event_detail_cu')}
     >
       <img
         src={props.url}
         alt=""
-        className="rounded-t-lg h-[150px] 2xl:h-[200px] w-[380px] object-cover "
+        className="rounded-t-lg h-[150px] 2xl:h-[200px]  object-cover "
       />
       <div className="mt-4 ml-6 text-lg  max-w-[270px] 2xl:max-w-[300px] ">
         <h1 className="font-bold h-7 overflow-hidden truncate">

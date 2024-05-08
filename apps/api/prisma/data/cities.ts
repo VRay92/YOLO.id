@@ -1,4 +1,4 @@
-export const locations = [
+export const cities = [
   { name: 'Kabupaten Simeulue' },
   { name: 'Kabupaten Aceh Singkil' },
   { name: 'Kabupaten Aceh Selatan' },
