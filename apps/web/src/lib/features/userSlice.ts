@@ -16,20 +16,23 @@ const initialState: IUserState = {
   isLoggedIn: false,
 };
 
-const loadTokenFromStorage = (): string | null => {
+const loadFromStorage = (): { token: string | null; isLoggedIn: boolean } => {
   if (typeof window !== 'undefined') {
     const storedToken = localStorage.getItem('token');
     console.log('Loading token from local storage');
     if (storedToken) {
-      return storedToken;
+      return { token: storedToken, isLoggedIn: true };
     }
   }
-  return null;
+  return { token: null, isLoggedIn: false };
 };
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: { ...initialState, token: loadTokenFromStorage() },
+  initialState: {
+    ...initialState,
+    ...loadFromStorage(),
+  },
   reducers: {
     setUser: (state, action: PayloadAction<IUserState>) => {
       state.username = action.payload.username;
@@ -46,7 +49,11 @@ const userSlice = createSlice({
     },
     updateUser: (
       state,
-      action: PayloadAction<{ username?: string; email?: string; role?: string }>
+      action: PayloadAction<{
+        username?: string;
+        email?: string;
+        role?: string;
+      }>,
     ) => {
       if (action.payload.username !== undefined) {
         state.username = action.payload.username;
