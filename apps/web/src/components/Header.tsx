@@ -57,20 +57,27 @@ export const Header = () => {
               setUser({ username, email, role, token, isLoggedIn: true }),
             );
           }
-
         }
       } catch (error) {
         console.error(error);
       }
     };
-    keepLogin();
-  }, [dispatch, isLoggedIn]);
-
-  useEffect(() => {
-    console.log('Redux isLoggedIn:', isLoggedIn);
-    initDropdowns();
+    const getEvent = async () => {
+      try {
+        console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}event/`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}event/`,
+        );
+        console.log('getEvent response:', response.data);
+        setEvent(response.data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
     getEvent();
-  }, [isLoggedIn]);
+    keepLogin();
+    initDropdowns();
+  }, [dispatch, isLoggedIn]);
 
   const filterData = event.filter((val: any) =>
     val.title.toLowerCase().startsWith(search),
