@@ -57,14 +57,28 @@ export const Header = () => {
               setUser({ username, email, role, token, isLoggedIn: true }),
             );
           }
-
         }
       } catch (error) {
         console.error(error);
       }
     };
+    const getEvent = async () => {
+      try {
+        console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}event/`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}event/`,
+        );
+        console.log('getEvent response:', response.data);
+        setEvent(response.data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+    getEvent();
     keepLogin();
+    initDropdowns();
   }, [dispatch, isLoggedIn]);
+
 
 
   const filterData = event.filter((val: any) =>
