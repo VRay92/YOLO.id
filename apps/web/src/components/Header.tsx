@@ -23,33 +23,28 @@ export const Header = () => {
       try {
         const token = localStorage.getItem('token');
         console.log('Token from local storage:', token);
-        if (token) {
+        if (token && !isLoggedIn) {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`,
             {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
+              headers: { Authorization: `Bearer ${token}` },
+            },
           );
           console.log('KeepLogin response:', response.data);
           if (response.data.success) {
             const user = response.data.data;
             const { username, email, role, token } = user;
-            dispatch(setUser({ username, email, role, token, isLoggedIn: true }));
+            dispatch(
+              setUser({ username, email, role, token, isLoggedIn: true }),
+            );
           }
         }
       } catch (error) {
         console.error(error);
       }
     };
-
     keepLogin();
-  }, [dispatch]);
-
-  useEffect(() => {
-    console.log('Redux isLoggedIn:', isLoggedIn);
-  }, [isLoggedIn]);
+  }, [dispatch, isLoggedIn]);
 
   return (
     <nav className={`w-full max-w-[1920px] $`}>
