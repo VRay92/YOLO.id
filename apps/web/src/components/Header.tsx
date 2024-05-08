@@ -59,6 +59,8 @@ export const Header = () => {
           }
 
         }
+      } catch (error) {
+        console.error(error);
       }
     };
     keepLogin();
