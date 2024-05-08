@@ -42,7 +42,7 @@ export const Header = () => {
       const token = localStorage.getItem('token');
       console.log('nilai url', process.env.NEXT_PUBLIC_BASE_API_URL);
       console.log('Token from local storage:', token);
-      if (token) {
+      if (token && !isLoggedIn) {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`,
           {
@@ -78,13 +78,8 @@ export const Header = () => {
 
   useEffect(() => {
     keepLogin();
-  }, [dispatch]);
-
-  useEffect(() => {
-    console.log('Redux isLoggedIn:', isLoggedIn);
     initDropdowns();
-    getEvent();
-  }, [isLoggedIn]);
+  }, [dispatch, isLoggedIn]);
 
   const filterData = event.filter((val: any) =>
     val.title.toLowerCase().startsWith(search),
