@@ -10,18 +10,27 @@ interface ISidebarProps {}
 const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
   const router = useRouter();
   const [active, setActive] = useState('');
+  const pathname = usePathname();
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
   console.log(active);
 
   return (
     <section className="2xl:w-[380px] space-y-5">
       <div
         className={`flex 2xl:w-[380px] h-[75px] ${
-          usePathname() === '/participant/profile'
+          usePathname() === `/participant/${token}/profile`
             ? 'bg-[#cacaca] text-[#282828]'
             : `text-white`
         } rounded-lg align-middle items-center cursor-pointer hover:bg-[#6e6e6e]`}
         onClick={() => {
-          router.push('/participant/profile');
+          router.push(`/participant/${token}/profile`);
         }}
       >
         <span className="mx-4">
@@ -31,13 +40,13 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex max-w-[380px] hover:bg-[#6e6e6e] h-[75px] ${
-          usePathname() === '/participant/voucher'
+          usePathname() === `/participant/${token}/voucher`
             ? 'bg-[#cacaca] text-[#282828]'
             : 'text-white'
         }
          rounded-lg align-middle items-center cursor-pointer`}
         onClick={() => {
-          router.push('/participant/voucher');
+          router.push(`/participant/${token}/voucher`);
         }}
       >
         <span className="mx-4">
@@ -47,7 +56,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex  hover:bg-[#6e6e6e] 2xl:w-[380px] h-[75px] ${
-          usePathname() === '/participant/purchased-event'
+          usePathname() === `/participant/${token}/purchased-event`
             ? 'bg-[#cacaca] text-[#282828]'
             : 'text-white'
         } rounded-lg align-middle items-center cursor-pointer`}
@@ -62,7 +71,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex hover:bg-[#6e6e6e] 2xl:w-[380px] h-[75px] ${
-          usePathname() === '/participant/review'
+          usePathname() === `/participant/${token}/review`
             ? 'bg-[#cacaca] text-[#282828]'
             : 'text-white'
         } rounded-lg align-middle items-center cursor-pointer`}

@@ -57,7 +57,6 @@ export const Header = () => {
               setUser({ username, email, role, token, isLoggedIn: true }),
             );
           }
-
         }
       } catch (error) {
         console.error(error);
@@ -65,7 +64,6 @@ export const Header = () => {
     };
     keepLogin();
   }, [dispatch, isLoggedIn]);
-
 
   const filterData = event.filter((val: any) =>
     val.title.toLowerCase().startsWith(search),
@@ -187,7 +185,7 @@ export const Header = () => {
               <span className="sr-only">Open user menu</span>
               <img
                 className="w-16 h-16 rounded-full"
-                src="28.jpg"
+                src="/28.jpg"
                 alt="user photo"
               />
             </button>
