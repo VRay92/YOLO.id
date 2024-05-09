@@ -7,7 +7,6 @@ import Container from '@/components/Container';
 import StoreProvider from './StoreProvider';
 import ClientOnly from '@/components/ClientOnly';
 
-
 const inter = Inter({ subsets: ['latin'] });
 const poppins = Poppins({
   subsets: ['latin'],
@@ -24,7 +23,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
   return (
     <StoreProvider>
       <html lang="en">

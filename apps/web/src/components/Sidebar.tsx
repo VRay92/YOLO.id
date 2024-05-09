@@ -61,7 +61,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
             : 'text-white'
         } rounded-lg align-middle items-center cursor-pointer`}
         onClick={() => {
-          router.push('/participant/purchased-event');
+          router.push(`/participant/${token}/purchased-event`);
         }}
       >
         <span className="mx-4">
@@ -77,7 +77,7 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
         } rounded-lg align-middle items-center cursor-pointer`}
         onClick={() => {
           setActive('review');
-          router.push('/participant/review');
+          router.push(`/participant/${token}/review`);
         }}
       >
         <span className="mx-4">

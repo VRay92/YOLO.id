@@ -156,7 +156,7 @@ export default function Home() {
       >
         <Image
           fill
-          sizes="100vw"
+          sizes="100"
           src="/hero-section.jpg"
           alt="hero"
           className="object-cover"
@@ -197,7 +197,7 @@ export default function Home() {
       >
         <Image
           fill
-          sizes="100vw"
+          sizes="100"
           src="/hero-section.jpg"
           alt="hero"
           className="object-cover"
