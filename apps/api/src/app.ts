@@ -36,15 +36,10 @@ export default class App {
 
   private routes(): void {
     const authRouter = new AuthRouter();
-
-<<<<<<< HEAD
     const customerRouter = new CustomerRouter();
-=======
- const customerRouter = new CustomerRouter();
->>>>>>> b0d6d9a9f056364cdb9b54ddec5339d53fa2c585
     const organizerRouter = new OrganizerRouter();
     const eventRouter = new EventRouter();
-    // this.app.use('/api/organizer', organizerRouter.getRouter());
+    this.app.use('/api/organizer', authMiddleware, authorizeOrganizer, organizerRouter.getRouter());
     this.app.use('/api/event', eventRouter.getRouter());
     this.app.use('/api/auth', authRouter.getRouter());
     this.app.use('/api/customer', authMiddleware, authorizeCustomer, customerRouter.getRouter());
