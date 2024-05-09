@@ -1,3 +1,4 @@
+import Voucher from '@/app/participant/[token]/voucher/page';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface IUserState {
@@ -6,6 +7,9 @@ export interface IUserState {
   role: string;
   token: string;
   isLoggedIn: boolean;
+  referralCode?: string;
+  points?: number;
+  vouchers?: Voucher[];
 }
 
 const initialState: IUserState = {
@@ -40,6 +44,9 @@ const userSlice = createSlice({
       state.role = action.payload.role;
       state.token = action.payload.token;
       state.isLoggedIn = true;
+      state.referralCode = action.payload.referralCode;
+      state.points = action.payload.points;
+      state.vouchers = action.payload.vouchers;
     },
     resetUser: (state) => {
       state.username = '';
@@ -50,19 +57,19 @@ const userSlice = createSlice({
     updateUser: (
       state,
       action: PayloadAction<{
-        username?: string;
-        email?: string;
-        role?: string;
+        referralCode?: string;
+        points?: number;
+        vouchers?: Voucher[];
       }>,
     ) => {
-      if (action.payload.username !== undefined) {
-        state.username = action.payload.username;
+      if (action.payload.referralCode !== undefined) {
+        state.referralCode = action.payload.referralCode;
       }
-      if (action.payload.email !== undefined) {
-        state.email = action.payload.email;
+      if (action.payload.points !== undefined) {
+        state.points = action.payload.points;
       }
-      if (action.payload.role !== undefined) {
-        state.role = action.payload.role;
+      if (action.payload.vouchers !== undefined) {
+        state.vouchers = action.payload.vouchers;
       }
     },
     logout: (state) => {
