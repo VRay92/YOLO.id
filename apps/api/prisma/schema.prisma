@@ -32,6 +32,9 @@ model User {
   isVerified        Boolean       @default(false)
   age               Int?
   gender            String?
+  imageProfile      String?
+  contactNumber     String?
+
 
   @@map("users")
 }

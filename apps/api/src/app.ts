@@ -36,7 +36,7 @@ export default class App {
 
   private routes(): void {
     const authRouter = new AuthRouter();
-    
+
  const customerRouter = new CustomerRouter();
     const organizerRouter = new OrganizerRouter();
     const eventRouter = new EventRouter();
