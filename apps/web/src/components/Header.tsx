@@ -199,7 +199,7 @@ export const Header = () => {
               <span className="sr-only">Open user menu</span>
               <img
                 className="w-16 h-16 rounded-full"
-                src="28.jpg"
+                src="/28.jpg"
                 alt="user photo"
               />
             </button>

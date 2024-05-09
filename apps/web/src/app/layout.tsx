@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import Container from '@/components/Container';
 import StoreProvider from './StoreProvider';
+import ClientOnly from '@/components/ClientOnly';
 
 
 const inter = Inter({ subsets: ['latin'] });
@@ -39,7 +40,9 @@ export default function RootLayout({
         <body className={poppins.className}>
           <Container>
             {' '}
-            <Header />
+            <ClientOnly>
+              <Header />
+            </ClientOnly>
             {children}
             <Footer />
           </Container>

@@ -13,14 +13,49 @@ import { MdOutlineContentCopy } from 'react-icons/md';
 
 interface IVoucherProps {}
 
+interface Voucher {
+  id: number;
+  discount: number;
+  expiresAt: string;
+}
+
 const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
   const router = useRouter();
   const [active, setActive] = useState('voucher');
-  const voucher = [
-    { name: ' DISCOUNT20%OFF ENCHANTING ANGGUN', value: '11/5/2024' },
-    { name: ' DISCOUNT20%OFF SEMINARWEB', value: '22/8/2024' },
-    { name: ' DISCOUNT20%OFF ENCHANTING ANGGUN', value: '2/2/2024' },
-  ];
+  const [voucher, setVoucher] = useState<Voucher[]>([]);
+  const [referralCode, setReferralCode] = useState('');
+  const [points, setPoints] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}customer/voucher`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setVoucher(data.voucher);
+          setReferralCode(data.referralCode);
+          setPoints(
+            data.points.reduce(
+              (total: number, point: { points: number }) =>
+                total + point.points,
+              0,
+            ),
+          );
+        } else {
+          console.error('Failed to fetch data');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="bg-[#282828] flex">
@@ -53,14 +88,14 @@ const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
               <h1 className="h-6 md:items-end mr-2 md:mr-4">
                 Your Refferal Code
               </h1>
-              <h1 className="text-3xl md:mr-14">123NMBH</h1>
+              <h1 className="text-3xl md:mr-14">{referralCode}</h1>
             </div>
 
             <div className="flex items-end justify-center mt-4">
               <div className="text-[#f8c34f] text-3xl flex justify-center items-center h-10 w-10">
                 <FaCoins></FaCoins>
               </div>
-              <h1 className="text-3xl mr-2">30000</h1>
+              <h1 className="text-3xl mr-2">{points}</h1>
               <h1 className=" h-6">Points</h1>
             </div>
           </div>
@@ -80,10 +115,10 @@ const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
               {voucher.map((item, index) => (
                 <tr key={index} className="h-10 w-[450px] space-x-10">
                   <td className="border-b-[1px] pl-4 md:pl-10 w-[450px]">
-                    {item.name}
+                    {item.discount}% OFF
                   </td>
                   <td className="border-b-[1px] w-[400px] pl-5">
-                    {item.value}
+                    {item.expiresAt}
                   </td>
                   <td className="border-b-[1px] w-[400px]">
                     <button className="md:hidden block mx-auto">

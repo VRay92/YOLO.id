@@ -245,4 +245,89 @@ export class CustomerController {
       return res.status(500).json({ message: 'Internal server error' });
     }
   }
+
+  async getCustomerById(req: Request, res: Response) {
+    try {
+      const userId = res.locals.user.id;
+
+      const customer = await prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          age: true,
+          gender: true,
+        },
+      });
+
+      if (!customer) {
+        return res.status(404).json({ message: 'Customer not found' });
+      }
+
+      return res.status(200).json({ data: customer });
+    } catch (error) {
+      console.error('Error getting customer:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
+  async updateCustomerById(req: Request, res: Response) {
+    try {
+      const userId = res.locals.user.id;
+      const { username, email, age, gender } = req.body;
+
+      const updatedCustomer = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          username,
+          email,
+          age,
+          gender,
+        },
+      });
+
+      return res.status(200).json({ data: updatedCustomer });
+    } catch (error) {
+      console.error('Error updating customer:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
+  async getCustomerVoucherById(req: Request, res: Response) {
+    try {
+      const userId = res.locals.user.id;
+  
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          voucher: {
+            select: {
+              id: true,
+              discount: true,
+              expiresAt: true,
+            },
+          },
+          points: {
+            select: {
+              id: true,
+              points: true,
+              expiresAt: true,
+            },
+          },
+        },
+      });
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      const { referralCode, voucher, points } = user;
+
+      res.status(200).json({ referralCode, voucher, points });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 }
