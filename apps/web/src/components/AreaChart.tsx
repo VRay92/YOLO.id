@@ -1,84 +1,82 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Chart from 'react-apexcharts';
+import { ApexOptions } from 'apexcharts';
 
 interface IAreaChartProps {
-
+  data: any;
 }
 
-interface IAreaChartState {
-  options: any;
-  series: { name: string; data: number[] }[];
-}
-
-class AreaChart extends Component<IAreaChartProps, IAreaChartState> {
-  constructor(props: IAreaChartProps) {
-    super(props);
-    this.state = {
-      options: {
-        chart: {
-          height: 280,
-          type: 'area',
+const AreaChart: React.FC<IAreaChartProps> = ({ data }) => {
+  const options: ApexOptions = {
+    chart: {
+      height: 350,
+      type: 'area',
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
+        speed: 800,
+        animateGradually: {
+          enabled: true,
+          delay: 150,
         },
-        xaxis: {
-          categories: [
-            '01 Jan',
-            '02 Jan',
-            '03 Jan',
-            '04 Jan',
-            '05 Jan',
-            '06 Jan',
-            '07 Jan',
-          ],
-          labels: {
-            style: {
-              colors: '#f3f4f6', // text-gray-100
-            },
-          },
-        },
-        yaxis: {
-          labels: {
-            style: {
-              colors: '#f3f4f6', // text-gray-100
-            },
-          },
-        },
-        plotOptions: {
-          bar: {
-            horizontal: false,
-          },
-        },
-        fill: {
-          type: 'gradient',
-          gradient: {
-            shadeIntensity: 1,
-            opacityFrom: 0.7,
-            opacityTo: 0.9,
-            stops: [0, 90, 100],
-          },
-        },
-        dataLabels: {
-          enabled: false,
+        dynamicAnimation: {
+          enabled: true,
+          speed: 350,
         },
       },
-      series: [
-        {
-          name: 'Series 1',
-          data: [45, 52, 38, 100, 80, 23, 40],
+    },
+    xaxis: {
+      type: 'datetime',
+      categories: data.map((item: any) => item.date),
+      labels: {
+        style: {
+          colors: '#f3f4f6',
         },
-      ],
-    };
-  }
+      },
+    },
+    yaxis: {
+      labels: {
+        style: {
+          colors: '#f3f4f6',
+        },
+      },
+    },
+    fill: {
+      type: 'gradient',
+      gradient: {
+        shade: 'dark',
+        gradientToColors: ['#FDD835'],
+        shadeIntensity: 1,
+        type: 'horizontal',
+        opacityFrom: 1,
+        opacityTo: 1,
+        stops: [0, 100, 100, 100],
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: 'smooth',
+      width: 2,
+    },
+    colors: ['#FF4560'],
+    tooltip: {
+      theme: 'dark',
+    },
+    grid: {
+      show: false,
+    },
+  };
 
-  render() {
-    return (
-      <Chart
-        options={this.state.options}
-        series={this.state.series}
-        type="area"
-        height="350"
-      />
-    );
-  }
-}
+  const series = [
+    {
+      name: 'Revenue',
+      data: data.map((item: any) => item.revenue),
+    },
+  ];
+
+  return <Chart options={options} series={series} type="area" height={350} />;
+};
 
 export default AreaChart;

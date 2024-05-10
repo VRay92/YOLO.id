@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { setUser } from '@/lib/features/userSlice';
+import { setUserFromToken } from '@/lib/features/userSlice';
 
 interface ISignInProps {}
 
@@ -39,6 +39,7 @@ const SignIn: React.FunctionComponent<ISignInProps> = (props) => {
       );
 
       if (response.data.success) {
+        console.log('Login response:', response.data);
         toast.success(`Signed in as ${userType}`, {
           position: 'top-right',
           autoClose: 3000,
@@ -49,15 +50,7 @@ const SignIn: React.FunctionComponent<ISignInProps> = (props) => {
           progress: undefined,
         });
         localStorage.setItem('token', response.data.token);
-        dispatch(
-          setUser({
-            username: response.data.username,
-            email: response.data.email,
-            role: response.data.role,
-            token: response.data.token,
-            isLoggedIn: true,
-          }),
-        );
+        dispatch(setUserFromToken(response.data.token));
         router.push('/');
       } else {
         toast.error(response.data.message || 'Unknown error occurred', {
@@ -72,7 +65,6 @@ const SignIn: React.FunctionComponent<ISignInProps> = (props) => {
       }
     } catch (error: any) {
       console.error('Error:', error);
-      console.log(error.response.data);
 
       if (error.response && error.response.data && error.response.data.errors) {
         const errorMessages = error.response.data.errors.map(

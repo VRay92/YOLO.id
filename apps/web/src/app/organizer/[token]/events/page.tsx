@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { fetchEvents } from '@/lib/features/eventSlice';
 import { useRouter } from 'next/navigation';
+import OrganizerRoute from '@/components/OrganizerRoute';
 
 interface IEventsEOProps {}
 
@@ -32,6 +33,7 @@ const EventsEO: React.FunctionComponent<IEventsEOProps> = (props) => {
   }
 
   return (
+    <OrganizerRoute>
     <div className="flex bg-[#282828] min-h-screen">
       <div className="mx-12 mt-28">
         <SideBarEO />
@@ -64,7 +66,7 @@ const EventsEO: React.FunctionComponent<IEventsEOProps> = (props) => {
                   Price: {event.isFree ? 'Free' : 'Paid'}
                 </p>
                 <p className="text-gray-500">
-                  Average Rating: {event.averageRating}
+                  {/* Average Rating: {event.averageRating} */}
                 </p>
               </div>
             ))}
@@ -72,6 +74,7 @@ const EventsEO: React.FunctionComponent<IEventsEOProps> = (props) => {
         </div>
       </section>
     </div>
+    </OrganizerRoute>
   );
 };
 

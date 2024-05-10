@@ -9,6 +9,7 @@ import Sidebar from '@/components/Sidebar';
 import { Table } from 'flowbite-react';
 import Image from 'next/image';
 import CardEvent from '@/components/CardEvent';
+import CustomerRoute from '@/components/CustomerRoute';
 
 interface IPurchasedeventProps {}
 
@@ -20,6 +21,7 @@ const Purchasedevent: React.FunctionComponent<IPurchasedeventProps> = (
   // const [active, setActive] = useState('purchase');
 
   return (
+    <CustomerRoute>
     <div className="bg-[#282828] flex">
       <div className="mx-12 mt-28 hidden md:block">
         <Sidebar></Sidebar>
@@ -50,6 +52,7 @@ const Purchasedevent: React.FunctionComponent<IPurchasedeventProps> = (
         {/* TABLE */}
       </section>
     </div>
+    </CustomerRoute>
   );
 };
 

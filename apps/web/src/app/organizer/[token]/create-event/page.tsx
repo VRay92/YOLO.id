@@ -1,5 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
+import OrganizerRoute from '@/components/OrganizerRoute';
 
 interface ICreateEventProps {}
 
@@ -9,7 +10,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
       await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/`);
     } catch (error) {}
   };
-  return <div></div>;
+  return <OrganizerRoute><div></div></OrganizerRoute>;
 };
 
 export default CreateEvent;
