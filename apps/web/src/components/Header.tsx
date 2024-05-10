@@ -2,13 +2,9 @@
 import * as React from 'react';
 import Image from 'next/image';
 import { SlMagnifier } from 'react-icons/sl';
-import { BsPersonCircle } from 'react-icons/bs';
-import { BsFillTicketPerforatedFill } from 'react-icons/bs';
 import { IoMenu } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
-import { initCarousels } from 'flowbite';
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { setUser } from '@/lib/features/userSlice';
 import axios from 'axios';
