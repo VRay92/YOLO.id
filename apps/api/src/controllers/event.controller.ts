@@ -12,4 +12,32 @@ export class EventController {
             console.log(error)
         }
     }
+    async getEventDetail(req: Request, res: Response) {
+        const eventId = parseInt(req.params.id);
+      
+        try {
+            const event = await prisma.event.findUnique({
+                where: { id: eventId },
+                include: {
+                  organizer: true,
+                  city: true,
+                  ticketTypes: {
+                    include: {
+                      ticketType: true,
+                    },
+                  },
+                  categories: true,
+                },
+              });
+      
+          if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+          }
+      
+          res.status(200).json({ data: event });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: 'Internal server error' });
+        }
+      }
 }

@@ -1,5 +1,6 @@
-import Voucher from '@/app/participant/[token]/voucher/page';
+import Voucher from '@/app/customer/[token]/voucher/page';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { decode } from 'jsonwebtoken';
 
 export interface IUserState {
   username: string;
@@ -20,25 +21,36 @@ const initialState: IUserState = {
   isLoggedIn: false,
 };
 
-const loadFromStorage = (): { token: string | null; isLoggedIn: boolean } => {
-  if (typeof window !== 'undefined') {
-    const storedToken = localStorage.getItem('token');
-    console.log('Loading token from local storage');
-    if (storedToken) {
-      return { token: storedToken, isLoggedIn: true };
-    }
-  }
-  return { token: null, isLoggedIn: false };
-};
-
 const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    ...initialState,
-    ...loadFromStorage(),
-  },
+  initialState,
   reducers: {
+    setUserFromToken: (state, action: PayloadAction<string>) => {
+      const token = action.payload;
+      if (token) {
+        const decodedToken = decode(token) as {
+          id: number;
+          username: string;
+          email: string;
+          role: string;
+        };
+        if (decodedToken) {
+          state.username = decodedToken.username;
+          state.email = decodedToken.email;
+          state.role = decodedToken.role;
+          state.token = token;
+          state.isLoggedIn = true;
+        }
+      } else {
+        state.username = '';
+        state.email = '';
+        state.role = '';
+        state.token = '';
+        state.isLoggedIn = false;
+      }
+    },
     setUser: (state, action: PayloadAction<IUserState>) => {
+      console.log('setUser payload:', action.payload);
       state.username = action.payload.username;
       state.email = action.payload.email;
       state.role = action.payload.role;
@@ -47,6 +59,7 @@ const userSlice = createSlice({
       state.referralCode = action.payload.referralCode;
       state.points = action.payload.points;
       state.vouchers = action.payload.vouchers;
+      console.log('Role stored in Redux:', action.payload.role);
     },
     resetUser: (state) => {
       state.username = '';
@@ -57,11 +70,19 @@ const userSlice = createSlice({
     updateUser: (
       state,
       action: PayloadAction<{
+        username?: string;
+        email?: string;
         referralCode?: string;
         points?: number;
         vouchers?: Voucher[];
       }>,
     ) => {
+      if (action.payload.username !== undefined) {
+        state.username = action.payload.username;
+      }
+      if (action.payload.email !== undefined) {
+        state.email = action.payload.email;
+      }
       if (action.payload.referralCode !== undefined) {
         state.referralCode = action.payload.referralCode;
       }
@@ -81,5 +102,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, resetUser, updateUser, logout } = userSlice.actions;
+export const { setUser, resetUser, updateUser, logout, setUserFromToken } =
+  userSlice.actions;
 export default userSlice.reducer;

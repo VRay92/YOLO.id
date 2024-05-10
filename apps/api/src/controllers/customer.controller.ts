@@ -3,6 +3,7 @@ import prisma from '@/prisma';
 import { Prisma, STATUS } from '@prisma/client';
 import { generateQRCode } from '@/utils/qrCodeGenerator';
 import snap from '@/lib/midtransConfig';
+import { format } from 'date-fns';
 
 export class CustomerController {
   async buyTicket(req: Request, res: Response) {
@@ -297,7 +298,7 @@ export class CustomerController {
   async getCustomerVoucherById(req: Request, res: Response) {
     try {
       const userId = res.locals.user.id;
-  
+
       const user = await prisma.user.findUnique({
         where: { id: userId },
         include: {
@@ -317,14 +318,28 @@ export class CustomerController {
           },
         },
       });
-  
+
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
-  
+
       const { referralCode, voucher, points } = user;
 
-      res.status(200).json({ referralCode, voucher, points });
+      const formattedVoucher = voucher.map((v) => ({
+        ...v,
+        expiresAt: format(v.expiresAt, 'dd MMMM yyyy'),
+      }));
+
+      const formattedPoints = points.map((p) => ({
+        ...p,
+        expiresAt: format(p.expiresAt, 'dd MMMM yyyy'),
+      }));
+
+      res.status(200).json({
+        referralCode,
+        voucher: formattedVoucher,
+        points: formattedPoints,
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal server error' });

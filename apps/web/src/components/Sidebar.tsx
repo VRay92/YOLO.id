@@ -10,7 +10,6 @@ interface ISidebarProps {}
 const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
   const router = useRouter();
   const [active, setActive] = useState('');
-  const pathname = usePathname();
   const [token, setToken] = useState('');
 
   useEffect(() => {
@@ -25,12 +24,12 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
     <section className="2xl:w-[380px] space-y-5">
       <div
         className={`flex 2xl:w-[380px] h-[75px] ${
-          usePathname() === `/participant/${token}/profile`
+          usePathname() === `/customer/${token}/profile`
             ? 'bg-[#cacaca] text-[#282828]'
             : `text-white`
         } rounded-lg align-middle items-center cursor-pointer hover:bg-[#6e6e6e]`}
         onClick={() => {
-          router.push(`/participant/${token}/profile`);
+          router.push(`/customer/${token}/profile`);
         }}
       >
         <span className="mx-4">
@@ -40,13 +39,13 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex max-w-[380px] hover:bg-[#6e6e6e] h-[75px] ${
-          usePathname() === `/participant/${token}/voucher`
+          usePathname() === `/customer/${token}/voucher`
             ? 'bg-[#cacaca] text-[#282828]'
             : 'text-white'
         }
          rounded-lg align-middle items-center cursor-pointer`}
         onClick={() => {
-          router.push(`/participant/${token}/voucher`);
+          router.push(`/customer/${token}/voucher`);
         }}
       >
         <span className="mx-4">
@@ -56,12 +55,12 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex  hover:bg-[#6e6e6e] 2xl:w-[380px] h-[75px] ${
-          usePathname() === `/participant/${token}/purchased-event`
+          usePathname() === `/customer/${token}/purchased-event`
             ? 'bg-[#cacaca] text-[#282828]'
             : 'text-white'
         } rounded-lg align-middle items-center cursor-pointer`}
         onClick={() => {
-          router.push('/participant/purchased-event');
+          router.push(`/customer/${token}/purchased-event`);
         }}
       >
         <span className="mx-4">
@@ -71,13 +70,13 @@ const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
       </div>
       <div
         className={`flex hover:bg-[#6e6e6e] 2xl:w-[380px] h-[75px] ${
-          usePathname() === `/participant/${token}/review`
+          usePathname() === `/customer/${token}/review`
             ? 'bg-[#cacaca] text-[#282828]'
             : 'text-white'
         } rounded-lg align-middle items-center cursor-pointer`}
         onClick={() => {
           setActive('review');
-          router.push('/participant/review');
+          router.push(`/customer/${token}/review`);
         }}
       >
         <span className="mx-4">
