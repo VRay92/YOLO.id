@@ -41,22 +41,28 @@ export const Header = () => {
   useEffect(() => {
     const keepLogin = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token =
+          typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         console.log('Token from local storage:', token);
         if (token && !isLoggedIn) {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
+            { headers: { Authorization: `Bearer ${token}` } },
           );
-          console.log('KeepLogin response:', response.data);
           if (response.data.success) {
-            const user = response.data.data;
-            const { username, email, role, token } = user;
+            console.log('KeepLogin response:', response.data);
+            const { username, email, role } = response.data.data;
+            localStorage.setItem('role', role);
             dispatch(
-              setUser({ username, email, role, token, isLoggedIn: true }),
+              setUser({
+                username,
+                email,
+                role,
+                token,
+                isLoggedIn: true,
+              }),
             );
+            console.log('Dispatched role:', role);
           }
         }
       } catch (error) {

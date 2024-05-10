@@ -7,8 +7,34 @@ interface Event {
   imageUrl: string;
   description: string;
   startDate: string;
+  endDate: string;
+  time: string;
+  availableSeats: number;
   isFree: boolean;
-  averageRating: number;
+  organizerId: number;
+  location: string;
+  cityId: number;
+  createdAt: string;
+  updatedAt: string;
+  maxTicket: number;
+  organizer: {
+    id: number;
+    username: string;
+    imageProfile: string;
+  };
+  city: {
+    id: number;
+    name: string;
+  };
+  ticketTypes: {
+    ticketTypeId: number;
+    price: number;
+    quantity: number;
+    ticketType: {
+      id: number;
+      name: string;
+    };
+  }[];
 }
 
 interface EventState {
@@ -50,11 +76,24 @@ export const fetchEvents = (token: string) => async (dispatch: any) => {
     dispatch(getEventsStart());
 
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/${token}/events`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/events/`,
     );
     const events = response.data.data;
 
     dispatch(getEventsSuccess(events));
+  } catch (error: any) {
+    dispatch(getEventsFailure(error.message));
+  }
+};
+
+export const fetchEventDetail = (id: string) => async (dispatch: any) => {
+  try {
+    dispatch(getEventsStart());
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}event/${id}`
+    );
+    const event = response.data.data;
+    dispatch(getEventsSuccess([event]));
   } catch (error: any) {
     dispatch(getEventsFailure(error.message));
   }
