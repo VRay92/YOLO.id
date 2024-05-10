@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
-import { verifyToken } from '../middleware/verifyToken';
+import { verifyLoginToken, verifyToken } from '../middleware/verifyToken';
 import { regisValidation } from '../middleware/vaidator/regis';
 import { passwordValidation } from '../middleware/vaidator/forgotPassword';
 import { authMiddleware } from '@/middleware/protectedRoute';
@@ -33,7 +33,7 @@ export class AuthRouter {
       this.authController.verifyForgotPassword,
     );
     this.route.post('/signin', this.authController.signIn);
-    this.route.get('/keeplogin', verifyToken, this.authController.keepLogin);
+    this.route.get('/keeplogin', verifyLoginToken, this.authController.keepLogin);
     this.route.get(
       '/verify-email/:token',
       this.authController.checkEmailToken,

@@ -11,7 +11,7 @@ const Toptrending: React.FunctionComponent<IToptrendingProps> = (props) => {
     <div className="h-[150px] md:h-[300px] md:min-w-[510px] relative">
       <Image
         fill
-        sizes="100vw"
+        sizes="100"
         src={props.url}
         alt="toptrending"
         style={{ objectFit: 'cover' }}

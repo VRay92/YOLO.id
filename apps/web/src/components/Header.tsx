@@ -2,18 +2,15 @@
 import * as React from 'react';
 import Image from 'next/image';
 import { SlMagnifier } from 'react-icons/sl';
-import { BsPersonCircle } from 'react-icons/bs';
-import { BsFillTicketPerforatedFill } from 'react-icons/bs';
 import { IoMenu } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
-import { initCarousels } from 'flowbite';
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { setUser } from '@/lib/features/userSlice';
 import axios from 'axios';
 import Searchbar from './Searchbar';
 import { initDropdowns } from 'flowbite';
+import { logout } from '@/lib/features/userSlice';
 
 interface IEvent {
   id: number;
@@ -40,49 +37,58 @@ export const Header = () => {
   useEffect(() => {
     const keepLogin = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token =
+          typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         console.log('Token from local storage:', token);
         if (token && !isLoggedIn) {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
+            { headers: { Authorization: `Bearer ${token}` } },
           );
-          console.log('KeepLogin response:', response.data);
           if (response.data.success) {
-            const user = response.data.data;
-            const { username, email, role, token } = user;
+            console.log('KeepLogin response:', response.data);
+            const { username, email, role } = response.data.data;
+            localStorage.setItem('role', role);
             dispatch(
-              setUser({ username, email, role, token, isLoggedIn: true }),
+              setUser({
+                username,
+                email,
+                role,
+                token,
+                isLoggedIn: true,
+              }),
             );
+            console.log('Dispatched role:', role);
           }
         }
       } catch (error) {
         console.error(error);
       }
     };
-    const getEvent = async () => {
-      try {
-        console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}event/`);
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}event/`,
-        );
-        console.log('getEvent response:', response.data);
-        setEvent(response.data);
-      } catch (error) {
-        console.error('Error fetching events:', error);
-      }
-    };
-    getEvent();
     keepLogin();
-    initDropdowns();
   }, [dispatch, isLoggedIn]);
+
+  const getEvent = async () => {
+    try {
+      console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}event/`);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/`,
+      );
+      console.log('getEvent response:', response.data);
+      setEvent(response.data);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  useEffect(() => {
+    getEvent();
+    initDropdowns();
+  }, []);
 
   const filterData = event.filter((val: any) =>
     val.title.toLowerCase().startsWith(search),
   );
-
   console.log(filterData);
   return (
     <nav className={`w-full max-w-[1920px] relative z-[30]`}>
@@ -162,12 +168,6 @@ export const Header = () => {
           </div>
         </div>
 
-        {/* search bar mobile */}
-        <div className="flex gap-4 my-auto mr-4 text-3xl text-white md:hidden">
-          <SlMagnifier className="" />
-          <IoMenu />
-        </div>
-
         <div
           className={`hidden gap-5 my-auto mr-20 text-white ${
             isLoggedIn ? '' : 'md:flex'
@@ -188,61 +188,68 @@ export const Header = () => {
         </div>
 
         {/* navbar menu */}
-        {isLoggedIn && (
-          <div className="mr-20 mt-4">
-            <button
-              id="dropdownUserAvatarButton"
-              data-dropdown-toggle="dropdownAvatar"
-              className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-              type="button"
-            >
-              <span className="sr-only">Open user menu</span>
-              <img
-                className="w-16 h-16 rounded-full"
-                src="/28.jpg"
-                alt="user photo"
-              />
-            </button>
-
-            <div
-              id="dropdownAvatar"
-              className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
-            >
-              <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                <div>Bonnie Green</div>
-                <div className="font-medium truncate">name@flowbite.com</div>
-              </div>
-              <ul
-                className="py-2 text-sm text-gray-700 dark:text-gray-200"
-                aria-labelledby="dropdownUserAvatarButton"
+        {/* search bar mobile */}
+        <div className="flex gap-4 my-auto mr-4 text-3xl text-white md:hidden">
+          <SlMagnifier className="mt-4" />
+          {isLoggedIn && (
+            <div className="mr-2 md:mr-20 mt-2 md:mt-4">
+              <button
+                id="dropdownUserAvatarButton"
+                data-dropdown-toggle="dropdownAvatar"
+                className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                type="button"
               >
-                <li>
+                <span className="sr-only">Open user menu</span>
+                <img
+                  className="w-12 h-12 md:w-16 md:h-16 rounded-full"
+                  src="/28.jpg"
+                  alt="user photo"
+                />
+              </button>
+
+              <div
+                id="dropdownAvatar"
+                className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+              >
+                <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                  <div></div>
+                  <div className="font-medium truncate">name@flowbite.com</div>
+                </div>
+                <ul
+                  className="py-2 text-sm text-gray-700 dark:text-gray-200"
+                  aria-labelledby="dropdownUserAvatarButton"
+                >
+                  <li>
+                    <a
+                      className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      onClick={() => router.push('/participant/123456/profile')}
+                    >
+                      Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                      Settings
+                    </a>
+                  </li>
+                  <li>
+                    <a className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                      Earnings
+                    </a>
+                  </li>
+                </ul>
+                <div className="py-2">
                   <a
-                    className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                    onClick={() => router.push('/participant/profile')}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white cursor-pointer"
+                    onClick={() => dispatch(logout())}
                   >
-                    Dashboard
+                    Sign out
                   </a>
-                </li>
-                <li>
-                  <a className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    Settings
-                  </a>
-                </li>
-                <li>
-                  <a className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    Earnings
-                  </a>
-                </li>
-              </ul>
-              <div className="py-2">
-                <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                  Sign out
-                </a>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* <div className="hidden my-auto mr-20 text-white md:flex font-poppins">
           <div className="my-1 mr-3 text-4xl">
