@@ -8,24 +8,6 @@ export class OrganizerController {
     try {
       console.log(Object.values(req.body))
 
-      const { title, imageUrl, description, startDate, endDate, time, availableSeats, isFree, organizerId, locationId, createdAt, updatedAt, maxTicket, price, quantity, name, eventId, ticketTypeId } = req.body
-
-      const dataForEventTable = {
-        title,
-        imageUrl,
-        description,
-        startDate,
-        endDate,
-        time,
-        availableSeats,
-        isFree,
-        organizerId,
-        locationId,
-        createdAt,
-        updatedAt,
-        maxTicket,
-      }
-
       if (Object.values(req.body).includes("")) {
         throw new Error("Fill in all form");
       } else {
@@ -47,24 +29,12 @@ export class OrganizerController {
 
   async createTicket(req: Request, res: Response) {
     console.log(req.body)
-    const { price, quantity, eventId, ticketTypeId, name } = req.body
     try {
-      const newTicketType = await prisma.ticketType.create({
-        data: {
-          name
-        }
+      const newTicket = await prisma.eventTicketType.create({
+        data: req.body
       })
 
-      const newPrice = await prisma.eventTicketType.create({
-        data: {
-          price,
-          quantity,
-          eventId,
-          ticketTypeId
-        }
-      })
-
-      return res.status(201).send({ ticketType: newTicketType, eventTicketType: newPrice });
+      return res.status(201).send({ eventTicketType: newTicket });
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);

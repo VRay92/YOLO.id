@@ -113,6 +113,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
   console.log(dataEvent);
   console.log('value', counter);
   console.log(typeof counter);
+  console.log(dataEvent.description);
   return (
     <OrganizerRoute>
       <div className="flex bg-[#282828] min-h-screen">
@@ -242,7 +243,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                 />
               </div>
               <div className="flex flex-col mr-10">
-                <h1>Start Time</h1>
+                <label htmlFor="start-time">Start Time</label>
                 <input
                   type="time"
                   className="border-gray-300"
@@ -256,7 +257,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                 />
               </div>
               <div className="flex flex-col mr-10">
-                <label htmlFor="end-time">Start Time</label>
+                <label htmlFor="end-time">End Time</label>
                 <input
                   type="time"
                   id="end-time"
