@@ -315,6 +315,7 @@ export const Header = () => {
                     setMenuOpen(false);
                   }
                 }}
+
               >
                 <h1>Purchased Events</h1>
               </div>
@@ -329,10 +330,12 @@ export const Header = () => {
                   }
                 }}
               >
+
                 <h1>Review & Ratings</h1>
               </div>
             </div>
           )}
+
 
           {/* FOR ORGANIZER  */}
 
@@ -397,10 +400,12 @@ export const Header = () => {
             className={` bg-slate-300 pt-4 h-[50px] text-center cursor-pointer hover:bg-blue-500 ${
               isLoggedIn && menuOpen ? 'block' : 'hidden'
             }`}
+
             onClick={() => {
               dispatch(logout());
               router.push('/');
             }}
+
           >
             Sign Out
           </div>
