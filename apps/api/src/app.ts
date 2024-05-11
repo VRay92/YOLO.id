@@ -49,7 +49,7 @@ export default class App {
     const customerRouter = new CustomerRouter();
     const organizerRouter = new OrganizerRouter();
     const eventRouter = new EventRouter();
-    this.app.use('/api/organizer', authMiddleware, authorizeOrganizer, organizerRouter.getRouter());
+    this.app.use('/api/organizer', organizerRouter.getRouter());
     this.app.use('/api/event', eventRouter.getRouter());
     this.app.use('/api/auth', authRouter.getRouter());
     this.app.use(
@@ -57,12 +57,6 @@ export default class App {
       authMiddleware,
       authorizeCustomer,
       customerRouter.getRouter(),
-    );
-    this.app.use(
-      '/api/organizer',
-      authMiddleware,
-      authorizeCustomer,
-      organizerRouter.getRouter(),
     );
   }
 

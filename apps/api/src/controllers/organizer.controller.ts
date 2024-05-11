@@ -26,18 +26,6 @@ export class OrganizerController {
         maxTicket,
       }
 
-      const dataForEventTicketType = {
-        price,
-        quantity,
-        eventId,
-        ticketTypeId
-      }
-
-      const dataForTicketType = {
-        name
-      }
-
-
       if (Object.values(req.body).includes("")) {
         throw new Error("Fill in all form");
       } else {
@@ -49,9 +37,7 @@ export class OrganizerController {
 
       });
 
-      const newTicketType = await prisma.eventTicketType.create({
-        data: dataForEventTicketType
-      })
+
       return res.status(201).send(newEvent);
     } catch (error) {
       console.log(error);
@@ -59,14 +45,28 @@ export class OrganizerController {
     }
   }
 
-  async setPrice(req: Request, res: Response) {
+  async createTicket(req: Request, res: Response) {
     console.log(req.body)
+    const { price, quantity, eventId, ticketTypeId, name } = req.body
     try {
-      const newPrice = await prisma.eventTicketType.create({
-        data: req.body
+      const newTicketType = await prisma.ticketType.create({
+        data: {
+          name
+        }
       })
-      return res.status(201).send(newPrice);
+
+      const newPrice = await prisma.eventTicketType.create({
+        data: {
+          price,
+          quantity,
+          eventId,
+          ticketTypeId
+        }
+      })
+
+      return res.status(201).send({ ticketType: newTicketType, eventTicketType: newPrice });
     } catch (error) {
+      console.log(error);
       return res.status(500).send(error);
     }
   }
@@ -82,11 +82,11 @@ export class OrganizerController {
           email: true,
         },
       });
-  
+
       if (!organizer) {
         return res.status(404).json({ message: 'Organizer not found' });
       }
-  
+
       return res.status(200).json({ data: organizer });
     } catch (error) {
       console.error('Error getting organizer:', error);
@@ -98,7 +98,7 @@ export class OrganizerController {
     try {
       const userId = res.locals.user.id;
       const { username, email } = req.body;
-  
+
       const updatedOrganizer = await prisma.user.update({
         where: { id: userId },
         data: {
@@ -111,7 +111,7 @@ export class OrganizerController {
           email: true,
         },
       });
-  
+
       return res.status(200).json({ data: updatedOrganizer });
     } catch (error) {
       console.error('Error updating organizer:', error);
@@ -122,24 +122,24 @@ export class OrganizerController {
   async getEventsByOrganizerId(req: Request, res: Response) {
     try {
       const organizerId = parseInt(req.params.organizerId);
-      
+
       const events = await prisma.event.findMany({
         where: {
           organizerId: organizerId,
         },
       });
-      
+
       return res.status(200).json(events);
     } catch (error) {
       console.error('Error getting events by organizer ID:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
   }
-  
+
   async getEventsSortedByDate(req: Request, res: Response) {
     try {
       const { startDate, endDate } = req.query;
-      
+
       const events = await prisma.event.findMany({
         where: {
           startDate: {
@@ -153,7 +153,7 @@ export class OrganizerController {
           startDate: 'asc',
         },
       });
-      
+
       return res.status(200).json(events);
     } catch (error) {
       console.error('Error getting events sorted by date:', error);
@@ -164,7 +164,7 @@ export class OrganizerController {
   async getTransactionsByDateRange(req: Request, res: Response) {
     try {
       const { startDate, endDate } = req.query;
-      
+
       const transactions = await prisma.transaction.aggregate({
         where: {
           createdAt: {
@@ -177,18 +177,18 @@ export class OrganizerController {
           totalPrice: true,
         },
       });
-      
+
       return res.status(200).json({ totalSales: transactions._sum.totalPrice });
     } catch (error) {
       console.error('Error getting transactions by date range:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
   }
-  
+
   async getCustomersByGender(req: Request, res: Response) {
     try {
       const { eventId } = req.params;
-      
+
       const customers = await prisma.user.findMany({
         where: {
           transactions: {
@@ -202,13 +202,13 @@ export class OrganizerController {
           gender: true,
         },
       });
-      
+
       const genderCounts = {
         male: 0,
         female: 0,
         unknown: 0,
       };
-      
+
       customers.forEach((customer) => {
         if (customer.gender === 'male') {
           genderCounts.male++;
@@ -218,18 +218,18 @@ export class OrganizerController {
           genderCounts.unknown++;
         }
       });
-      
+
       return res.status(200).json(genderCounts);
     } catch (error) {
       console.error('Error getting customers by gender:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
   }
-  
+
   async getCustomersByAgeGroup(req: Request, res: Response) {
     try {
       const { eventId } = req.params;
-      
+
       const customers = await prisma.user.findMany({
         where: {
           transactions: {
@@ -243,13 +243,13 @@ export class OrganizerController {
           age: true,
         },
       });
-      
+
       const ageGroups = {
         '17-25': 0,
         '25-40': 0,
         '40+': 0,
       };
-      
+
       customers.forEach((customer) => {
         if (customer.age !== null) {
           if (customer.age >= 17 && customer.age <= 25) {
@@ -261,7 +261,7 @@ export class OrganizerController {
           }
         }
       });
-      
+
       return res.status(200).json(ageGroups);
     } catch (error) {
       console.error('Error getting customers by age group:', error);
