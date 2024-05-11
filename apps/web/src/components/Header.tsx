@@ -107,8 +107,7 @@ export const Header = () => {
   const filterData = event.filter((val: any) =>
     val.title.toLowerCase().startsWith(search),
   );
-  console.log(filterData);
-  console.log(menuOpen);
+
   return (
     <nav className={`w-full max-w-[1920px] relative z-[30]`}>
       {/* LOADING SCREEN */}
@@ -195,7 +194,7 @@ export const Header = () => {
                 type="text"
                 id="floating_filled"
                 className="block rounded-r-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-[#d9d9d9] dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
+                placeholder=""
                 onChange={(e) => setSearch(e.target.value)}
               />
               <label
@@ -316,6 +315,7 @@ export const Header = () => {
                     setMenuOpen(false);
                   }
                 }}
+
               >
                 <h1>Purchased Events</h1>
               </div>
@@ -330,10 +330,12 @@ export const Header = () => {
                   }
                 }}
               >
+
                 <h1>Review & Ratings</h1>
               </div>
             </div>
           )}
+
 
           {/* FOR ORGANIZER  */}
 
@@ -398,7 +400,12 @@ export const Header = () => {
             className={` bg-slate-300 pt-4 h-[50px] text-center cursor-pointer hover:bg-blue-500 ${
               isLoggedIn && menuOpen ? 'block' : 'hidden'
             }`}
-            onClick={() => dispatch(logout())}
+
+            onClick={() => {
+              dispatch(logout());
+              router.push('/');
+            }}
+
           >
             Sign Out
           </div>
@@ -464,7 +471,10 @@ export const Header = () => {
               <div className="py-2">
                 <a
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white cursor-pointer"
-                  onClick={() => dispatch(logout())}
+                  onClick={() => {
+                    dispatch(logout());
+                    router.push('/');
+                  }}
                 >
                   Sign out
                 </a>

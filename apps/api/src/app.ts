@@ -58,12 +58,6 @@ export default class App {
       authorizeCustomer,
       customerRouter.getRouter(),
     );
-    this.app.use(
-      '/api/organizer',
-      authMiddleware,
-      authorizeCustomer,
-      organizerRouter.getRouter(),
-    );
   }
 
   public start(): void {

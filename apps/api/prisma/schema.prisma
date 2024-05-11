@@ -35,7 +35,6 @@ model User {
   imageProfile      String?
   contactNumber     String?
 
-
   @@map("users")
 }
 
@@ -74,6 +73,8 @@ model Event {
   description    String            @db.Text
   startDate      DateTime
   endDate        DateTime
+  categoryId     Int
+  category       Category?         @relation(fields: [categoryId], references: [id])
   time           String
   availableSeats Int
   isFree         Boolean           @default(true)
@@ -84,7 +85,6 @@ model Event {
   city           City?             @relation(fields: [cityId], references: [id])
   transactions   Transaction[]
   reviews        Review[]
-  categories     Category[]
   ticketTypes    EventTicketType[]
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
