@@ -40,6 +40,7 @@ export const Header = () => {
   const [search, setSearch] = React.useState('');
   const [event, setEvent] = React.useState<IEvent[]>([]);
   const [loading, setLoading] = React.useState(false);
+
   const router = useRouter();
   const isLoggedIn = useAppSelector((state) => state.userReducer.isLoggedIn);
   const dispatch = useAppDispatch();
@@ -107,6 +108,7 @@ export const Header = () => {
   const filterData = event.filter((val: any) =>
     val.title.toLowerCase().startsWith(search),
   );
+
 
   console.log('value search', search);
 
@@ -318,6 +320,7 @@ export const Header = () => {
                     setMenuOpen(false);
                   }
                 }}
+
               >
                 <h1>Purchased Events</h1>
               </div>
@@ -341,17 +344,21 @@ export const Header = () => {
 
           {data.role === 'organizer' && (
             <div>
+
               <div
                 className={`bg-slate-300 pt-4 h-[50px] text-center cursor-pointer hover:bg-blue-500 ${
                   isLoggedIn && menuOpen ? 'block' : 'hidden'
                 }`}
                 onClick={() => {
                   {
+
                     router.push(`/organizer/${data.token}/profile`);
+
                     setMenuOpen(false);
                   }
                 }}
               >
+
                 <h1>Dashboard Organizer</h1>
               </div>
               <div
@@ -392,18 +399,22 @@ export const Header = () => {
                 }}
               >
                 <h1>Events</h1>
+
               </div>
             </div>
           )}
+
 
           <div
             className={` bg-slate-300 pt-4 h-[50px] text-center cursor-pointer hover:bg-blue-500 ${
               isLoggedIn && menuOpen ? 'block' : 'hidden'
             }`}
+
             onClick={() => {
               dispatch(logout());
               router.push('/');
             }}
+
           >
             Sign Out
           </div>

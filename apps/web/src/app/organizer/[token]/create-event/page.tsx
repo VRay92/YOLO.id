@@ -8,10 +8,12 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import parse from 'html-react-parser';
 import { start } from 'repl';
+
 import NextButton from '@/components/NextButton';
 import PreviousButton from '@/components/PreviousButton';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/Modal';
+
 
 interface ICreateEventProps {}
 
@@ -33,6 +35,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
     cityId: 0,
     location: '',
   });
+
   const router = useRouter();
   const [value, setValue] = useState(0);
   const [file, setFile] = React.useState<File | null>(null);
@@ -141,7 +144,9 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
   console.log('value', counter);
   console.log(typeof counter);
   console.log(dataEvent.description);
+
   console.log('show ticket', showTicket);
+
   return (
     <OrganizerRoute>
       <div className="flex bg-[#282828] min-h-screen">
@@ -169,6 +174,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
               Save
             </button>
           </div>
+
 
           {/* SELECT MENU */}
           <div className="border-b border-gray-300 flex justify-between mt-4 mx-0 md:mx-10">
@@ -419,6 +425,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
           {/* DESCRIPTION MENU */}
 
           <div className={`${menu === 'DESCRIPTION' ? '' : 'hidden'} `}>
+
             <div className="mt-8  ">
               <label htmlFor="description">Description</label>
               <ReactQuill
@@ -492,6 +499,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                 name="Previous Form"
                 onClick={() => setMenu('DESCRIPTION')}
               ></PreviousButton>
+
             </div>
           </div>
         </section>
