@@ -39,7 +39,7 @@ export const Header = () => {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
   const [event, setEvent] = React.useState<IEvent[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
   const router = useRouter();
   const isLoggedIn = useAppSelector((state) => state.userReducer.isLoggedIn);
   const dispatch = useAppDispatch();
@@ -107,6 +107,8 @@ export const Header = () => {
   const filterData = event.filter((val: any) =>
     val.title.toLowerCase().startsWith(search),
   );
+
+  console.log('value search', search);
 
   return (
     <nav className={`w-full max-w-[1920px] relative z-[30]`}>
@@ -209,15 +211,16 @@ export const Header = () => {
             id="dropdown"
             className="bg-white w-[685px] absolute -bottom-7 left-[410px]"
           >
-            {filterData.map((val, index) => (
-              <div
-                key={index}
-                className="hover:bg-blue-500 cursor-pointer"
-                onClick={() => router.push(`/${val.title}`)}
-              >
-                {val.title}
-              </div>
-            ))}
+            {search &&
+              filterData.map((val, index) => (
+                <div
+                  key={index}
+                  className="hover:bg-blue-500 cursor-pointer"
+                  onClick={() => router.push(`/${val.title}`)}
+                >
+                  {val.title}
+                </div>
+              ))}
           </div>
         </div>
 
