@@ -1,5 +1,6 @@
 import express, { Router } from 'express';
 import { OrganizerController } from '../controllers/organizer.controller';
+import { regisValidation } from '@/middleware/vaidator/regis';
 
 export class OrganizerRouter {
   private route: Router;

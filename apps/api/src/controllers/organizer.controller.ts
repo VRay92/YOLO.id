@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '@/prisma';
+import { Prisma } from '@prisma/client';
+import { genSalt, hash } from 'bcrypt';
 
 export class OrganizerController {
 
@@ -67,14 +69,27 @@ export class OrganizerController {
   async updateOrganizerById(req: Request, res: Response) {
     try {
       const userId = res.locals.user.id;
-      const { username, email } = req.body;
-
+      const { username, email, password } = req.body;
+  
+      const updateData: Prisma.UserUpdateInput = {};
+  
+      if (username !== undefined) {
+        updateData.username = username;
+      }
+  
+      if (email !== undefined) {
+        updateData.email = email;
+      }
+  
+      if (password !== undefined) {
+        const salt = await genSalt(10);
+        const hashPassword = await hash(password, salt);
+        updateData.password = hashPassword;
+      }
+  
       const updatedOrganizer = await prisma.user.update({
         where: { id: userId },
-        data: {
-          username,
-          email,
-        },
+        data: updateData,
         select: {
           id: true,
           username: true,
@@ -134,7 +149,7 @@ export class OrganizerController {
   async getTransactionsByDateRange(req: Request, res: Response) {
     try {
       const { startDate, endDate } = req.query;
-
+      
       const transactions = await prisma.transaction.aggregate({
         where: {
           createdAt: {
@@ -147,7 +162,11 @@ export class OrganizerController {
           totalPrice: true,
         },
       });
-
+  
+      if (transactions._sum.totalPrice === null) {
+        return res.status(200).json({ totalSales: 0 });
+      }
+  
       return res.status(200).json({ totalSales: transactions._sum.totalPrice });
     } catch (error) {
       console.error('Error getting transactions by date range:', error);
