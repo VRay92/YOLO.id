@@ -24,14 +24,14 @@ const TransactionEO: React.FunctionComponent<ITransactionEOProps> = (props) => {
     (state: RootState) => state.userReducer,
   );
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      dispatch(fetchTransactions(token, eventId, startDate, endDate));
-    } else {
-      router.push('/signin');
-    }
-  }, [dispatch, router, eventId, startDate, endDate]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //     dispatch(fetchTransactions(token, eventId, startDate, endDate));
+  //   } else {
+  //     router.push('/signin');
+  //   }
+  // }, [dispatch, router, eventId, startDate, endDate]);
 
   const handleEventFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedEventId = parseInt(e.target.value);

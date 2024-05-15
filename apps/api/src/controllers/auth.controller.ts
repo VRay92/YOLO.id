@@ -293,6 +293,10 @@ export class AuthController {
       const { token } = req.params;
       const { password } = req.body;
 
+      if (!password) {
+        return res.status(400).send({ error: 'Password is required' });
+      }
+
       const isTokenValid = await validateForgotPasswordToken(token);
 
       if (!isTokenValid) {

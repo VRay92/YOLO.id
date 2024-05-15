@@ -16,7 +16,7 @@ export class OrganizerRouter {
     this.route.get('/profile', this.organizerController.getOrganizerById);
     this.route.put('/profile', this.organizerController.updateOrganizerById);
     this.route.post('/', this.organizerController.createEvent);
-    this.route.post('/price', this.organizerController.setPrice);
+    this.route.post('/ticket', this.organizerController.createTicket);
     this.route.get(
       '/events/:organizerId',
       this.organizerController.getEventsByOrganizerId,

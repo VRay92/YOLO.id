@@ -6,20 +6,22 @@ import Image from 'next/image';
 import { FaCoins } from 'react-icons/fa6';
 import { MdOutlineContentCopy } from 'react-icons/md';
 import CustomerRoute from '@/components/CustomerRoute';
+import { useAppDispatch } from '@/lib/hooks';
+import { updateUser } from '@/lib/features/userSlice';
 
 interface IVoucherProps {}
 
-interface Voucher {
-  id: string;
-  code: string;
+export interface Voucher {
+  id: number;
   discount: number;
-  expiryDate: string;
+  expiresAt: string;
 }
 
 const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
   const [voucher, setVoucher] = useState<Voucher[]>([]);
   const [referralCode, setReferralCode] = useState('');
   const [points, setPoints] = useState(0);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +37,7 @@ const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
 
         if (response.ok) {
           const data = await response.json();
+          console.log(data.voucher)
           setVoucher(data.voucher);
           setReferralCode(data.referralCode);
           setPoints(
@@ -44,6 +47,15 @@ const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
               0,
             ),
           );
+          // Update Redux state
+          dispatch(updateUser({
+            points: data.points.reduce(
+              (total: number, point: { points: number }) =>
+                total + point.points,
+              0,
+            ),
+            vouchers: data.voucher,
+          }));
         } else {
           console.error('Failed to fetch data');
         }
@@ -53,7 +65,7 @@ const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
     };
 
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   return (
     <CustomerRoute>
@@ -117,7 +129,7 @@ const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
                       {item.discount}% OFF
                     </td>
                     <td className="border-b-[1px] w-[400px] pl-5">
-                      {item.expiryDate}
+                      {item.expiresAt}
                     </td>
                     <td className="border-b-[1px] w-[400px]">
                       <button className="md:hidden block mx-auto">
