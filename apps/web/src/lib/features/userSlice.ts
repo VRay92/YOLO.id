@@ -1,5 +1,5 @@
-import Voucher from '@/app/customer/[token]/voucher/page';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Voucher } from '@/app/customer/[token]/voucher/page';
 import { decode } from 'jsonwebtoken';
 
 export interface IUserState {
@@ -20,7 +20,12 @@ const initialState: IUserState = {
   role: '',
   token: '',
   isLoggedIn: false,
+
   imageProfile: "",
+
+  points: 0, 
+  vouchers: [], 
+
 };
 
 const userSlice = createSlice({
@@ -55,7 +60,6 @@ const userSlice = createSlice({
       }
     },
     setUser: (state, action: PayloadAction<IUserState>) => {
-      console.log('setUser payload:', action.payload);
       state.username = action.payload.username;
       state.email = action.payload.email;
       state.role = action.payload.role;
@@ -66,6 +70,7 @@ const userSlice = createSlice({
       state.vouchers = action.payload.vouchers;
       state.imageProfile = action.payload.imageProfile;
       console.log('Role stored in Redux:', action.payload.role);
+
     },
 
     resetUser: (state) => {

@@ -5,13 +5,14 @@ export class EventController {
   async getAllEvent(req: Request, res: Response) {
     try {
       const query = req.query
-      console.log("nilai query", query)
+      console.log(query)
       const dataEvent = await prisma.event.findMany()
       return res.status(201).send(dataEvent)
     } catch (error) {
       console.log(error)
     }
   }
+
   // const filterData = music.filter((val: any) =>
   //   val.title.toLowerCase().startsWith(debouncedSearch),
   // );
@@ -36,6 +37,7 @@ export class EventController {
     }
   }
 
+  
   async getEventDetail(req: Request, res: Response) {
     const eventId = parseInt(req.params.id);
 

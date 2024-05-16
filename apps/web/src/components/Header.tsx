@@ -18,6 +18,7 @@ import { IoMdArrowDroprightCircle } from 'react-icons/io';
 import Pagination from './Pagination';
 import { useDebounce } from 'use-debounce';
 
+
 interface IEvent {
   id: number;
   title: string;
@@ -38,17 +39,21 @@ export const Header = () => {
     username: '',
     email: '',
     role: '',
+
     imageProfile: '',
     token: '',
     isLoggedIn: false,
+
   });
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
   const [event, setEvent] = React.useState<IEvent[]>([]);
   const [loading, setLoading] = React.useState(false);
+
   const [currentPage, setCurrentPage] = React.useState(1);
   const [postsPerPage, setPostsPerPage] = React.useState(5);
   const [debouncedValue] = useDebounce(search, 3000);
+
 
   const router = useRouter();
   const isLoggedIn = useAppSelector((state) => state.userReducer.isLoggedIn);
@@ -86,6 +91,7 @@ export const Header = () => {
               token,
               imageProfile,
               isLoggedIn: true,
+
             });
             console.log('Dispatched role:', role);
             console.log('imageprofile:', imageProfile);
@@ -131,6 +137,7 @@ export const Header = () => {
 
   return (
     <nav className={`w-full max-w-[1920px] relative z-[30] `}>
+
       {/* LOADING SCREEN */}
 
       {loading && (
@@ -214,7 +221,8 @@ export const Header = () => {
               <input
                 type="text"
                 id="floating_filled"
-                className="block rounded-r-lg mb-4 px-2.5 pb-2.5 pt-5 z-50 w-full text-sm text-gray-900 bg-[#d9d9d9] dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+
+                className="block rounded-r-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-[#d9d9d9] dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=""
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -224,6 +232,7 @@ export const Header = () => {
               >
                 search here..
               </label>
+
               <div className={`${search ? '' : 'hidden'}`}>
                 {paginationCategory.length ? (
                   paginationCategory.map((val, index) => (
@@ -255,6 +264,7 @@ export const Header = () => {
                 )}
               </div>
             </div>
+
           </div>
 
           <div className="absolute -bottom-7 left-[410px] flex flex-col"></div>
@@ -328,6 +338,7 @@ export const Header = () => {
                     setMenuOpen(false);
                   }
                 }}
+
               >
                 <h1>Dashboard Customer</h1>
               </div>
@@ -343,6 +354,7 @@ export const Header = () => {
                 }}
               >
                 <h1>Vouchers</h1>
+
               </div>
               <div
                 className={`bg-slate-300 pt-4 h-[50px] text-center cursor-pointer hover:bg-blue-500 ${
@@ -351,6 +363,7 @@ export const Header = () => {
                 onClick={() => {
                   {
                     router.push(`/customer/${data.token}/purchased-event`);
+
                     setMenuOpen(false);
                   }
                 }}
@@ -363,6 +376,7 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
+
                     router.push(`/customer/${data.token}/review`);
                     setMenuOpen(false);
                   }
@@ -377,17 +391,21 @@ export const Header = () => {
 
           {data.role === 'organizer' && (
             <div>
+
               <div
                 className={`bg-slate-300 pt-4 h-[50px] text-center cursor-pointer hover:bg-blue-500 ${
                   isLoggedIn && menuOpen ? 'block' : 'hidden'
                 }`}
                 onClick={() => {
                   {
+
                     router.push(`/organizer/${data.token}/profile`);
+
                     setMenuOpen(false);
                   }
                 }}
               >
+
                 <h1>Dashboard Organizer</h1>
               </div>
               <div
@@ -428,6 +446,7 @@ export const Header = () => {
                 }}
               >
                 <h1>Events</h1>
+
               </div>
             </div>
           )}
@@ -466,11 +485,14 @@ export const Header = () => {
             <button
               id="dropdownUserAvatarButton"
               data-dropdown-toggle="dropdownAvatar"
+
               className="flex text-sm bg-gray-800 w-[65px] h-[65px] rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+
               type="button"
             >
               <span className="sr-only">Open user menu</span>
               <img
+
                 sizes="100vw"
                 className="object-cover rounded-full w-full h-full"
                 src={`http://localhost:8000/assets/${data.imageProfile}`}

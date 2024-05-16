@@ -30,3 +30,4 @@ export const getUniqueEvent = async (data: any) => {
         throw error;
     }
 }
+

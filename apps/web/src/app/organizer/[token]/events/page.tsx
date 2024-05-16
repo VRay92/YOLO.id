@@ -15,14 +15,14 @@ const EventsEO: React.FunctionComponent<IEventsEOProps> = (props) => {
   const router = useRouter();
   const { events, loading, error } = useAppSelector((state) => state.eventReducer);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      dispatch(fetchEvents(token));
-    } else {
-      router.push('/signin');
-    }
-  }, [dispatch, router]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //     dispatch(fetchEvents(token));
+  //   } else {
+  //     router.push('/signin');
+  //   }
+  // }, [dispatch, router]);
 
   if (loading) {
     return <div>Loading...</div>;

@@ -60,7 +60,7 @@ export class AuthController {
 
       const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-      const referralCode = role === 'customer' ? generateReferralCode() : null;
+      const referralCode = role === 'customer' ? generateReferralCode(username) : null;
 
       let referredById = null;
       if (role === 'customer' && referralCodeInput) {
@@ -292,6 +292,10 @@ export class AuthController {
     try {
       const { token } = req.params;
       const { password } = req.body;
+
+      if (!password) {
+        return res.status(400).send({ error: 'Password is required' });
+      }
 
       const isTokenValid = await validateForgotPasswordToken(token);
 

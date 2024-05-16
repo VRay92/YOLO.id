@@ -3,12 +3,16 @@ import prisma from '@/prisma';
 import fs from "fs";
 import { join } from "path";
 import { getUniqueEvent, getUniqueUser } from '@/services/auth';
+import { Prisma } from '@prisma/client';
+import { genSalt, hash } from 'bcrypt';
+
 
 export class OrganizerController {
 
   async createEvent(req: Request, res: Response) {
 
     try {
+
       console.log("ssssssssssss", req.files)
       console.log("aaaaaaaaaaaaaaaaaaaaaa", req.body)
       // console.log(Object.values(req.body))
@@ -38,6 +42,7 @@ export class OrganizerController {
       //   success: true,
       //   message: "Update profile success",
       // })
+
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
@@ -85,14 +90,28 @@ export class OrganizerController {
   async updateOrganizerById(req: Request, res: Response) {
     try {
       const userId = res.locals.user.id;
-      const { username, email } = req.body;
+
+      const { username, email, password } = req.body;
+  
+      const updateData: Prisma.UserUpdateInput = {};
+  
+      if (username !== undefined) {
+        updateData.username = username;
+      }
+  
+      if (email !== undefined) {
+        updateData.email = email;
+      }
+  
+      if (password !== undefined) {
+        const salt = await genSalt(10);
+        const hashPassword = await hash(password, salt);
+        updateData.password = hashPassword;
+      }
 
       const updatedOrganizer = await prisma.user.update({
         where: { id: userId },
-        data: {
-          username,
-          email,
-        },
+        data: updateData,
         select: {
           id: true,
           username: true,
@@ -165,6 +184,12 @@ export class OrganizerController {
           totalPrice: true,
         },
       });
+
+  
+      if (transactions._sum.totalPrice === null) {
+        return res.status(200).json({ totalSales: 0 });
+      }
+  
 
       return res.status(200).json({ totalSales: transactions._sum.totalPrice });
     } catch (error) {

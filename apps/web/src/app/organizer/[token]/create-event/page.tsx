@@ -12,7 +12,9 @@ import NextButton from '@/components/NextButton';
 import PreviousButton from '@/components/PreviousButton';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/Modal';
+
 import { toast } from 'react-toastify';
+
 
 interface ICreateEventProps {}
 
@@ -34,6 +36,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
     cityId: 0,
     location: '',
   });
+
   const router = useRouter();
   const [value, setValue] = useState(0);
   const [file, setFile] = React.useState<File | null>(null);
@@ -41,6 +44,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
   const [menu, setMenu] = useState('DETAILS');
   const [endTime, setEndTime] = useState(false);
   const [showTicket, setShowTicket] = useState(false);
+
 
   const submitEvent = async (): Promise<void> => {
     const formData = new FormData();
@@ -107,6 +111,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
       return false;
     } else {
       return true;
+
     }
   };
 
@@ -188,6 +193,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
   console.log(dataEvent.maxTicket);
   console.log('show ticket', showTicket);
   console.log(dataEvent.availableSeats);
+
   return (
     <OrganizerRoute>
       <div className="flex bg-[#282828] min-h-screen">
@@ -463,6 +469,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
             </div>
           </div>
 
+
           {/* DESCRIPTION MENU */}
 
           <div className={`${menu === 'DESCRIPTION' ? '' : 'hidden'} `}>
@@ -538,12 +545,14 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                 name="Previous Form"
                 onClick={() => setMenu('DESCRIPTION')}
               ></PreviousButton>
+
               <button
                 onClick={submitEvent}
                 className="text-white w-[8rem] h-[2.5rem] bg-orange-500 rounded-lg font-semibold"
               >
                 SUBMIT
               </button>
+
             </div>
           </div>
         </section>

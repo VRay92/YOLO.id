@@ -2,12 +2,14 @@
 import OrganizerRoute from '@/components/OrganizerRoute';
 import SideBarEO from '@/components/SidebarEO';
 import { updateUser } from '@/lib/features/userSlice';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { RootState } from '@/lib/store';
+import { useAppDispatch } from '@/lib/hooks';
 import axios from 'axios';
 import Image from 'next/image';
 import * as React from 'react';
 import { MdPhotoCamera } from 'react-icons/md';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 interface IProfileEOProps {}
 
@@ -21,6 +23,8 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
     email: '',
     imageProfile: '',
   });
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
 
   React.useEffect(() => {
     const fetchOrganizer = async () => {
@@ -50,14 +54,29 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOrganizer({ ...organizer, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       if (token) {
         const response = await axios.put(
           `${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/profile`,
-          organizer,
+          { ...organizer, password },
           { headers: { Authorization: `Bearer ${token}` } },
         );
         setOrganizer(response.data.data);
@@ -67,10 +86,29 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
             email: response.data.data.email,
           }),
         );
-        alert('Data updated successfully');
+        setPassword('');
+        setConfirmPassword('');
+        toast.success('Data updated successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (error) {
       console.error('Error updating organizer:', error);
+      toast.error('Failed to update data', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -155,11 +193,15 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
               <input
                 type="password"
                 className="w-auto md:w-[350px] h-[50px] rounded-lg border-gray-200 mb-4"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <h1>Confirm password</h1>
               <input
                 type="password"
                 className="w-auto md:w-[350px] h-[50px] rounded-lg border-gray-200"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <div>
                 <button
@@ -224,6 +266,7 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </OrganizerRoute>
   );
 };

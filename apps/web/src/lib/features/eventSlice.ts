@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-interface Event {
+export interface Event {
   id: number;
   title: string;
   imageUrl: string;
@@ -71,6 +71,19 @@ export const eventSlice = createSlice({
 export const { getEventsStart, getEventsSuccess, getEventsFailure } =
   eventSlice.actions;
 
+  export const fetchEventDetail = (id: string) => async (dispatch: any) => {
+    try {
+      dispatch(getEventsStart());
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/${id}`
+      );
+      const event = response.data.data;
+      dispatch(getEventsSuccess([event]));
+    } catch (error: any) {
+      dispatch(getEventsFailure(error.message));
+    }
+  };
+
 export const fetchEvents = (token: string) => async (dispatch: any) => {
   try {
     dispatch(getEventsStart());
@@ -81,19 +94,6 @@ export const fetchEvents = (token: string) => async (dispatch: any) => {
     const events = response.data.data;
 
     dispatch(getEventsSuccess(events));
-  } catch (error: any) {
-    dispatch(getEventsFailure(error.message));
-  }
-};
-
-export const fetchEventDetail = (id: string) => async (dispatch: any) => {
-  try {
-    dispatch(getEventsStart());
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}event/${id}`
-    );
-    const event = response.data.data;
-    dispatch(getEventsSuccess([event]));
   } catch (error: any) {
     dispatch(getEventsFailure(error.message));
   }
