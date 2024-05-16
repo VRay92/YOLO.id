@@ -11,6 +11,7 @@ export interface IUserState {
   referralCode?: string;
   points?: number;
   vouchers?: Voucher[];
+  imageProfile: string;
 }
 
 const initialState: IUserState = {
@@ -19,6 +20,7 @@ const initialState: IUserState = {
   role: '',
   token: '',
   isLoggedIn: false,
+  imageProfile: "",
 };
 
 const userSlice = createSlice({
@@ -33,12 +35,14 @@ const userSlice = createSlice({
           username: string;
           email: string;
           role: string;
+          imageProfile: string;
         };
         if (decodedToken) {
           state.username = decodedToken.username;
           state.email = decodedToken.email;
           state.role = decodedToken.role;
           state.token = token;
+          state.imageProfile = decodedToken.imageProfile;
           state.isLoggedIn = true;
         }
       } else {
@@ -46,6 +50,7 @@ const userSlice = createSlice({
         state.email = '';
         state.role = '';
         state.token = '';
+        state.imageProfile = "";
         state.isLoggedIn = false;
       }
     },
@@ -59,14 +64,18 @@ const userSlice = createSlice({
       state.referralCode = action.payload.referralCode;
       state.points = action.payload.points;
       state.vouchers = action.payload.vouchers;
+      state.imageProfile = action.payload.imageProfile;
       console.log('Role stored in Redux:', action.payload.role);
     },
+
     resetUser: (state) => {
       state.username = '';
       state.email = '';
       state.role = '';
+      state.imageProfile = '';
       state.isLoggedIn = false;
     },
+
     updateUser: (
       state,
       action: PayloadAction<{
@@ -74,6 +83,7 @@ const userSlice = createSlice({
         email?: string;
         referralCode?: string;
         points?: number;
+        imageProfile?: string;
         vouchers?: Voucher[];
       }>,
     ) => {
@@ -91,6 +101,9 @@ const userSlice = createSlice({
       }
       if (action.payload.vouchers !== undefined) {
         state.vouchers = action.payload.vouchers;
+      }
+      if (action.payload.imageProfile !== undefined) {
+        state.imageProfile = action.payload.imageProfile;
       }
     },
     logout: (state) => {

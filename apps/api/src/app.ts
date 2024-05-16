@@ -17,6 +17,8 @@ import {
   authorizeCustomer,
   authorizeOrganizer,
 } from './middleware/protectedRoute';
+import { ProfileRouter } from './routers/profile.router';
+import { join } from 'path';
 
 export default class App {
   private app: Express;
@@ -32,6 +34,7 @@ export default class App {
     this.app.use(cors());
     this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
+    this.app.use("/assets", express.static(join(__dirname, "../public")))
   }
 
   private handleError(): void {
@@ -49,6 +52,7 @@ export default class App {
     const customerRouter = new CustomerRouter();
     const organizerRouter = new OrganizerRouter();
     const eventRouter = new EventRouter();
+    const profileRouter = new ProfileRouter
     this.app.use('/api/organizer', authMiddleware, authorizeOrganizer, organizerRouter.getRouter());
     this.app.use('/api/event', eventRouter.getRouter());
     this.app.use('/api/auth', authRouter.getRouter());
@@ -58,6 +62,8 @@ export default class App {
       authorizeCustomer,
       customerRouter.getRouter(),
     );
+    this.app.use('/api/profile', profileRouter.getRouter());
+
   }
 
   public start(): void {

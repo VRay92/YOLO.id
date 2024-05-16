@@ -1,26 +1,43 @@
 import { Request, Response } from 'express';
 import prisma from '@/prisma';
+import fs from "fs";
+import { join } from "path";
+import { getUniqueEvent, getUniqueUser } from '@/services/auth';
 
 export class OrganizerController {
 
   async createEvent(req: Request, res: Response) {
 
     try {
-      console.log(Object.values(req.body))
+      console.log("ssssssssssss", req.files)
+      console.log("aaaaaaaaaaaaaaaaaaaaaa", req.body)
+      // console.log(Object.values(req.body))
+      // console.log("file upload info : ", req.file);
+      // const inputDataEvent = { ...req.body, imageUrl: req.file?.filename }
+      // if (Object.values(inputDataEvent).includes("")) {
+      //   throw new Error("Fill in all form");
+      // } else {
+      //   req.body.startDate = new Date(req.body.startDate);
+      //   req.body.endDate = new Date(req.body.startDate);
+      // }
+      // console.log("nilai input data", inputDataEvent)
+      // const newEvent = await prisma.event.create({
+      //   data: inputDataEvent
 
-      if (Object.values(req.body).includes("")) {
-        throw new Error("Fill in all form");
-      } else {
-        req.body.startDate = new Date(req.body.startDate);
-        req.body.endDate = new Date(req.body.startDate);
-      }
-      const newEvent = await prisma.event.create({
-        data: req.body
-
-      });
-
-
-      return res.status(201).send(newEvent);
+      // });
+      // const findEvent = await getUniqueEvent({ title: req.body.title })
+      // console.log(findEvent)
+      // if (fs.existsSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`))) {
+      //   fs.unlinkSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`));
+      //   console.log("File deleted successfully.");
+      // } else {
+      //   console.log("File does not exist.");
+      // }
+      // res.status(200).send({
+      //   rc: 200,
+      //   success: true,
+      //   message: "Update profile success",
+      // })
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
@@ -50,6 +67,7 @@ export class OrganizerController {
           id: true,
           username: true,
           email: true,
+          imageProfile: true
         },
       });
 

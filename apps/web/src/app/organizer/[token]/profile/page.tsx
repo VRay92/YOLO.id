@@ -6,17 +6,20 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { RootState } from '@/lib/store';
 import axios from 'axios';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import * as React from 'react';
+import { MdPhotoCamera } from 'react-icons/md';
 
 interface IProfileEOProps {}
 
 const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
+  const [openModal, setOpenModal] = React.useState(false);
+  const [file, setFile] = React.useState<File | null>(null);
   const dispatch = useAppDispatch();
   const [organizer, setOrganizer] = React.useState({
     id: '',
     username: '',
     email: '',
+    imageProfile: '',
   });
 
   React.useEffect(() => {
@@ -35,7 +38,14 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
       }
     };
     fetchOrganizer();
-  }, []);
+  }, [organizer.imageProfile]);
+
+  const handleImageUploadSuccess = (imageName: string) => {
+    setOrganizer((prevOrganizer) => ({
+      ...prevOrganizer,
+      imageProfile: imageName,
+    }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOrganizer({ ...organizer, [e.target.name]: e.target.value });
@@ -61,6 +71,34 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
       }
     } catch (error) {
       console.error('Error updating organizer:', error);
+    }
+  };
+
+  console.log('organizer', organizer.imageProfile);
+  const onSavePhoto = async (): Promise<void> => {
+    const formData = new FormData();
+    const token = localStorage.getItem('token');
+
+    // Menyematkan file
+    if (file) {
+      // formData.append("email","mail.com"): example if you want to send other data
+      formData.append('imgProfile', file);
+
+      console.log('form data', file);
+      const updatePhoto = await axios.patch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}profile/photo`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}profile/photo`);
+      console.log('update photo', formData);
+      handleImageUploadSuccess(updatePhoto.data.fileName);
+      alert('Update profile success');
+      setOpenModal(false);
     }
   };
 
@@ -132,17 +170,59 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
                 </button>
               </div>
             </div>
-            <div className="rounded-full h-[220px] w-[220px] relative">
-              <Image
-                fill
-                sizes="100vw"
-                src="/profile.webp"
-                alt="hero"
-                className="object-cover rounded-full hidden md:block"
-              />
+            <div>
+              <div className="rounded-full w-[200px] h-[200px] relative cursor-pointer">
+                <img
+                  sizes="100vw"
+                  src={`http://localhost:8000/assets/${organizer.imageProfile}`}
+                  alt="hero"
+                  className="object-cover rounded-full w-full h-full "
+                />
+                <div
+                  className="absolute bottom-0 right-0 size-14 bg-gray-300 rounded-full"
+                  onClick={() => setOpenModal(true)}
+                >
+                  <MdPhotoCamera className=" size-8 m-auto mt-3" />
+                </div>
+              </div>
             </div>
           </div>
         </section>
+        {/* CHANGE PICTURE MODAL */}
+        <div
+          className={`absolute left-0 top-0 z-[36] h-screen w-screen bg-black bg-opacity-50 backdrop-blur-sm backdrop-filter ${
+            openModal ? 'block' : 'hidden'
+          }`}
+        >
+          <div className="flex absolute left-1/2 top-2/4 -translate-x-1/2 -translate-y-1/2 h-56 w-96 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+            {' '}
+            <button
+              className="absolute -top-5 -right-5 size-14 rounded-full bg-black border-2 border-white text-white font-semibold text-xl"
+              onClick={() => setOpenModal(false)}
+            >
+              X
+            </button>
+            <div className=" rounded-lg flex flex-col justify-center items-center">
+              <input
+                type="file"
+                className=" bg-slate-500 md:w-auto w-[100px]"
+                onChange={(e) => {
+                  console.log('Selected files', e.target.files);
+                  if (e.target.files?.length) setFile(e.target.files[0]);
+                }}
+              ></input>
+              <button
+                title="Save"
+                onClick={onSavePhoto}
+                className={`bg-orange-500 w-[5rem] h-[2rem] mt-4 rounded-md ${
+                  file ? 'block' : 'hidden'
+                }`}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </OrganizerRoute>
   );

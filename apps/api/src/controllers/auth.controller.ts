@@ -337,16 +337,16 @@ export class AuthController {
       const user = await prisma.user.findUnique({
         where: { id },
       });
-  
+
       if (user) {
         const token = sign(
           { id: user.id, role: user.role },
           process.env.TOKEN_KEY || 'secret',
           { expiresIn: '24h' },
         );
-  
+
         console.log('User role:', user.role);
-  
+
         return resp.status(200).send({
           rc: 200,
           success: true,
@@ -355,6 +355,7 @@ export class AuthController {
             username: user.username,
             email: user.email,
             role: user.role,
+            imageProfile: user.imageProfile
           },
           token,
         });
