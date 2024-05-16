@@ -35,7 +35,6 @@ model User {
   imageProfile      String?
   contactNumber     String?
 
-
   @@map("users")
 }
 
@@ -51,21 +50,21 @@ model UserPoint {
   points    Int
   expiresAt DateTime
   createdAt DateTime @default(now())
-
+  isUsed    Boolean  @default(false)
   @@map("user_points")
 }
 
 model UserVoucher {
-  id          Int           @id @default(autoincrement())
-  user        User          @relation(fields: [userId], references: [id])
-  userId      Int
-  discount    Int
-  expiresAt   DateTime
-  createdAt   DateTime      @default(now())
-  transaction Transaction[]
-
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  discount  Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  isUsed    Boolean  @default(false)
   @@map("user_vouchers")
 }
+
 
 model Event {
   id             Int               @id @default(autoincrement())
@@ -74,6 +73,8 @@ model Event {
   description    String            @db.Text
   startDate      DateTime
   endDate        DateTime
+  categoryId     Int
+  category       Category?         @relation(fields: [categoryId], references: [id])
   time           String
   availableSeats Int
   isFree         Boolean           @default(true)
@@ -84,7 +85,6 @@ model Event {
   city           City?             @relation(fields: [cityId], references: [id])
   transactions   Transaction[]
   reviews        Review[]
-  categories     Category[]
   ticketTypes    EventTicketType[]
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
@@ -124,9 +124,7 @@ model Transaction {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   receiptUrl     String
-  userVoucherId  Int?
-  voucher        UserVoucher? @relation(fields: [userVoucherId], references: [id])
-
+  pointsUsed     Int?           @default(0)
   @@index([userId])
   @@index([eventId])
   @@map("transactions")

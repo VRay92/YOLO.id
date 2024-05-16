@@ -17,6 +17,7 @@ import {
   authorizeCustomer,
   authorizeOrganizer,
 } from './middleware/protectedRoute';
+import { TransactionRoute } from './routers/transaction.router';
 
 export default class App {
   private app: Express;
@@ -49,7 +50,13 @@ export default class App {
     const customerRouter = new CustomerRouter();
     const organizerRouter = new OrganizerRouter();
     const eventRouter = new EventRouter();
-    this.app.use('/api/organizer', organizerRouter.getRouter());
+    const transactionRouter = new TransactionRoute();
+    this.app.use(
+      '/api/organizer',
+      authMiddleware,
+      authorizeOrganizer,
+      organizerRouter.getRouter(),
+    );
     this.app.use('/api/event', eventRouter.getRouter());
     this.app.use('/api/auth', authRouter.getRouter());
     this.app.use(
@@ -58,12 +65,7 @@ export default class App {
       authorizeCustomer,
       customerRouter.getRouter(),
     );
-    this.app.use(
-      '/api/organizer',
-      authMiddleware,
-      authorizeCustomer,
-      organizerRouter.getRouter(),
-    );
+    this.app.use('/api/transaction', transactionRouter.getRouter());
   }
 
   public start(): void {

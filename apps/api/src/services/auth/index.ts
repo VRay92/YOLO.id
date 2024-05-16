@@ -8,3 +8,14 @@ export interface IUser {
     OTP: string;
     token: string;
 }
+
+export const getUniqueUser = async (data: any) => {
+    try {
+        const check = await prisma.user.findUnique({
+            where: data,
+        })
+        return check;
+    } catch (error) {
+        throw error;
+    }
+};
