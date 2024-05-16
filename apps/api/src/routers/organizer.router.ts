@@ -1,6 +1,11 @@
 import express, { Router } from 'express';
 import { OrganizerController } from '../controllers/organizer.controller';
+
+import { verifyToken } from "../middleware/verifyToken";
+import { uploader } from '@/middleware/uploader';
+
 import { regisValidation } from '@/middleware/vaidator/regis';
+
 
 export class OrganizerRouter {
   private route: Router;
@@ -15,7 +20,8 @@ export class OrganizerRouter {
   private initializeRoutes(): void {
     this.route.get('/profile', this.organizerController.getOrganizerById);
     this.route.put('/profile', this.organizerController.updateOrganizerById);
-    this.route.post('/', this.organizerController.createEvent);
+
+    this.route.post('/', verifyToken, uploader("/event", "EVENT").array("imgUrl"), this.organizerController.createEvent);
     this.route.post('/ticket', this.organizerController.createTicket);
     this.route.get(
       '/events/:organizerId',

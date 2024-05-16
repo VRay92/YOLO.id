@@ -19,3 +19,15 @@ export const getUniqueUser = async (data: any) => {
         throw error;
     }
 };
+
+export const getUniqueEvent = async (data: any) => {
+    try {
+        const check = await prisma.event.findUnique({
+            where: data,
+        })
+        return check
+    } catch (error) {
+        throw error;
+    }
+}
+

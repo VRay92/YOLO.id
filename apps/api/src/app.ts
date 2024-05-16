@@ -17,7 +17,11 @@ import {
   authorizeCustomer,
   authorizeOrganizer,
 } from './middleware/protectedRoute';
+
+import { ProfileRouter } from './routers/profile.router';
+import { join } from 'path';
 import { TransactionRoute } from './routers/transaction.router';
+
 
 export default class App {
   private app: Express;
@@ -33,6 +37,7 @@ export default class App {
     this.app.use(cors());
     this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
+    this.app.use("/assets", express.static(join(__dirname, "../public")))
   }
 
   private handleError(): void {
@@ -50,6 +55,10 @@ export default class App {
     const customerRouter = new CustomerRouter();
     const organizerRouter = new OrganizerRouter();
     const eventRouter = new EventRouter();
+
+    const profileRouter = new ProfileRouter
+    this.app.use('/api/organizer', authMiddleware, authorizeOrganizer, organizerRouter.getRouter());
+
     const transactionRouter = new TransactionRoute();
     this.app.use(
       '/api/organizer',
@@ -57,6 +66,7 @@ export default class App {
       authorizeOrganizer,
       organizerRouter.getRouter(),
     );
+
     this.app.use('/api/event', eventRouter.getRouter());
     this.app.use('/api/auth', authRouter.getRouter());
     this.app.use(
@@ -65,7 +75,10 @@ export default class App {
       authorizeCustomer,
       customerRouter.getRouter(),
     );
+
+    this.app.use('/api/profile', profileRouter.getRouter());
     this.app.use('/api/transaction', transactionRouter.getRouter());
+
   }
 
   public start(): void {

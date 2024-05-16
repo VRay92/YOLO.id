@@ -10,6 +10,7 @@ import CustomerRoute from '@/components/CustomerRoute';
 interface IProfileProps {}
 
 const Profile: React.FunctionComponent<IProfileProps> = (props) => {
+  const [file, setFile] = React.useState<File | null>(null);
   const [customer, setCustomer] = useState({
     id: '',
     username: '',
@@ -71,6 +72,28 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
       }
     } catch (error) {
       console.error('Error updating customer:', error);
+    }
+  };
+
+  const onSavePhoto = async (): Promise<void> => {
+    const formData = new FormData();
+    const token = localStorage.getItem('isLoggedIn');
+
+    // Menyematkan file
+    if (file) {
+      // formData.append("email","mail.com"): example if you want to send other data
+      formData.append('imgProfile', file);
+      const updatePhoto = await axios.patch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}profile/photo`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}profile/photo`);
+      alert('Update profile success');
     }
   };
 
@@ -177,7 +200,10 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
                   </button>
                 </div>
               </div>
-              <div className="rounded-full h-[220px] w-[220px] relative">
+              <div
+                className="rounded-full h-[220px] w-[220px] relative "
+                onClick={onSavePhoto}
+              >
                 <Image
                   fill
                   sizes="100vw"

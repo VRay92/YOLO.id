@@ -13,6 +13,11 @@ import { initDropdowns } from 'flowbite';
 import { logout } from '@/lib/features/userSlice';
 import { IoCalendarSharp } from 'react-icons/io5';
 import { ToastContainer } from 'react-toastify';
+import { IoMdArrowDropleftCircle } from 'react-icons/io';
+import { IoMdArrowDroprightCircle } from 'react-icons/io';
+import Pagination from './Pagination';
+import { useDebounce } from 'use-debounce';
+
 
 interface IEvent {
   id: number;
@@ -34,12 +39,21 @@ export const Header = () => {
     username: '',
     email: '',
     role: '',
+
+    imageProfile: '',
     token: '',
+    isLoggedIn: false,
+
   });
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
   const [event, setEvent] = React.useState<IEvent[]>([]);
   const [loading, setLoading] = React.useState(false);
+
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [postsPerPage, setPostsPerPage] = React.useState(5);
+  const [debouncedValue] = useDebounce(search, 3000);
+
 
   const router = useRouter();
   const isLoggedIn = useAppSelector((state) => state.userReducer.isLoggedIn);
@@ -58,7 +72,7 @@ export const Header = () => {
           );
           if (response.data.success) {
             console.log('KeepLogin response:', response.data);
-            const { username, email, role } = response.data.data;
+            const { username, email, role, imageProfile } = response.data.data;
             localStorage.setItem('role', role);
             dispatch(
               setUser({
@@ -66,6 +80,7 @@ export const Header = () => {
                 email,
                 role,
                 token,
+                imageProfile,
                 isLoggedIn: true,
               }),
             );
@@ -74,8 +89,12 @@ export const Header = () => {
               email,
               role,
               token,
+              imageProfile,
+              isLoggedIn: true,
+
             });
             console.log('Dispatched role:', role);
+            console.log('imageprofile:', imageProfile);
           }
         }
       } catch (error) {
@@ -86,34 +105,39 @@ export const Header = () => {
     keepLogin();
   }, [dispatch, isLoggedIn]);
 
-  const getEvent = async () => {
+  const getEventByFilter = async () => {
     try {
-      console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}event/`);
+      const query = debouncedValue;
+      console.log('query', query);
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/`,
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/filter?title=${query}`,
       );
       console.log('getEvent response:', response.data);
-      setEvent(response.data);
+
+      setEvent(response.data.data);
+      console.log('nilai event', event);
     } catch (error) {
       console.error('Error fetching events:', error);
     }
   };
 
   useEffect(() => {
-    getEvent();
+    getEventByFilter();
     initDropdowns();
+    setLoading(true);
     setTimeout(() => setLoading(false), 1500);
-  }, []);
+  }, [debouncedValue]);
 
-  const filterData = event.filter((val: any) =>
-    val.title.toLowerCase().startsWith(search),
-  );
-
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const paginationCategory = event.slice(indexOfFirstPost, indexOfLastPost);
 
   console.log('value search', search);
+  console.log('image profile:', data.imageProfile);
 
   return (
-    <nav className={`w-full max-w-[1920px] relative z-[30]`}>
+    <nav className={`w-full max-w-[1920px] relative z-[30] `}>
+
       {/* LOADING SCREEN */}
 
       {loading && (
@@ -193,10 +217,11 @@ export const Header = () => {
             <span className="w-[50px] h-[52px] bg-white mt-5 rounded-l-md">
               <SlMagnifier className="m-auto my-3 text-2xl" />
             </span>
-            <div className="relative w-[685px] h-[40px] mt-5 mr-20">
+            <div className="relative w-[685px] h-[40px] mt-5 mr-20 ">
               <input
                 type="text"
                 id="floating_filled"
+
                 className="block rounded-r-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-[#d9d9d9] dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=""
                 onChange={(e) => setSearch(e.target.value)}
@@ -207,23 +232,42 @@ export const Header = () => {
               >
                 search here..
               </label>
+
+              <div className={`${search ? '' : 'hidden'}`}>
+                {paginationCategory.length ? (
+                  paginationCategory.map((val, index) => (
+                    <div
+                      key={index}
+                      className="hover:bg-blue-500 bg-white w-[685px] cursor-pointer h-[3rem] pl-10 pt-2 z-30"
+                      onClick={() => router.push(`/${val.title}`)}
+                    >
+                      {val.title}
+                    </div>
+                  ))
+                ) : (
+                  <div className="bg-white w-[685px] cursor-pointer h-[4rem] pl-10 pt-5 z-30">
+                    Search not found
+                  </div>
+                )}
+
+                {paginationCategory.length > 0 && (
+                  <div className="w-[685px] flex justify-end">
+                    <IoMdArrowDropleftCircle
+                      className="text-white text-3xl cursor-pointer"
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                    />
+                    <IoMdArrowDroprightCircle
+                      className="text-white text-3xl cursor-pointer"
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
+
           </div>
-          <div
-            id="dropdown"
-            className="bg-white w-[685px] absolute -bottom-7 left-[410px]"
-          >
-            {search &&
-              filterData.map((val, index) => (
-                <div
-                  key={index}
-                  className="hover:bg-blue-500 cursor-pointer"
-                  onClick={() => router.push(`/${val.title}`)}
-                >
-                  {val.title}
-                </div>
-              ))}
-          </div>
+
+          <div className="absolute -bottom-7 left-[410px] flex flex-col"></div>
         </div>
 
         <div
@@ -294,6 +338,7 @@ export const Header = () => {
                     setMenuOpen(false);
                   }
                 }}
+
               >
                 <h1>Dashboard Customer</h1>
               </div>
@@ -309,6 +354,7 @@ export const Header = () => {
                 }}
               >
                 <h1>Vouchers</h1>
+
               </div>
               <div
                 className={`bg-slate-300 pt-4 h-[50px] text-center cursor-pointer hover:bg-blue-500 ${
@@ -317,10 +363,10 @@ export const Header = () => {
                 onClick={() => {
                   {
                     router.push(`/customer/${data.token}/purchased-event`);
+
                     setMenuOpen(false);
                   }
                 }}
-
               >
                 <h1>Purchased Events</h1>
               </div>
@@ -330,6 +376,7 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
+
                     router.push(`/customer/${data.token}/review`);
                     setMenuOpen(false);
                   }
@@ -404,17 +451,14 @@ export const Header = () => {
             </div>
           )}
 
-
           <div
             className={` bg-slate-300 pt-4 h-[50px] text-center cursor-pointer hover:bg-blue-500 ${
               isLoggedIn && menuOpen ? 'block' : 'hidden'
             }`}
-
             onClick={() => {
               dispatch(logout());
               router.push('/');
             }}
-
           >
             Sign Out
           </div>
@@ -441,13 +485,17 @@ export const Header = () => {
             <button
               id="dropdownUserAvatarButton"
               data-dropdown-toggle="dropdownAvatar"
-              className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+
+              className="flex text-sm bg-gray-800 w-[65px] h-[65px] rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+
               type="button"
             >
               <span className="sr-only">Open user menu</span>
               <img
-                className="w-12 h-12 md:w-16 md:h-16 rounded-full"
-                src="/28.jpg"
+
+                sizes="100vw"
+                className="object-cover rounded-full w-full h-full"
+                src={`http://localhost:8000/assets/${data.imageProfile}`}
                 alt="user photo"
               />
             </button>

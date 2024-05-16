@@ -60,7 +60,7 @@ const Modal: React.FunctionComponent<IModalProps> = (props) => {
       <div className="w-[1000px]  bg-white rounded-lg absolute left-1/2 top-20 -translate-x-1/2 p-10  ">
         <h1 className="text-3xl font-semibold">Create New Ticket</h1>
         <button
-          className="absolute -top-5 -right-5 size-16 bg-slate-500 text-white font-semibold text-3xl"
+          className="absolute -top-5 -right-5 size-14 rounded-full bg-black border-2 border-white text-white font-semibold text-xl"
           onClick={() => router.push('create-event')}
         >
           X

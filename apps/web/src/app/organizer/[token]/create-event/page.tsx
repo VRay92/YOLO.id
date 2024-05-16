@@ -8,11 +8,12 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import parse from 'html-react-parser';
 import { start } from 'repl';
-
 import NextButton from '@/components/NextButton';
 import PreviousButton from '@/components/PreviousButton';
 import { useRouter } from 'next/navigation';
 import Modal from '@/components/Modal';
+
+import { toast } from 'react-toastify';
 
 
 interface ICreateEventProps {}
@@ -44,23 +45,25 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
   const [endTime, setEndTime] = useState(false);
   const [showTicket, setShowTicket] = useState(false);
 
-  const setEvent = async () => {
-    try {
-      await axios.post(`${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/`);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const onSavePhoto = async (): Promise<void> => {
+
+  const submitEvent = async (): Promise<void> => {
     const formData = new FormData();
-    const token = localStorage.getItem('isLoggedIn');
+    const token = localStorage.getItem('token');
 
     // Menyematkan file
     if (file) {
       // formData.append("email","mail.com"): example if you want to send other data
-      formData.append('imgProfile', file);
-      const updatePhoto = await axios.patch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}profile/photo`,
+      formData.append('imgUrl', file);
+      formData.append('title', dataEvent.title);
+      formData.append('description', dataEvent.description);
+      formData.append('startDate', dataEvent.startDate);
+      formData.append('endDate', dataEvent.endDate);
+      formData.append('time', dataEvent.time);
+      formData.append('availableSeats', dataEvent.availableSeats.toString());
+      formData.append('isFree', dataEvent.isFree.toString());
+      formData.append('maxTicket', dataEvent.maxTicket.toString());
+      const submitEvent = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/`,
         formData,
         {
           headers: {
@@ -68,8 +71,29 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
           },
         },
       );
-      console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}profile/photo`);
-      alert('Update profile success');
+      console.log('Berhasil', submitEvent);
+      if (submitEvent) {
+        console.log('Login response:', submitEvent.data);
+        toast.success(`Create Event Success`, {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.error('Unknown error occurred', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     }
   };
 
@@ -87,6 +111,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
       return false;
     } else {
       return true;
+
     }
   };
 
@@ -115,37 +140,59 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
   };
 
   const increment = () => {
-    setCounter(counter + 1);
+    const newAvailableSeats = dataEvent.availableSeats + 50; // Increment by 50
+    const newData = { ...dataEvent, availableSeats: newAvailableSeats };
+    setDataEvent(newData);
   };
 
   const decrement = () => {
-    if (counter > 0) {
-      setCounter(counter - 1);
+    if (dataEvent.availableSeats >= 50) {
+      const newAvailableSeats = dataEvent.availableSeats - 50; // Decrement by 50, ensuring it doesn't go negative
+      const newData = { ...dataEvent, availableSeats: newAvailableSeats };
+      setDataEvent(newData);
     }
   };
 
   const sessionStorage: Storage = window.sessionStorage;
+
+  const storePhoto = (dataEvent: ITemporaryData): void => {
+    sessionStorage.setItem('createEvent', JSON.stringify(dataEvent));
+  };
+
+  const [imgURL, setImgURL] = useState('');
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImgURL(url);
+    }
+  };
+
   const storeTemporaryData = (dataEvent: ITemporaryData): void => {
     sessionStorage.setItem('createEvent', JSON.stringify(dataEvent));
   };
-  const getTemporaryData = (): ITemporaryData | null => {
+
+  const getTemporaryData = (): void => {
     const data = window.sessionStorage.getItem('createEvent');
     if (data) {
-      return JSON.parse(data);
+      const restoredData = JSON.parse(data);
+      setDataEvent(restoredData);
+      setCounter(restoredData.availableSeats);
     }
-    return null;
   };
 
   useEffect(() => {
-    getTemporaryData;
+    getTemporaryData();
   }, []);
 
-  console.log(dataEvent);
-  console.log('value', counter);
+  console.log('file', file);
+  console.log('value', counter, typeof counter);
   console.log(typeof counter);
   console.log(dataEvent.description);
-
+  console.log(dataEvent.maxTicket);
   console.log('show ticket', showTicket);
+  console.log(dataEvent.availableSeats);
 
   return (
     <OrganizerRoute>
@@ -155,26 +202,26 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
         </div>
         <section className=" m-4 md:m-8 bg-white w-full rounded-lg p-4 md:p-8">
           <h1 className="text-3xl text-black mb-8">Create Event</h1>
-          <div className="w-full h-[300px] border-2 rounded-lg flex flex-col justify-center items-center">
+          <div className="flex justify-end">
             <input
               type="file"
-              className=" bg-slate-500 md:w-auto w-[100px]"
+              className=" bg-slate-500 md:w-auto w-[100px] mb-10"
               onChange={(e) => {
                 console.log('Selected files', e.target.files);
                 if (e.target.files?.length) setFile(e.target.files[0]);
+                handleFileChange(e);
               }}
             ></input>
-            <button
-              title="Save"
-              onClick={onSavePhoto}
-              className={`bg-orange-500 w-[5rem] h-[2rem] mt-4 md:mt-0 md:ml-10 rounded-md ${
-                file ? 'block' : 'hidden'
-              }`}
-            >
-              Save
-            </button>
           </div>
-
+          <div className="relative w-full h-[300px] border-2 rounded-lg flex flex-col justify-center items-center">
+            <img
+              sizes="100vw"
+              src={imgURL || '/blank.jpg'}
+              alt=""
+              id="imgPreview"
+              className="object-cover w-full h-full "
+            />
+          </div>
 
           {/* SELECT MENU */}
           <div className="border-b border-gray-300 flex justify-between mt-4 mx-0 md:mx-10">
@@ -214,6 +261,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                 <input
                   id="title"
                   type="text"
+                  defaultValue={dataEvent.title || ''}
                   className="w-full border-gray-300"
                   onChange={(element: any) => {
                     const newData = {
@@ -224,14 +272,15 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                   }}
                 />
                 <div className="flex flex-col">
-                  <label htmlFor="location">City</label>
+                  <label htmlFor="city">City</label>
                   <select
-                    id="location"
+                    id="city"
                     className="border-gray-300"
+                    value={dataEvent.cityId || 0}
                     onChange={(element: any) => {
                       const newData = {
                         ...dataEvent,
-                        locationId: element.target.value,
+                        cityId: element.target.value,
                       };
                       setDataEvent(newData);
                     }}
@@ -247,6 +296,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                   id="location"
                   type="text"
                   className="w-full border-gray-300"
+                  defaultValue={dataEvent.location}
                   onChange={(element: any) => {
                     const newData = {
                       ...dataEvent,
@@ -261,6 +311,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                     <input
                       type="time"
                       className="border-gray-300"
+                      defaultValue={dataEvent.time || ''}
                       onChange={(element: any) => {
                         const newData = {
                           ...dataEvent,
@@ -304,8 +355,10 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                     <input
                       id="inputStartDate"
                       type="date"
+                      defaultValue={dataEvent.startDate || ''}
                       className="border-gray-300"
                       onChange={(e) => {
+                        console.log('input date', e.target.value);
                         const selectedDate = new Date(e.target.value);
                         console.log(selectedDate);
                         if (startDateValidation(selectedDate)) {
@@ -325,7 +378,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                       type="date"
                       id="inputEndDate"
                       className="border-gray-300"
-                      defaultValue={20}
+                      defaultValue={dataEvent.endDate || ''}
                       onChange={(e) => {
                         const selectedDate = new Date(e.target.value);
                         console.log(selectedDate);
@@ -356,6 +409,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                     <select
                       id="maxTicket"
                       className="border-gray-300 mb-8 w-[250px]"
+                      value={dataEvent.maxTicket || 0}
                       onChange={(element: any) => {
                         const newData = {
                           ...dataEvent,
@@ -372,7 +426,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                     </select>
                   </div>
                   <div className=" flex flex-col ">
-                    <h1>Set Available Ticket</h1>
+                    <h1>Set Available Seats</h1>
                     <div className="items-center space-x-5">
                       <button
                         id="decrement"
@@ -382,18 +436,12 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                         -
                       </button>
                       <input
-                        type="text"
-                        value={counter}
+                        type="number"
+                        value={dataEvent.availableSeats}
                         onChange={(e) => {
-                          const availableSeats = e.target.value;
-                          setCounter(
-                            availableSeats === ''
-                              ? 0
-                              : parseInt(availableSeats),
-                          );
                           const newData = {
                             ...dataEvent,
-                            availableSeats: parseInt(availableSeats),
+                            availableSeats: parseInt(e.target.value),
                           };
                           setDataEvent(newData);
                         }}
@@ -416,22 +464,22 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                 name="Next Form"
                 onClick={() => {
                   setMenu('DESCRIPTION');
-                  storeTemporaryData;
                 }}
               ></NextButton>
             </div>
           </div>
 
+
           {/* DESCRIPTION MENU */}
 
           <div className={`${menu === 'DESCRIPTION' ? '' : 'hidden'} `}>
-
             <div className="mt-8  ">
               <label htmlFor="description">Description</label>
               <ReactQuill
                 id="description"
                 theme="snow"
                 className="h-[300px] mb-10"
+                defaultValue={dataEvent.description || ''}
                 onChange={(element) => {
                   const newData = {
                     ...dataEvent,
@@ -447,14 +495,12 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                 name="Previous Form"
                 onClick={() => {
                   setMenu('DETAILS');
-                  getTemporaryData;
                 }}
               ></PreviousButton>
               <NextButton
                 name="Next Form"
                 onClick={() => {
                   setMenu('TICKETS');
-                  storeTemporaryData;
                 }}
               ></NextButton>
             </div>
@@ -486,7 +532,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                   className="border-2 border-dashed border-gray-300 size-[5rem] rounded-full mx-auto mb-4"
                   onClick={() => {
                     router.push(`modal`);
-                    storeTemporaryData;
+                    storeTemporaryData(dataEvent);
                   }}
                 >
                   +
@@ -499,6 +545,13 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                 name="Previous Form"
                 onClick={() => setMenu('DESCRIPTION')}
               ></PreviousButton>
+
+              <button
+                onClick={submitEvent}
+                className="text-white w-[8rem] h-[2.5rem] bg-orange-500 rounded-lg font-semibold"
+              >
+                SUBMIT
+              </button>
 
             </div>
           </div>

@@ -12,6 +12,32 @@ export class EventController {
       console.log(error)
     }
   }
+
+  // const filterData = music.filter((val: any) =>
+  //   val.title.toLowerCase().startsWith(debouncedSearch),
+  // );
+
+  async getEventByFilter(req: Request, res: Response) {
+    try {
+      const query = req.query.title
+      if (typeof query === 'string') {
+        const dataEvent = await prisma.event.findMany({
+          where: {
+            title: { startsWith: query }
+          }
+        })
+        return res.status(201).send({
+          rc: 201,
+          success: true,
+          data: dataEvent
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  
   async getEventDetail(req: Request, res: Response) {
     const eventId = parseInt(req.params.id);
 
