@@ -1,28 +1,48 @@
 import { Request, Response } from 'express';
 import prisma from '@/prisma';
+import fs from "fs";
+import { join } from "path";
+import { getUniqueEvent, getUniqueUser } from '@/services/auth';
 import { Prisma } from '@prisma/client';
 import { genSalt, hash } from 'bcrypt';
+
 
 export class OrganizerController {
 
   async createEvent(req: Request, res: Response) {
 
     try {
-      console.log(Object.values(req.body))
 
-      if (Object.values(req.body).includes("")) {
-        throw new Error("Fill in all form");
-      } else {
-        req.body.startDate = new Date(req.body.startDate);
-        req.body.endDate = new Date(req.body.startDate);
-      }
-      const newEvent = await prisma.event.create({
-        data: req.body
+      console.log("ssssssssssss", req.files)
+      console.log("aaaaaaaaaaaaaaaaaaaaaa", req.body)
+      // console.log(Object.values(req.body))
+      // console.log("file upload info : ", req.file);
+      // const inputDataEvent = { ...req.body, imageUrl: req.file?.filename }
+      // if (Object.values(inputDataEvent).includes("")) {
+      //   throw new Error("Fill in all form");
+      // } else {
+      //   req.body.startDate = new Date(req.body.startDate);
+      //   req.body.endDate = new Date(req.body.startDate);
+      // }
+      // console.log("nilai input data", inputDataEvent)
+      // const newEvent = await prisma.event.create({
+      //   data: inputDataEvent
 
-      });
+      // });
+      // const findEvent = await getUniqueEvent({ title: req.body.title })
+      // console.log(findEvent)
+      // if (fs.existsSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`))) {
+      //   fs.unlinkSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`));
+      //   console.log("File deleted successfully.");
+      // } else {
+      //   console.log("File does not exist.");
+      // }
+      // res.status(200).send({
+      //   rc: 200,
+      //   success: true,
+      //   message: "Update profile success",
+      // })
 
-
-      return res.status(201).send(newEvent);
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
@@ -52,6 +72,7 @@ export class OrganizerController {
           id: true,
           username: true,
           email: true,
+          imageProfile: true
         },
       });
 
@@ -69,6 +90,7 @@ export class OrganizerController {
   async updateOrganizerById(req: Request, res: Response) {
     try {
       const userId = res.locals.user.id;
+
       const { username, email, password } = req.body;
   
       const updateData: Prisma.UserUpdateInput = {};
@@ -86,7 +108,7 @@ export class OrganizerController {
         const hashPassword = await hash(password, salt);
         updateData.password = hashPassword;
       }
-  
+
       const updatedOrganizer = await prisma.user.update({
         where: { id: userId },
         data: updateData,
@@ -149,7 +171,7 @@ export class OrganizerController {
   async getTransactionsByDateRange(req: Request, res: Response) {
     try {
       const { startDate, endDate } = req.query;
-      
+
       const transactions = await prisma.transaction.aggregate({
         where: {
           createdAt: {
@@ -162,11 +184,13 @@ export class OrganizerController {
           totalPrice: true,
         },
       });
+
   
       if (transactions._sum.totalPrice === null) {
         return res.status(200).json({ totalSales: 0 });
       }
   
+
       return res.status(200).json({ totalSales: transactions._sum.totalPrice });
     } catch (error) {
       console.error('Error getting transactions by date range:', error);

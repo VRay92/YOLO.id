@@ -10,137 +10,38 @@ import { initCarousels } from 'flowbite';
 import { Dropdown } from 'flowbite';
 import { Princess_Sofia } from 'next/font/google';
 import { type } from 'os';
+import Pagination from '@/components/Pagination';
+import { current } from '@reduxjs/toolkit';
+import { divide } from 'cypress/types/lodash';
+import EventTestingData from './testingdata';
 
 export default function Home() {
   const [category, setCategory] = useState('music');
-  const [city, setCity] = useState('Jakarta');
+  const [city, setCity] = useState('Bandung');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(3);
 
-  const music = [
-    {
-      url: '/dewa19.jpg',
-      date: '5 Aug 2024',
-      title: 'GOPHORIA - Dewa19 Gorontalo',
-      price: 'Rp. 677.000,-',
-      username: 'Deal Indonesia',
-    },
+  const filterByCategory = EventTestingData.filter(
+    (val, index) => val.category === category,
+  );
 
-    {
-      url: '/LiSa2.webp',
-      date: '28 Dec 2024',
-      title: 'Live is Smile Always',
-      price: 'Rp. 830.000,-',
-      username: 'FLASHBACK motion',
-    },
-    {
-      url: '/anggun.png',
-      date: '28 Jul 2024',
-      title: 'Enchanting Anggun & Friends',
-      price: 'Rp. 677.000,-',
-      username: 'FLASHBACK motion',
-    },
-    {
-      url: '/gedebagejazz.jpg',
-      date: '1 Jun 2024',
-      title: 'Enchanting Anggun & Friends',
-      price: 'Rp. 350.000,-',
-      username: 'Summarecon Mall Bandung',
-    },
+  const filterByCityAndCategory = EventTestingData.filter(
+    (val, index) => val.location === city && val.category === category,
+  );
+  console.log('nilai filter', filterByCityAndCategory);
 
-    {
-      url: '/gedebagejazz.jpg',
-      date: '11 May 2024',
-      title: 'Gedebage Jazz Festival',
-      price: 'Rp. 239.000,-',
-      username: 'Summarecon Mall Bandung',
-    },
-    {
-      url: '/ultrabeach.jpg',
-      date: '7 Jun 2024',
-      title: 'Ultra Beach Bali 2024',
-      price: 'Rp. 2.100.000,-',
-      username: 'Ultra Beach Bali',
-    },
-    {
-      url: 'anggun.png',
-      date: '28 Jul 2024',
-      title: 'Enchanting Anggun & Friends',
-      price: 'Rp. 677.000,-',
-      username: 'FLASHBACK motion',
-    },
-    {
-      url: '/dewa19.jpg',
-      date: '5 Aug 2024',
-      title: 'GOPHORIA - Dewa19 Gorontalo',
-      price: 'Rp. 677.000,-',
-      username: 'Deal Indonesia',
-    },
-  ];
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const paginationCategory = filterByCategory.slice(
+    indexOfFirstPost,
+    indexOfLastPost,
+  );
+  const paginationByCityAndCategory = filterByCityAndCategory.slice(
+    indexOfFirstPost,
+    indexOfLastPost,
+  );
 
-  const festival = [
-    {
-      url: '/nelangsa.jpg',
-      date: '05 May 2024',
-      title: 'Sajian Spesial Bilal Indrajaya: Konser Nelangsa Kala Purnama',
-      price: 'Rp. 450.000,-',
-      username: 'Aksara Records',
-    },
-    {
-      url: '/funrun.jpg',
-      date: '12 May 2024',
-      title: 'ESQ Fun Charity Run',
-      price: 'Rp. 200.000,-',
-      username: 'UAG University',
-    },
-    {
-      url: '/alcorfest.jpg',
-      date: '01 Aug 2024',
-      title: 'Alcor Fest 2024',
-      price: 'Rp. 600.000,-',
-      username: 'Goodworks',
-    },
-    {
-      url: '/batakfestival.jpg',
-      date: '24 May 2024',
-      title: 'BATAK FESTIVAL',
-      price: 'Rp. 90.000,-',
-      username: 'Samarga House',
-    },
-    {
-      url: '/momandbabyexpo.jpg',
-      date: '3 May 2024',
-      title: 'Indonesia Mom and Baby Expo IMOBY Surabaya 2024',
-      price: 'Rp. 20.000,-',
-      username: 'PT. MYExpo Kreasi Indonesia',
-    },
-    {
-      url: '/nebsfestival.jpg',
-      date: '1 Jun 2024',
-      title: 'NEBS Festival',
-      price: 'Rp. 100.000,-',
-      username: 'PERMUDHITA',
-    },
-    {
-      url: '/batakfestival.jpg',
-      date: '24 May 2024',
-      title: 'BATAK FESTIVAL',
-      price: 'Rp. 90.000,-',
-      username: 'Samarga House',
-    },
-    {
-      url: '/alcorfest.jpg',
-      date: '01 Aug 2024',
-      title: 'Alcor Fest 2024',
-      price: 'Rp. 600.000,-',
-      username: 'Goodworks',
-    },
-    {
-      url: '/momandbabyexpo.jpg',
-      date: '3 May 2024',
-      title: 'Indonesia Mom and Baby Expo IMOBY Surabaya 2024',
-      price: 'Rp. 20.000,-',
-      username: 'PT. MYExpo Kreasi Indonesia',
-    },
-  ];
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   useEffect(() => {
     initCarousels;
@@ -298,12 +199,12 @@ export default function Home() {
             id="top-trending"
             className="md:flex-row flex-col flex max-w-[1920px] gap-6 md:gap-10 mx-4 md:mx-10 mt-4 md:mt-10 md:ml-40 md:overflow-x-scroll no-scrollbar"
           >
-            <Toptrending url={music[0].url} rank={1}></Toptrending>
-            <Toptrending url={music[1].url} rank={2}></Toptrending>
-            <Toptrending url={music[2].url} rank={3}></Toptrending>
+            <Toptrending url={filterByCategory[0].url} rank={1}></Toptrending>
+            <Toptrending url={filterByCategory[1].url} rank={2}></Toptrending>
+            <Toptrending url={filterByCategory[2].url} rank={3}></Toptrending>
             <div className="hidden gap-10 md:flex">
-              <Toptrending url={music[3].url} rank={4}></Toptrending>
-              <Toptrending url={music[4].url} rank={5}></Toptrending>
+              <Toptrending url={filterByCategory[3].url} rank={4}></Toptrending>
+              <Toptrending url={filterByCategory[4].url} rank={5}></Toptrending>
             </div>
           </div>
         )}
@@ -315,22 +216,22 @@ export default function Home() {
             id="top-trending"
             className="md:flex-row flex-col flex max-w-[1920px] gap-6 md:gap-10 mx-4 md:mx-10 mt-4 md:mt-10 md:ml-40 md:overflow-x-scroll no-scrollbar"
           >
-            <Toptrending url={festival[0].url} rank={1}></Toptrending>
-            <Toptrending url={festival[1].url} rank={2}></Toptrending>
-            <Toptrending url={festival[2].url} rank={3}></Toptrending>
+            <Toptrending url={filterByCategory[0].url} rank={1}></Toptrending>
+            <Toptrending url={filterByCategory[1].url} rank={2}></Toptrending>
+            <Toptrending url={filterByCategory[2].url} rank={3}></Toptrending>
             <div className="hidden gap-10 md:flex">
-              <Toptrending url={festival[3].url} rank={4}></Toptrending>
-              <Toptrending url={festival[4].url} rank={5}></Toptrending>
+              <Toptrending url={filterByCategory[3].url} rank={4}></Toptrending>
+              <Toptrending url={filterByCategory[4].url} rank={5}></Toptrending>
             </div>
           </div>
         )}
       </div>
 
-      {/* music card */}
+      {/* event card for desktop (with pagination) */}
 
-      {category === 'music' && (
-        <div className="flex overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:grid-rows-2 gap-10 mx-4 md:mx-20 mt-20">
-          {music.map((val, idx) => (
+      <div className="hidden overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:grid-rows-2 gap-10 mx-4 md:mx-20 mt-20">
+        {paginationCategory.length ? (
+          paginationCategory.map((val, idx) => (
             <Card
               key={idx}
               url={val.url}
@@ -339,33 +240,67 @@ export default function Home() {
               price={val.price}
               username={val.username}
             />
-          ))}
-        </div>
-      )}
-
-      {/* festival card */}
-
-      {category === 'festival' && (
-        <div className="flex overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:grid-rows-2 gap-10 mx-4 md:mx-20 mt-20">
-          {festival.map((val, idx) => (
-            <Card
-              key={idx}
-              url={val.url}
-              title={val.title}
-              date={val.date}
-              price={val.price}
-              username={val.username}
-            />
-          ))}
-        </div>
-      )}
-      <div className="flex">
-        <h1 className="text-white text-[40px] font-bold font-poppins ml-5 md:mx-16 mt-4 md:mt-10">
-          Popular in
-        </h1>
+          ))
+        ) : (
+          <div>No More Event</div>
+        )}
       </div>
 
-      <div className="h-60 w-full">.</div>
+      <div className="hidden md:flex justify-end pr-16">
+        <Pagination
+          postsPerPage={postsPerPage}
+          totalPosts={filterByCategory.length}
+          paginate={paginate}
+          currentPage={currentPage}
+        ></Pagination>
+      </div>
+
+      {/* event card for mobile */}
+
+      <div className="flex overflow-x-scroll no-scrollbar md:hidden gap-10 mx-4 md:mx-20 mt-20">
+        {filterByCategory.map((val, idx) => (
+          <Card
+            key={idx}
+            url={val.url}
+            title={val.title}
+            date={val.date}
+            price={val.price}
+            username={val.username}
+          />
+        ))}
+      </div>
+      {/* FILTER BY CITY */}
+      <div className="flex items-center mt-10 md:ml-10">
+        <h1 className="text-white text-3xl md:text-[40px] font-bold font-poppins ml-5 mr-5 ">
+          Popular in
+        </h1>
+        <select
+          id="city"
+          className="bg-[#282828] text-white text-xl  border-none h-[3rem]"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+        >
+          <option value={'Jakarta'}>Jakarta</option>
+          <option value={'Surabaya'}>Surabaya</option>
+          <option value={'Bandung'}>Bandung</option>
+          <option value={'Tangerang'}>Tangerang</option>
+          <option value={'Bali'}>Bali</option>
+        </select>
+      </div>
+      <div className="flex overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:grid-rows-2 gap-10 mx-4 md:mx-20 mt-10  md:mt-20">
+        {filterByCityAndCategory.map((val, idx) => (
+          <Card
+            key={idx}
+            url={val.url}
+            title={val.title}
+            date={val.date}
+            price={val.price}
+            username={val.username}
+          />
+        ))}
+      </div>
+
+      <div className="h-32 w-full">.</div>
     </main>
   );
 }
