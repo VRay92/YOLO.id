@@ -20,6 +20,8 @@ import PaymentModal from '@/components/PaymentModal';
 import { Event } from '@/lib/features/eventSlice';
 import { Voucher } from '@/app/customer/[token]/voucher/page';
 import CustomerRoute from '@/components/CustomerRoute';
+import parse from 'html-react-parser';
+import axios from 'axios';
 
 interface IEventDetailCustomerProps {}
 
@@ -33,6 +35,11 @@ const EventDetailCustomer: React.FunctionComponent<
   const ticketRef = useRef<HTMLDivElement>(null);
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
   const [pointsToUse, setPointsToUse] = useState(0);
+  const [selectedLocation, setSelectedLocation] = useState<number | null>(null);
+
+  const handleSelectLocation = (locationId: number | null) => {
+    setSelectedLocation(locationId);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,8 +72,11 @@ const EventDetailCustomer: React.FunctionComponent<
     state.eventReducer.events.find((event) => event.id === Number(id)),
   );
 
+  console.log('event', event);
+
   const user = useAppSelector((state: RootState) => state.userReducer);
   console.log(user.vouchers);
+  console.log(user.imageProfile);
   const points = user.points || 0;
 
   const [selectedTickets, setSelectedTickets] = useState<
@@ -82,6 +92,7 @@ const EventDetailCustomer: React.FunctionComponent<
     if (typeof id === 'string') {
       dispatch(fetchEventDetail(id));
     }
+    getOrganizerById();
   }, [dispatch, id]);
 
   const handleTabClick = (tab: string) => {
@@ -138,6 +149,26 @@ const EventDetailCustomer: React.FunctionComponent<
     setShowPaymentModal(true);
   };
 
+  const getOrganizerById = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      console.log('11111111111111', token);
+      if (token) {
+        const data = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        console.log('data11111111111111', data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <CustomerRoute>
       <div className="bg-white">
@@ -163,13 +194,11 @@ const EventDetailCustomer: React.FunctionComponent<
         </div>
         <div className="container hidden lg:block mx-auto py-8 pt-20">
           <div className="flex mb-8">
-            <div className="w-2/3">
-              <Image
-                src={event?.imageUrl || ''}
+            <div className="md:w-2/3 ">
+              <img
+                src={`http://localhost:8000/assets/${event?.imageUrl}`}
                 alt="Event Banner"
-                width={600}
-                height={400}
-                layout="responsive"
+                className="md:w-full md:h-full w-[600px] h-[400px]"
               />
             </div>
             <div className="w-1/3 border border-gray-200 rounded-xl ml-8 p-8 shadow-md">
@@ -202,8 +231,8 @@ const EventDetailCustomer: React.FunctionComponent<
                 </p>
                 <div className="flex items-center">
                   <div className="mr-4">
-                    <Image
-                      src={event?.organizer?.imageProfile || ''}
+                    <img
+                      src={`http://localhost:8000/assets/${event?.organizer?.imageProfile}`}
                       alt="Organizer"
                       width={50}
                       height={50}
@@ -321,7 +350,11 @@ const EventDetailCustomer: React.FunctionComponent<
           </div>
           {activeTab === 'description' && (
             <div className="w-2/3 -mt-16">
-              <p>{event?.description}</p>
+              <p>
+                {event?.description
+                  ? parse(event?.description)
+                  : 'no description'}
+              </p>
             </div>
           )}
           {activeTab === 'ticket' && event && event.ticketTypes && (
@@ -428,12 +461,11 @@ const EventDetailCustomer: React.FunctionComponent<
         <div className="block lg:hidden">
           <div className="container mx-auto py-8">
             <div className="my-14">
-              <Image
-                src={event?.imageUrl || ''}
+              <img
+                src={`http://localhost:8000/assets/${event?.imageUrl}`}
                 alt="Event Banner"
                 width={600}
                 height={400}
-                layout="responsive"
               />
             </div>
             <div className="px-4">
@@ -462,8 +494,8 @@ const EventDetailCustomer: React.FunctionComponent<
                 <p className="mb-2 text-gray-500">Diselenggarakan oleh:</p>
                 <div className="flex items-center">
                   <div className="mr-4">
-                    <Image
-                      src={event?.organizer?.imageProfile || ''}
+                    <img
+                      src={`http://localhost:8000/assets/${event?.imageUrl}`}
                       alt="Organizer"
                       width={50}
                       height={50}
@@ -503,7 +535,11 @@ const EventDetailCustomer: React.FunctionComponent<
               {activeTab === 'description' && (
                 <div>
                   <h2 className="text-xl font-bold mb-4">Deskripsi</h2>
-                  <p>{event?.description}</p>
+                  <p>
+                    {event?.description
+                      ? parse(event?.description)
+                      : 'no description'}
+                  </p>
                 </div>
               )}
               {activeTab === 'ticket' && event && event.ticketTypes && (

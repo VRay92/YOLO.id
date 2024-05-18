@@ -9,7 +9,7 @@ export class CustomerController {
   async getCustomerById(req: Request, res: Response) {
     try {
       const userId = res.locals.user.id;
-
+      console.log("userid", userId)
       const customer = await prisma.user.findUnique({
         where: { id: userId },
         select: {
@@ -18,6 +18,7 @@ export class CustomerController {
           email: true,
           age: true,
           gender: true,
+          imageProfile: true,
         },
       });
 

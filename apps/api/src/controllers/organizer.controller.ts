@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '@/prisma';
 import fs from "fs";
 import { join } from "path";
-import { getUniqueEvent, getUniqueUser } from '@/services/auth';
+import { getLastEventId, getUniqueEvent } from '@/services/auth';
 import { Prisma } from '@prisma/client';
 import { genSalt, hash } from 'bcrypt';
 
@@ -12,51 +12,82 @@ export class OrganizerController {
   async createEvent(req: Request, res: Response) {
 
     try {
+      const lastEventId = await getLastEventId();
+      console.log("Last event ID:", lastEventId);
+      console.log(req.files)
+      console
+      console.log('1111 body', req.body)
+      console.log('body', req.body.title)
+      const { tickets, ...eventData } = req.body;
+      console.log(tickets)
+      // Check if req.files is an array
+      if (Array.isArray(req.files)) {
+        // If it's an array, access the fieldname of the first file
+        console.log("ssssssssssss", req.files[0].filename);
+        const imageUrl = `event/${req.files[0].filename}`
+        console.log(Object.values(req.body))
+        console.log(imageUrl)
+        const inputDataEvent = { ...eventData, imageUrl: imageUrl }
+        console.log("input data", inputDataEvent)
+        if (Object.values(inputDataEvent).includes("")) {
+          throw new Error("Fill in all form");
+        } else {
+          inputDataEvent.cityId = parseInt(req.body.cityId)
+          inputDataEvent.availableSeats = parseInt(req.body.availableSeats)
+          inputDataEvent.startDate = new Date(req.body.startDate);
+          inputDataEvent.endDate = new Date(req.body.endDate);
+          inputDataEvent.isFree === 'true' ? inputDataEvent.isFree = true : inputDataEvent.isFree = false;
+          inputDataEvent.maxTicket = parseInt(req.body.maxTicket);
+          inputDataEvent.updatedAt = new Date(req.body.updatedAt);
+          inputDataEvent.categoryId = parseInt(req.body.categoryId);
+          inputDataEvent.organizerId = parseInt(req.body.organizerId);
+          console.log("successss")
+        }
+        console.log("input data setelah parsing", inputDataEvent)
+        console.log("tipe cityId", typeof inputDataEvent.cityId)
+        console.log('ticket', tickets)
+        const data = {
+          ...inputDataEvent,
+          ticketTypes: tickets && Array.isArray(tickets) ? {
+            create: tickets.map((ticket: any) => ({
+              ticketTypeId: parseInt(ticket.ticketTypeId),
+              price: parseInt(ticket.price),
+              quantity: parseInt(ticket.quantity)
+            }))
+          } : undefined
+        }
 
-      console.log("ssssssssssss", req.files)
-      console.log("aaaaaaaaaaaaaaaaaaaaaa", req.body)
-      // console.log(Object.values(req.body))
-      // console.log("file upload info : ", req.file);
-      // const inputDataEvent = { ...req.body, imageUrl: req.file?.filename }
-      // if (Object.values(inputDataEvent).includes("")) {
-      //   throw new Error("Fill in all form");
-      // } else {
-      //   req.body.startDate = new Date(req.body.startDate);
-      //   req.body.endDate = new Date(req.body.startDate);
-      // }
-      // console.log("nilai input data", inputDataEvent)
-      // const newEvent = await prisma.event.create({
-      //   data: inputDataEvent
+        console.log("yukbisayuk", data)
+        const eventWithTicketTypes = await prisma.event.create({
+          data: data
+        });
+      }
 
-      // });
-      // const findEvent = await getUniqueEvent({ title: req.body.title })
-      // console.log(findEvent)
-      // if (fs.existsSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`))) {
-      //   fs.unlinkSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`));
-      //   console.log("File deleted successfully.");
-      // } else {
-      //   console.log("File does not exist.");
-      // }
-      // res.status(200).send({
-      //   rc: 200,
-      //   success: true,
-      //   message: "Update profile success",
-      // })
 
-    } catch (error) {
-      console.log(error);
-      return res.status(500).send(error);
-    }
-  }
+      const findEvent = await getUniqueEvent({ title: req.body.title })
+      try {
+        const newTicket = await prisma.eventTicketType.create({
+          data: req.body
+        })
+        return res.status(201).send({ eventTicketType: newTicket });
+      } catch (error) {
+        console.log(error)
+      }
 
-  async createTicket(req: Request, res: Response) {
-    console.log(req.body)
-    try {
-      const newTicket = await prisma.eventTicketType.create({
-        data: req.body
+      console.log(findEvent)
+      if (fs.existsSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`))) {
+        fs.unlinkSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`));
+        console.log("File deleted successfully.");
+      } else {
+        console.log("File does not exist.");
+      }
+
+      res.status(200).send({
+        rc: 200,
+        success: true,
+        message: "Create Event success",
       })
 
-      return res.status(201).send({ eventTicketType: newTicket });
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
@@ -92,17 +123,17 @@ export class OrganizerController {
       const userId = res.locals.user.id;
 
       const { username, email, password } = req.body;
-  
+
       const updateData: Prisma.UserUpdateInput = {};
-  
+
       if (username !== undefined) {
         updateData.username = username;
       }
-  
+
       if (email !== undefined) {
         updateData.email = email;
       }
-  
+
       if (password !== undefined) {
         const salt = await genSalt(10);
         const hashPassword = await hash(password, salt);
@@ -185,11 +216,11 @@ export class OrganizerController {
         },
       });
 
-  
+
       if (transactions._sum.totalPrice === null) {
         return res.status(200).json({ totalSales: 0 });
       }
-  
+
 
       return res.status(200).json({ totalSales: transactions._sum.totalPrice });
     } catch (error) {

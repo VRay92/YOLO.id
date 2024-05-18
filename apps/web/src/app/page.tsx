@@ -19,7 +19,7 @@ export default function Home() {
   const [category, setCategory] = useState('music');
   const [city, setCity] = useState('Bandung');
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(3);
+  const [postsPerPage, setPostsPerPage] = useState(8);
 
   const filterByCategory = EventTestingData.filter(
     (val, index) => val.category === category,
@@ -246,7 +246,7 @@ export default function Home() {
         )}
       </div>
 
-      <div className="hidden md:flex justify-end pr-16">
+      <div className="hidden md:flex justify-end pr-16 pt-10">
         <Pagination
           postsPerPage={postsPerPage}
           totalPosts={filterByCategory.length}

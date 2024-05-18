@@ -97,14 +97,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       toast.error('Anda harus menyetujui syarat dan ketentuan terlebih dahulu');
       return;
     }
-  
+
     const ticketTypes = Object.entries(selectedTickets).map(
       ([id, quantity]) => ({
         id: Number(id),
         quantity,
       }),
     );
-  
+
     const data = {
       eventId: event.id,
       ticketTypes,
@@ -113,7 +113,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       usePoints,
       pointsToUse,
     };
-  
+
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}transaction/buy-ticket`,
@@ -124,7 +124,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           },
         },
       );
-  
+
       if (totalPrice === 0) {
         toast.success('Pemesanan tiket gratis berhasil');
         setTimeout(onClose, 3000); // Menambahkan jeda 3 detik sebelum menutup modal
@@ -154,7 +154,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       toast.error('Terjadi kesalahan saat memproses pembayaran');
     }
   };
-  
 
   const totalPrice = Object.entries(selectedTickets).reduce(
     (total, [ticketTypeId, quantity]) => {
@@ -187,7 +186,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div>
             <Image
-              src={event?.imageUrl || ''}
+              src={'/' + event?.imageUrl || ''}
               alt="Event Banner"
               width={600}
               height={400}
