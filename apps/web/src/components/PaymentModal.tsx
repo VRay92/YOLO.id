@@ -79,13 +79,21 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
   const handlePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsePoints(e.target.checked);
+    if (!e.target.checked) {
+      onPointsToUseChange(0);
+    }
   };
 
   const handlePointsToUseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Math.floor(parseInt(e.target.value, 10) / 10000) * 10000;
-    if (value <= points) {
-      onPointsToUseChange(value);
+    let value = parseInt(e.target.value, 10);
+
+    if (value > points) {
+      value = points;
     }
+
+    value = Math.floor(value / 10000) * 10000;
+
+    onPointsToUseChange(value);
   };
 
   const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,6 +141,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           onSuccess: (result) => {
             console.log(result);
             toast.success('Pembayaran berhasil');
+            localStorage.setItem('transactionStatus', 'success');
+            localStorage.setItem('transactionId', response.data.transactionId);
+            // Redirect ke halaman status pesanan
+            window.location.href = '/order-status';
           },
           onPending: (result) => {
             console.log(result);
@@ -169,7 +181,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   const totalDiscount = selectedVoucher
     ? (totalPrice * selectedVoucher.discount) / 100
     : 0;
-  const totalPayment = totalPrice - totalDiscount;
+  const totalPayment = totalPrice - totalDiscount - pointsToUse;
 
   const formatTime = (timeInSeconds: number) => {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -263,7 +275,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             </div>
             <button
               onClick={handlePayment}
-              className="bg-blue-500 text-white rounded-lg px-6 py-3 w-full font-semibold"
+              className="bg-[#d9d9d9] text-black rounded-lg px-6 py-3 w-full font-semibold"
             >
               Pesan Tiket Gratis
             </button>
@@ -338,6 +350,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                   <span>Rp {totalDiscount.toLocaleString('id-ID')}</span>
                 </div>
               )}
+              {usePoints && pointsToUse > 0 && (
+                <div className="flex justify-between mb-2">
+                  <span className="font-semibold">Potongan Poin</span>
+                  <span>Rp {pointsToUse.toLocaleString('id-ID')}</span>
+                </div>
+              )}
               <div className="flex justify-between text-xl font-bold mb-8">
                 <span>Total Bayar</span>
                 <span>Rp {totalPayment.toLocaleString('id-ID')}</span>
@@ -355,7 +373,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
               <button
                 onClick={handlePayment}
-                className="bg-blue-500 text-white rounded-lg px-6 py-3 w-full font-semibold"
+                className="bg-[#d9d9d9] text-black rounded-lg px-6 py-3 w-full font-semibold"
               >
                 Bayar Tiket
               </button>

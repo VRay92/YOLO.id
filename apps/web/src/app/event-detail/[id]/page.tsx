@@ -40,6 +40,7 @@ const EventDetailCustomer: React.FunctionComponent<
   const handleSelectLocation = (locationId: number | null) => {
     setSelectedLocation(locationId);
   };
+  const [points, setPoints] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +56,11 @@ const EventDetailCustomer: React.FunctionComponent<
         if (response.ok) {
           const data = await response.json();
           setVouchers(data.voucher);
+          const totalPoints = data.points.reduce(
+            (acc: number, point: any) => acc + point.points,
+            0,
+          );
+          setPoints(totalPoints);
         } else {
           console.error('Failed to fetch vouchers');
         }
@@ -77,7 +83,6 @@ const EventDetailCustomer: React.FunctionComponent<
   const user = useAppSelector((state: RootState) => state.userReducer);
   console.log(user.vouchers);
   console.log(user.imageProfile);
-  const points = user.points || 0;
 
   const [selectedTickets, setSelectedTickets] = useState<
     Record<string, number>
@@ -116,7 +121,7 @@ const EventDetailCustomer: React.FunctionComponent<
     function handleScroll() {
       const scrollPosition = window.scrollY;
       if (scrollPosition > 700) {
-        setFixed('fixed');
+        setFixed('md:fixed');
       } else {
         setFixed('hidden');
       }
@@ -173,19 +178,19 @@ const EventDetailCustomer: React.FunctionComponent<
     <CustomerRoute>
       <div className="bg-white">
         <div
-          className={`bg-white shadow-xl w-full pl-40 h-[80px] flex ${fixed} top-0`}
+          className={`bg-white shadow-xl w-full pl-40 h-[80px] flex ${fixed} top-0 `}
         >
           <button
-            className={`text-xl font-semibold h-[80px] w-[180px] text-center  ${
-              activeTab === 'description' ? 'border-b-4 border-blue-500' : ''
+            className={`hidden md:block text-xl font-semibold h-[80px] w-[180px] text-center  ${
+              activeTab === 'description' ? 'border-b-4 border-[#F40841]' : ''
             }`}
             onClick={() => setActiveTab('description')}
           >
             DESCRIPTION
           </button>
           <button
-            className={`text-xl font-semibold h-[80px] w-[180px] text-center  ${
-              activeTab === 'ticket' ? 'border-b-4 border-blue-500' : ''
+            className={`hidden md:block text-xl font-semibold h-[80px] w-[180px] text-center  ${
+              activeTab === 'ticket' ? 'border-b-4 border-[#F40841]' : ''
             }`}
             onClick={() => setActiveTab('ticket')}
           >
@@ -255,7 +260,7 @@ const EventDetailCustomer: React.FunctionComponent<
                 <button
                   className={`px-4 py-2 w-1/2 ${
                     activeTab === 'description'
-                      ? 'border-b-2 border-blue-500 text-blue-500'
+                      ? 'border-b-2 border-[#F40841] text-[#F40841]'
                       : 'text-gray-500'
                   }`}
                   onClick={() => handleTabClick('description')}
@@ -265,7 +270,7 @@ const EventDetailCustomer: React.FunctionComponent<
                 <button
                   className={`px-4 py-2 w-1/2 ${
                     activeTab === 'ticket'
-                      ? 'border-b-2 border-blue-500 text-blue-500'
+                      ? 'border-b-2 border-[#F40841] text-[#F40841]'
                       : 'text-gray-500'
                   }`}
                   onClick={() => handleTabClick('ticket')}
@@ -323,7 +328,7 @@ const EventDetailCustomer: React.FunctionComponent<
                   },
                 )}
                 <button
-                  className="px-6 py-3 bg-blue-500 text-white rounded w-full mt-4 text-lg border border-gray-400"
+                  className="px-6 py-3 bg-[#d9d9d9] text-black font-bold rounded w-full mt-4 text-lg border border-gray-400"
                   onClick={handleBuyTicket}
                 >
                   Beli Tiket
@@ -332,16 +337,16 @@ const EventDetailCustomer: React.FunctionComponent<
               <div>
                 <h3 className="text-sm my-2">Bagikan Event</h3>
                 <div className="flex items-center">
-                  <a href="#" className="mr-4 text-blue-500">
+                  <a href="#" className="mr-4 text-black">
                     <FaFacebook size={18} />
                   </a>
-                  <a href="#" className="mr-4 text-blue-500">
+                  <a href="#" className="mr-4 text-black">
                     <FaTwitter size={18} />
                   </a>
-                  <a href="#" className="mr-4 text-blue-500">
+                  <a href="#" className="mr-4 text-black">
                     <FaInstagram size={18} />
                   </a>
-                  <a href="#" className="text-blue-500">
+                  <a href="#" className="text-black">
                     <FaLink size={18} />
                   </a>
                 </div>
@@ -399,7 +404,11 @@ const EventDetailCustomer: React.FunctionComponent<
                         <p className="text-lg font-bold text-green-500">Free</p>
                       ) : (
                         <p className="text-lg font-bold">
-                          Rp {ticketType.price.toLocaleString('id-ID')}
+                          Rp{' '}
+                          {new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                          }).format(Number(ticketType.price))}
                         </p>
                       )}
                       <div className="flex items-center">
@@ -459,8 +468,8 @@ const EventDetailCustomer: React.FunctionComponent<
         </div>
         {/* tampilan mobile */}
         <div className="block lg:hidden">
-          <div className="container mx-auto py-8">
-            <div className="my-14">
+          <div className="container mx-auto py-4">
+            <div className="my-4">
               <img
                 src={`http://localhost:8000/assets/${event?.imageUrl}`}
                 alt="Event Banner"
@@ -514,7 +523,7 @@ const EventDetailCustomer: React.FunctionComponent<
                 <button
                   className={`px-4 py-2 w-1/2 ${
                     activeTab === 'description'
-                      ? 'border-b-2 border-blue-500 text-blue-500'
+                      ? 'border-b-2 border-[#F40841] text-[#F40841]'
                       : 'text-gray-500'
                   }`}
                   onClick={() => handleTabClick('description')}
@@ -524,7 +533,7 @@ const EventDetailCustomer: React.FunctionComponent<
                 <button
                   className={`px-4 py-2 w-1/2 ${
                     activeTab === 'ticket'
-                      ? 'border-b-2 border-blue-500 text-blue-500'
+                      ? 'border-b-2 border-[#F40841] text-[#F40841]'
                       : 'text-gray-500'
                   }`}
                   onClick={() => handleTabClick('ticket')}
@@ -586,7 +595,11 @@ const EventDetailCustomer: React.FunctionComponent<
                               </p>
                             ) : (
                               <p className="text-lg font-bold">
-                                Rp {ticketType.price.toLocaleString('id-ID')}
+                                Rp{' '}
+                                {new Intl.NumberFormat('id-ID', {
+                                  style: 'currency',
+                                  currency: 'IDR',
+                                }).format(Number(ticketType.price))}
                               </p>
                             )}
                             <div className="flex items-center">
@@ -673,7 +686,7 @@ const EventDetailCustomer: React.FunctionComponent<
                 </p>
               </div>
               <button
-                className="px-6 py-3 bg-blue-500 text-white rounded w-full text-lg"
+                className="px-6 py-3 bg-[#d9d9d9] text-black rounded w-full text-lg"
                 onClick={() => {
                   const totalQuantity = Object.values(selectedTickets).reduce(
                     (sum, quantity) => sum + quantity,

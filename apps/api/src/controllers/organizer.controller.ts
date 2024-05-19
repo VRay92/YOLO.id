@@ -158,19 +158,26 @@ export class OrganizerController {
     }
   }
 
-  async getEventsByOrganizerId(req: Request, res: Response) {
+  async getEventsByOrganizer(req: Request, res: Response) {
     try {
-      const organizerId = parseInt(req.params.organizerId);
-
+      const organizerId = res.locals.user.id;
       const events = await prisma.event.findMany({
         where: {
           organizerId: organizerId,
         },
+        include: {
+          organizer: true,
+          city: true,
+          ticketTypes: {
+            include: {
+              ticketType: true,
+            },
+          },
+        },
       });
-
-      return res.status(200).json(events);
+      return res.status(200).json({ data: events });
     } catch (error) {
-      console.error('Error getting events by organizer ID:', error);
+      console.error('Error getting events by organizer:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
   }
@@ -200,32 +207,44 @@ export class OrganizerController {
     }
   }
 
-  async getTransactionsByDateRange(req: Request, res: Response) {
+  async getTransactionsByFilter(req: Request, res: Response) {
     try {
-      const { startDate, endDate } = req.query;
-
-      const transactions = await prisma.transaction.aggregate({
-        where: {
-          createdAt: {
-            gte: new Date(startDate as string),
-            lte: new Date(endDate as string),
-          },
-          status: 'success',
+      const { eventId, startDate, endDate } = req.query;
+      const organizerId = res.locals.user.id;
+  
+      const where: any = {
+        event: {
+          organizerId: organizerId,
         },
-        _sum: {
-          totalPrice: true,
+      };
+  
+      if (eventId) {
+        where.eventId = parseInt(eventId as string);
+      }
+  
+      if (startDate && endDate) {
+        where.createdAt = {
+          gte: new Date(startDate as string),
+          lte: new Date(endDate as string),
+        };
+      }
+  
+      const transactions = await prisma.transaction.findMany({
+        where,
+        include: {
+          event: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
+          user: true,
         },
       });
-
-
-      if (transactions._sum.totalPrice === null) {
-        return res.status(200).json({ totalSales: 0 });
-      }
-
-
-      return res.status(200).json({ totalSales: transactions._sum.totalPrice });
+  
+      return res.status(200).json({ data: transactions });
     } catch (error) {
-      console.error('Error getting transactions by date range:', error);
+      console.error('Error getting transactions by filter:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
   }

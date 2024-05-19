@@ -143,7 +143,7 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
   return (
     <OrganizerRoute>
       <div className="flex bg-[#282828] min-h-screen">
-        <div className="mx-12 mt-28">
+      <div className="mx-12 mt-28 hidden md:block">
           <SideBarEO />
         </div>
         <section className="w-full md:h-[710px] rounded-none md:mr-16 md:rounded-lg md:my-14 relative">
