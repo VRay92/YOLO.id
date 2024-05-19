@@ -5,10 +5,15 @@ interface Transaction {
   id: number;
   userId: number;
   eventId: number;
+  event: {
+    id: number;
+    title: string;
+  };
   totalPrice: number;
   discountAmount: number;
   status: string;
   createdAt: string;
+  receiptUrl: string;
 }
 
 interface TransactionState {
@@ -47,20 +52,24 @@ export const { getTransactionsStart, getTransactionsSuccess, getTransactionsFail
 export const fetchTransactions = (token: string, eventId?: number, startDate?: string, endDate?: string) => async (dispatch: any) => {
   try {
     dispatch(getTransactionsStart());
-
-    let url = `${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/${token}/transactions`;
+    let url = `${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/transactions/filter`;
+    const params: any = {};
 
     if (eventId) {
-      url += `?eventId=${eventId}`;
+      params.eventId = eventId;
     }
-
     if (startDate && endDate) {
-      url += `&startDate=${startDate}&endDate=${endDate}`;
+      params.startDate = startDate;
+      params.endDate = endDate;
     }
 
-    const response = await axios.get(url);
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params,
+    });
     const transactions = response.data.data;
-
     dispatch(getTransactionsSuccess(transactions));
   } catch (error: any) {
     dispatch(getTransactionsFailure(error.message));

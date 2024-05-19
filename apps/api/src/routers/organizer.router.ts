@@ -24,16 +24,16 @@ export class OrganizerRouter {
     this.route.post('/', verifyToken, uploader("/event", "EVENT").array("imgUrl"), this.organizerController.createEvent);
     this.route.post('/ticket', this.organizerController.createTicket);
     this.route.get(
-      '/events/:organizerId',
-      this.organizerController.getEventsByOrganizerId,
+      '/events',
+      this.organizerController.getEventsByOrganizer,
     );
     this.route.get(
       '/events/sorted-by-date',
       this.organizerController.getEventsSortedByDate,
     );
     this.route.get(
-      '/transactions/sales',
-      this.organizerController.getTransactionsByDateRange,
+      '/transactions/filter',
+      this.organizerController.getTransactionsByFilter,
     );
     this.route.get(
       '/events/:eventId/customers/gender',
