@@ -25,16 +25,14 @@ export class TransactionRoute {
       this.transactionController.createTransaction,
     );
     this.route.post(
+      '/midtrans-notification',
+      this.transactionController.handleMidtransNotification,
+    );
+    this.route.post(
       '/claim-promo',
       authMiddleware,
       authorizeCustomer,
       this.transactionController.claimVoucher,
-    );
-    this.route.post(
-      '/complete-payment',
-      authMiddleware,
-      authorizeOrganizer,
-      this.transactionController.completePayment,
     );
   }
   getRouter(): Router {

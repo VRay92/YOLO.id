@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 
 interface IDonutProps {
-  data: any;
+  data: { label: string; value: number }[];
 }
 
 const Donut: React.FC<IDonutProps> = ({ data }) => {
@@ -24,7 +24,7 @@ const Donut: React.FC<IDonutProps> = ({ data }) => {
         },
       },
     },
-    labels: data.map((item: any) => item.label),
+    labels: data.map((item) => item.label),
     colors: ['#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#34495e'],
     legend: {
       show: true,
@@ -51,7 +51,7 @@ const Donut: React.FC<IDonutProps> = ({ data }) => {
     ],
   };
 
-  const series = data.map((item: any) => item.value);
+  const series = data.map((item) => item.value);
 
   return <Chart options={options} series={series} type="donut" width="100%" height={350} />;
 };

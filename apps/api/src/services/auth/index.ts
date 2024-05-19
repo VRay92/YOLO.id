@@ -22,7 +22,7 @@ export const getUniqueUser = async (data: any) => {
 
 export const getUniqueEvent = async (data: any) => {
     try {
-        const check = await prisma.event.findUnique({
+        const check = await prisma.event.findFirst({
             where: data,
         })
         return check
@@ -31,3 +31,19 @@ export const getUniqueEvent = async (data: any) => {
     }
 }
 
+export const getLastEventId = async () => {
+    try {
+        const lastEvent = await prisma.event.findFirst({
+            orderBy: { id: 'desc' }
+        });
+
+        if (lastEvent) {
+            const lastEventId = lastEvent.id;
+            return lastEventId
+        } else {
+            console.log("No events found in the database.");
+        }
+    } catch (error) {
+
+    }
+}

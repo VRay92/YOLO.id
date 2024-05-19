@@ -20,6 +20,8 @@ import PaymentModal from '@/components/PaymentModal';
 import { Event } from '@/lib/features/eventSlice';
 import { Voucher } from '@/app/customer/[token]/voucher/page';
 import CustomerRoute from '@/components/CustomerRoute';
+import parse from 'html-react-parser';
+import axios from 'axios';
 
 interface IEventDetailCustomerProps {}
 
@@ -33,6 +35,12 @@ const EventDetailCustomer: React.FunctionComponent<
   const ticketRef = useRef<HTMLDivElement>(null);
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
   const [pointsToUse, setPointsToUse] = useState(0);
+  const [selectedLocation, setSelectedLocation] = useState<number | null>(null);
+
+  const handleSelectLocation = (locationId: number | null) => {
+    setSelectedLocation(locationId);
+  };
+  const [points, setPoints] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +56,11 @@ const EventDetailCustomer: React.FunctionComponent<
         if (response.ok) {
           const data = await response.json();
           setVouchers(data.voucher);
+          const totalPoints = data.points.reduce(
+            (acc: number, point: any) => acc + point.points,
+            0,
+          );
+          setPoints(totalPoints);
         } else {
           console.error('Failed to fetch vouchers');
         }
@@ -65,9 +78,11 @@ const EventDetailCustomer: React.FunctionComponent<
     state.eventReducer.events.find((event) => event.id === Number(id)),
   );
 
+  console.log('nilai event', event);
+
   const user = useAppSelector((state: RootState) => state.userReducer);
   console.log(user.vouchers);
-  const points = user.points || 0;
+  console.log(user.imageProfile);
 
   const [selectedTickets, setSelectedTickets] = useState<
     Record<string, number>
@@ -82,6 +97,7 @@ const EventDetailCustomer: React.FunctionComponent<
     if (typeof id === 'string') {
       dispatch(fetchEventDetail(id));
     }
+    getOrganizerById();
   }, [dispatch, id]);
 
   const handleTabClick = (tab: string) => {
@@ -105,7 +121,7 @@ const EventDetailCustomer: React.FunctionComponent<
     function handleScroll() {
       const scrollPosition = window.scrollY;
       if (scrollPosition > 700) {
-        setFixed('fixed');
+        setFixed('md:fixed');
       } else {
         setFixed('hidden');
       }
@@ -138,23 +154,43 @@ const EventDetailCustomer: React.FunctionComponent<
     setShowPaymentModal(true);
   };
 
+  const getOrganizerById = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      console.log('11111111111111', token);
+      if (token) {
+        const data = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL}profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        console.log('data11111111111111', data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <CustomerRoute>
       <div className="bg-white">
         <div
-          className={`bg-white shadow-xl w-full pl-40 h-[80px] flex ${fixed} top-0`}
+          className={`bg-white shadow-xl w-full pl-40 h-[80px] flex ${fixed} top-0 `}
         >
           <button
-            className={`text-xl font-semibold h-[80px] w-[180px] text-center  ${
-              activeTab === 'description' ? 'border-b-4 border-blue-500' : ''
+            className={`hidden md:block text-xl font-semibold h-[80px] w-[180px] text-center  ${
+              activeTab === 'description' ? 'border-b-4 border-[#F40841]' : ''
             }`}
             onClick={() => setActiveTab('description')}
           >
             DESCRIPTION
           </button>
           <button
-            className={`text-xl font-semibold h-[80px] w-[180px] text-center  ${
-              activeTab === 'ticket' ? 'border-b-4 border-blue-500' : ''
+            className={`hidden md:block text-xl font-semibold h-[80px] w-[180px] text-center  ${
+              activeTab === 'ticket' ? 'border-b-4 border-[#F40841]' : ''
             }`}
             onClick={() => setActiveTab('ticket')}
           >
@@ -163,13 +199,11 @@ const EventDetailCustomer: React.FunctionComponent<
         </div>
         <div className="container hidden lg:block mx-auto py-8 pt-20">
           <div className="flex mb-8">
-            <div className="w-2/3">
-              <Image
-                src={event?.imageUrl || ''}
+            <div className="md:w-2/3 ">
+              <img
+                src={`http://localhost:8000/assets/${event?.imageUrl}`}
                 alt="Event Banner"
-                width={600}
-                height={400}
-                layout="responsive"
+                className="md:w-full md:h-full w-[600px] h-[400px]"
               />
             </div>
             <div className="w-1/3 border border-gray-200 rounded-xl ml-8 p-8 shadow-md">
@@ -202,8 +236,8 @@ const EventDetailCustomer: React.FunctionComponent<
                 </p>
                 <div className="flex items-center">
                   <div className="mr-4">
-                    <Image
-                      src={event?.organizer?.imageProfile || ''}
+                    <img
+                      src={`http://localhost:8000/assets/${event?.organizer?.imageProfile}`}
                       alt="Organizer"
                       width={50}
                       height={50}
@@ -226,7 +260,7 @@ const EventDetailCustomer: React.FunctionComponent<
                 <button
                   className={`px-4 py-2 w-1/2 ${
                     activeTab === 'description'
-                      ? 'border-b-2 border-blue-500 text-blue-500'
+                      ? 'border-b-2 border-[#F40841] text-[#F40841]'
                       : 'text-gray-500'
                   }`}
                   onClick={() => handleTabClick('description')}
@@ -236,7 +270,7 @@ const EventDetailCustomer: React.FunctionComponent<
                 <button
                   className={`px-4 py-2 w-1/2 ${
                     activeTab === 'ticket'
-                      ? 'border-b-2 border-blue-500 text-blue-500'
+                      ? 'border-b-2 border-[#F40841] text-[#F40841]'
                       : 'text-gray-500'
                   }`}
                   onClick={() => handleTabClick('ticket')}
@@ -294,7 +328,7 @@ const EventDetailCustomer: React.FunctionComponent<
                   },
                 )}
                 <button
-                  className="px-6 py-3 bg-blue-500 text-white rounded w-full mt-4 text-lg border border-gray-400"
+                  className="px-6 py-3 bg-[#d9d9d9] text-black font-bold rounded w-full mt-4 text-lg border border-gray-400"
                   onClick={handleBuyTicket}
                 >
                   Beli Tiket
@@ -303,16 +337,16 @@ const EventDetailCustomer: React.FunctionComponent<
               <div>
                 <h3 className="text-sm my-2">Bagikan Event</h3>
                 <div className="flex items-center">
-                  <a href="#" className="mr-4 text-blue-500">
+                  <a href="#" className="mr-4 text-black">
                     <FaFacebook size={18} />
                   </a>
-                  <a href="#" className="mr-4 text-blue-500">
+                  <a href="#" className="mr-4 text-black">
                     <FaTwitter size={18} />
                   </a>
-                  <a href="#" className="mr-4 text-blue-500">
+                  <a href="#" className="mr-4 text-black">
                     <FaInstagram size={18} />
                   </a>
-                  <a href="#" className="text-blue-500">
+                  <a href="#" className="text-black">
                     <FaLink size={18} />
                   </a>
                 </div>
@@ -321,7 +355,11 @@ const EventDetailCustomer: React.FunctionComponent<
           </div>
           {activeTab === 'description' && (
             <div className="w-2/3 -mt-16">
-              <p>{event?.description}</p>
+              <p>
+                {event?.description
+                  ? parse(event?.description)
+                  : 'no description'}
+              </p>
             </div>
           )}
           {activeTab === 'ticket' && event && event.ticketTypes && (
@@ -366,7 +404,11 @@ const EventDetailCustomer: React.FunctionComponent<
                         <p className="text-lg font-bold text-green-500">Free</p>
                       ) : (
                         <p className="text-lg font-bold">
-                          Rp {ticketType.price.toLocaleString('id-ID')}
+                          Rp{' '}
+                          {new Intl.NumberFormat('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                          }).format(Number(ticketType.price))}
                         </p>
                       )}
                       <div className="flex items-center">
@@ -426,14 +468,13 @@ const EventDetailCustomer: React.FunctionComponent<
         </div>
         {/* tampilan mobile */}
         <div className="block lg:hidden">
-          <div className="container mx-auto py-8">
-            <div className="my-14">
-              <Image
-                src={event?.imageUrl || ''}
+          <div className="container mx-auto py-4">
+            <div className="my-4">
+              <img
+                src={`http://localhost:8000/assets/${event?.imageUrl}`}
                 alt="Event Banner"
                 width={600}
                 height={400}
-                layout="responsive"
               />
             </div>
             <div className="px-4">
@@ -462,8 +503,8 @@ const EventDetailCustomer: React.FunctionComponent<
                 <p className="mb-2 text-gray-500">Diselenggarakan oleh:</p>
                 <div className="flex items-center">
                   <div className="mr-4">
-                    <Image
-                      src={event?.organizer?.imageProfile || ''}
+                    <img
+                      src={`http://localhost:8000/assets/${event?.imageUrl}`}
                       alt="Organizer"
                       width={50}
                       height={50}
@@ -482,7 +523,7 @@ const EventDetailCustomer: React.FunctionComponent<
                 <button
                   className={`px-4 py-2 w-1/2 ${
                     activeTab === 'description'
-                      ? 'border-b-2 border-blue-500 text-blue-500'
+                      ? 'border-b-2 border-[#F40841] text-[#F40841]'
                       : 'text-gray-500'
                   }`}
                   onClick={() => handleTabClick('description')}
@@ -492,7 +533,7 @@ const EventDetailCustomer: React.FunctionComponent<
                 <button
                   className={`px-4 py-2 w-1/2 ${
                     activeTab === 'ticket'
-                      ? 'border-b-2 border-blue-500 text-blue-500'
+                      ? 'border-b-2 border-[#F40841] text-[#F40841]'
                       : 'text-gray-500'
                   }`}
                   onClick={() => handleTabClick('ticket')}
@@ -503,7 +544,11 @@ const EventDetailCustomer: React.FunctionComponent<
               {activeTab === 'description' && (
                 <div>
                   <h2 className="text-xl font-bold mb-4">Deskripsi</h2>
-                  <p>{event?.description}</p>
+                  <p>
+                    {event?.description
+                      ? parse(event?.description)
+                      : 'no description'}
+                  </p>
                 </div>
               )}
               {activeTab === 'ticket' && event && event.ticketTypes && (
@@ -550,7 +595,11 @@ const EventDetailCustomer: React.FunctionComponent<
                               </p>
                             ) : (
                               <p className="text-lg font-bold">
-                                Rp {ticketType.price.toLocaleString('id-ID')}
+                                Rp{' '}
+                                {new Intl.NumberFormat('id-ID', {
+                                  style: 'currency',
+                                  currency: 'IDR',
+                                }).format(Number(ticketType.price))}
                               </p>
                             )}
                             <div className="flex items-center">
@@ -637,7 +686,7 @@ const EventDetailCustomer: React.FunctionComponent<
                 </p>
               </div>
               <button
-                className="px-6 py-3 bg-blue-500 text-white rounded w-full text-lg"
+                className="px-6 py-3 bg-[#d9d9d9] text-black rounded w-full text-lg"
                 onClick={() => {
                   const totalQuantity = Object.values(selectedTickets).reduce(
                     (sum, quantity) => sum + quantity,

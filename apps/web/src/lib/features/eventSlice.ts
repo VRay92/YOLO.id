@@ -41,12 +41,16 @@ interface EventState {
   events: Event[];
   loading: boolean;
   error: string | null;
+  genderData: { label: string; value: number }[];
+  ageGroupData: { label: string; value: number }[];
 }
 
 const initialState: EventState = {
   events: [],
   loading: false,
   error: null,
+  genderData: [],
+  ageGroupData: [],
 };
 
 export const eventSlice = createSlice({
@@ -65,38 +69,91 @@ export const eventSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    getGenderDataSuccess(state, action: PayloadAction<any>) {
+      state.genderData = Object.entries(action.payload).map(
+        ([label, value]) => ({
+          label,
+          value: value as number,
+        }),
+      );
+      state.loading = false;
+    },
+    getAgeGroupDataSuccess(state, action: PayloadAction<any>) {
+      state.ageGroupData = Object.entries(action.payload).map(
+        ([label, value]) => ({
+          label,
+          value: value as number,
+        }),
+      );
+      state.loading = false;
+    },
   },
 });
 
-export const { getEventsStart, getEventsSuccess, getEventsFailure } =
-  eventSlice.actions;
+export const {
+  getEventsStart,
+  getEventsSuccess,
+  getEventsFailure,
+  getGenderDataSuccess,
+  getAgeGroupDataSuccess,
+} = eventSlice.actions;
 
-  export const fetchEventDetail = (id: string) => async (dispatch: any) => {
-    try {
-      dispatch(getEventsStart());
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/${id}`
-      );
-      const event = response.data.data;
-      dispatch(getEventsSuccess([event]));
-    } catch (error: any) {
-      dispatch(getEventsFailure(error.message));
-    }
-  };
-
-export const fetchEvents = (token: string) => async (dispatch: any) => {
+export const fetchEventDetail = (id: string) => async (dispatch: any) => {
   try {
     dispatch(getEventsStart());
-
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/events/`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}event/${id}`,
+    );
+    const event = response.data.data;
+    dispatch(getEventsSuccess([event]));
+  } catch (error: any) {
+    dispatch(getEventsFailure(error.message));
+  }
+};
+
+export const fetchEvents = () => async (dispatch: any) => {
+  try {
+    dispatch(getEventsStart());
+    const token = localStorage.getItem('token');
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/events`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
     );
     const events = response.data.data;
-
     dispatch(getEventsSuccess(events));
   } catch (error: any) {
     dispatch(getEventsFailure(error.message));
   }
 };
+
+export const fetchEventGenderData =
+  (eventId: number) => async (dispatch: any) => {
+    try {
+      dispatch(getEventsStart());
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}events/${eventId}/customers/gender`,
+      );
+      dispatch(getGenderDataSuccess(response.data));
+    } catch (error: any) {
+      dispatch(getEventsFailure(error.message));
+    }
+  };
+
+export const fetchEventAgeGroupData =
+  (eventId: number) => async (dispatch: any) => {
+    try {
+      dispatch(getEventsStart());
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}events/${eventId}/customers/age-group`,
+      );
+      dispatch(getAgeGroupDataSuccess(response.data));
+    } catch (error: any) {
+      dispatch(getEventsFailure(error.message));
+    }
+  };
 
 export default eventSlice.reducer;
