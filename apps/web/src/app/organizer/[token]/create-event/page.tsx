@@ -165,7 +165,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
             theme: 'light',
             transition: Bounce,
           });
-          // setTimeout(() => router.push('/'), 3000);
+          setTimeout(() => router.push('/'), 3000);
         }
       }
     } catch (error) {
