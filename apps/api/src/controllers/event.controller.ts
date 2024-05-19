@@ -13,10 +13,6 @@ export class EventController {
     }
   }
 
-  // const filterData = music.filter((val: any) =>
-  //   val.title.toLowerCase().startsWith(debouncedSearch),
-  // );
-
   async getEventByFilter(req: Request, res: Response) {
     try {
       const query = req.query.title
@@ -37,7 +33,36 @@ export class EventController {
     }
   }
 
-  
+  async getEventByTitle(req: Request, res: Response) {
+    try {
+      console.log("query", req.query)
+      const events = await prisma.event.findFirst({
+        where: req.query,
+      });
+      return res.status(200).json({ data: events })
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
+  async getLastEventId(req: Request, res: Response) {
+    try {
+      const lastEvent = await prisma.event.findFirst({
+        orderBy: { id: 'desc' }
+      });
+
+      if (lastEvent) {
+        return res.status(200).json({ data: lastEvent.id });
+      } else {
+        return res.status(200).json({ data: 0 });
+      }
+    } catch (error) {
+      console.log(error)
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
   async getEventDetail(req: Request, res: Response) {
     const eventId = parseInt(req.params.id);
 
@@ -66,4 +91,5 @@ export class EventController {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
+
 }

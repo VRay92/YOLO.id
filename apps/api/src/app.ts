@@ -12,6 +12,7 @@ import { AuthRouter } from './routers/auth.router';
 import { OrganizerRouter } from './routers/organizer.router';
 import { EventRouter } from './routers/event.router';
 import { CustomerRouter } from './routers/customer.router';
+import { LocationRouter } from './routers/location.router';
 import {
   authMiddleware,
   authorizeCustomer,
@@ -55,6 +56,7 @@ export default class App {
     const customerRouter = new CustomerRouter();
     const organizerRouter = new OrganizerRouter();
     const eventRouter = new EventRouter();
+    const locationRouter = new LocationRouter();
 
     const profileRouter = new ProfileRouter
     this.app.use('/api/organizer', authMiddleware, authorizeOrganizer, organizerRouter.getRouter());
@@ -75,9 +77,9 @@ export default class App {
       authorizeCustomer,
       customerRouter.getRouter(),
     );
-
     this.app.use('/api/profile', profileRouter.getRouter());
     this.app.use('/api/transaction', transactionRouter.getRouter());
+    this.app.use('/api/location', locationRouter.getRouter())
 
   }
 
