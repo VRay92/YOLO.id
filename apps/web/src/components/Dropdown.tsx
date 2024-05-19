@@ -62,6 +62,9 @@ const DropDown: React.FunctionComponent<IDropDownProps> = ({
 
   const handleRadioChange = (id: number) => {
     setSelectedLocation(id);
+    setTimeout(() => {
+      setDropdownVisible(false);
+    }, 500);
   };
 
   console.log(selectedLocation);

@@ -5,6 +5,7 @@ import { join } from "path";
 import { getLastEventId, getUniqueEvent } from '@/services/auth';
 import { Prisma } from '@prisma/client';
 import { genSalt, hash } from 'bcrypt';
+import { Bounce, toast } from 'react-toastify';
 
 
 export class OrganizerController {
@@ -13,12 +14,8 @@ export class OrganizerController {
 
     try {
       const lastEventId = await getLastEventId();
-      console.log("Last event ID:", lastEventId);
-      console.log(req.files)
-      console
-      console.log('1111 body', req.body)
-      console.log('body', req.body.title)
       const { tickets, ...eventData } = req.body;
+      console.log(req.file)
       console.log(tickets)
       // Check if req.files is an array
       if (Array.isArray(req.files)) {
@@ -29,7 +26,19 @@ export class OrganizerController {
         console.log(imageUrl)
         const inputDataEvent = { ...eventData, imageUrl: imageUrl }
         console.log("input data", inputDataEvent)
+        console.log('imageUrL', imageUrl)
         if (Object.values(inputDataEvent).includes("")) {
+          toast.error('fill in all form', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+            transition: Bounce,
+          })
           throw new Error("Fill in all form");
         } else {
           inputDataEvent.cityId = parseInt(req.body.cityId)
@@ -65,22 +74,14 @@ export class OrganizerController {
 
 
       const findEvent = await getUniqueEvent({ title: req.body.title })
-      try {
-        const newTicket = await prisma.eventTicketType.create({
-          data: req.body
-        })
-        return res.status(201).send({ eventTicketType: newTicket });
-      } catch (error) {
-        console.log(error)
-      }
 
       console.log(findEvent)
-      if (fs.existsSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`))) {
-        fs.unlinkSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`));
-        console.log("File deleted successfully.");
-      } else {
-        console.log("File does not exist.");
-      }
+      // if (fs.existsSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`))) {
+      //   fs.unlinkSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`));
+      //   console.log("File deleted successfully.");
+      // } else {
+      //   console.log("File does not exist.");
+      // }
 
       res.status(200).send({
         rc: 200,

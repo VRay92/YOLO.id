@@ -52,10 +52,10 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
     availableSeats: 0,
     isFree: true,
     updatedAt: '',
-    maxTicket: 0,
+    maxTicket: 1,
     cityId: 0,
     location: '',
-    categoryId: 0,
+    categoryId: 1,
   });
 
   const router = useRouter();
@@ -85,12 +85,14 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
       alert('Fill in the blanks');
     }
   };
-
+  console.log(file);
+  console.log('nilai file', file?.name);
   const submitEvent = async () => {
     try {
       const formData = new FormData();
       const token = localStorage.getItem('token');
       console.log('location', dataEvent.location);
+      console.log('nilai file', file?.name);
       const lastEventId = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/lastId`,
       );
@@ -147,7 +149,6 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
             },
           },
         );
-        alert('create event success');
         if (submitEvent.data.success) {
           console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/`);
           console.log('Login submitEvent:', submitEvent.data.success);
@@ -164,6 +165,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
             theme: 'light',
             transition: Bounce,
           });
+          // setTimeout(() => router.push('/'), 3000);
         }
       }
     } catch (error) {
@@ -171,9 +173,14 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
     }
   };
 
+  const resetTime = (date: Date) => {
+    date.setHours(0, 0, 0, 0);
+    return date;
+  };
+
   const startDateValidation = (element: any) => {
-    const startDate = element.getTime();
-    const presentDate = new Date().getTime();
+    const startDate = resetTime(new Date(element)).getTime();
+    const presentDate = resetTime(new Date()).getTime();
     console.log('startDate', startDate);
     console.log('presentDate', presentDate);
     if (startDate < presentDate) {
@@ -206,6 +213,10 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
       'inputEndDate',
     ) as HTMLInputElement;
     defaultValue.value = element;
+    setDataEvent((prevState: any) => ({
+      ...prevState,
+      endDate: element,
+    }));
   }
 
   const endDateValidation = (element: any) => {
@@ -303,6 +314,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                 console.log('Selected files', e.target.files);
                 if (e.target.files?.length) {
                   setFile(e.target.files[0]);
+                  console.log('Selected files', e.target.files[0]);
                 }
                 handleFileChange(e);
               }}
@@ -454,7 +466,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                       id="inputStartDate"
                       name="inputStartDate"
                       type="date"
-                      defaultValue={dataEvent.startDate || ''}
+                      value={dataEvent.startDate}
                       className="border-gray-300"
                       onChange={(e) => {
                         console.log('input date', e.target.value);
@@ -481,7 +493,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                       id="inputEndDate"
                       name="inputEndDate"
                       className="border-gray-300"
-                      defaultValue={dataEvent.endDate}
+                      value={dataEvent.endDate}
                       onChange={(e) => {
                         const selectedDate = new Date(e.target.value);
                         console.log('nilai selected', selectedDate);
@@ -517,7 +529,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                       id="maxTicket"
                       name="maxTicket"
                       className="border-gray-300 mb-8 w-[250px]"
-                      value={dataEvent.maxTicket || 0}
+                      value={dataEvent.maxTicket}
                       onChange={(element: any) => {
                         const newData = {
                           ...dataEvent,
@@ -581,7 +593,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                   id="category"
                   name="category"
                   className="border-gray-300"
-                  value={dataEvent.categoryId || 0}
+                  value={dataEvent.categoryId}
                   onChange={(element: any) => {
                     const newData = {
                       ...dataEvent,

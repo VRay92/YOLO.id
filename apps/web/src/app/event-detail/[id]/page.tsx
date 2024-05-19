@@ -72,7 +72,7 @@ const EventDetailCustomer: React.FunctionComponent<
     state.eventReducer.events.find((event) => event.id === Number(id)),
   );
 
-  console.log('event', event);
+  console.log('nilai event', event);
 
   const user = useAppSelector((state: RootState) => state.userReducer);
   console.log(user.vouchers);
