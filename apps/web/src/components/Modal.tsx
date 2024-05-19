@@ -1,19 +1,25 @@
 'use client';
+import axios from 'axios';
 import * as React from 'react';
 
 interface IModalProps {
-  ticketTypeId: number;
+  eventId: number;
+  onEventDataChange: (data: any[]) => void;
+  onEventOpenModal: (data: boolean) => void;
 }
 
-const Modal: React.FunctionComponent<IModalProps> = (props) => {
+const Modal: React.FunctionComponent<IModalProps> = ({
+  eventId,
+  onEventDataChange,
+}) => {
   const [dataEvent, setDataEvent] = React.useState([
-    { id: 1, eventId: 0, ticketTypeId: 0, price: 0, quantity: 0 },
+    { id: 1, eventId: eventId, ticketTypeId: 0, price: 0, quantity: 0 },
   ]);
 
   const addRow = () => {
     const newRow = {
       id: dataEvent.length + 1,
-      eventId: 3,
+      eventId: eventId,
       ticketTypeId: 0,
       price: 0,
       quantity: 0,
@@ -24,6 +30,7 @@ const Modal: React.FunctionComponent<IModalProps> = (props) => {
   const removeRow = (id: number) => {
     const updatedData = dataEvent.filter((row) => row.id !== id);
     setDataEvent(updatedData);
+    onEventDataChange(updatedData);
   };
 
   const handleTypeChange = (id: number, value: number): void => {
@@ -31,6 +38,7 @@ const Modal: React.FunctionComponent<IModalProps> = (props) => {
       row.id === id ? { ...row, ticketTypeId: value } : row,
     );
     setDataEvent(updatedData);
+    onEventDataChange(updatedData);
   };
 
   const handlePriceChange = (id: number, value: number): void => {
@@ -38,6 +46,7 @@ const Modal: React.FunctionComponent<IModalProps> = (props) => {
       row.id === id ? { ...row, price: value } : row,
     );
     setDataEvent(updatedData);
+    onEventDataChange(updatedData);
   };
 
   const handleQuantityChange = (id: number, value: number): void => {
@@ -45,21 +54,13 @@ const Modal: React.FunctionComponent<IModalProps> = (props) => {
       row.id === id ? { ...row, quantity: value } : row,
     );
     setDataEvent(updatedData);
-  };
-
-  const onHandleSubmit = async () => {
-    try {
-    } catch (error) {}
+    onEventDataChange(updatedData);
   };
 
   console.log(dataEvent);
   return (
-    <div className="fixed  inset-0 z-50 bg-black bg-opacity-50 backdrop-blur-sm backdrop-filter">
-      <div className="w-[1000px]  bg-white rounded-lg absolute left-1/2 top-20 -translate-x-1/2 p-10  ">
-        <h1 className="text-3xl font-semibold">Create New Ticket</h1>
-        <button className="absolute -top-5 -right-5 size-16 bg-slate-500 text-white font-semibold text-3xl">
-          X
-        </button>
+    <div className="">
+      <div className="w-[1000px]p-10  ">
         {dataEvent.map((row: any) => (
           <div key={row.id}>
             <select
@@ -69,6 +70,7 @@ const Modal: React.FunctionComponent<IModalProps> = (props) => {
                 handleTypeChange(row.id, parseInt(e.target.value))
               }
             >
+              <option value={0}>--</option>
               <option value={1}>Reguler 1</option>
               <option value={2}>Reguler 2</option>
               <option value={3}>Reguler 3</option>
@@ -125,12 +127,6 @@ const Modal: React.FunctionComponent<IModalProps> = (props) => {
             className="w-[12rem] h-[2.5rem] text-white bg-black rounded-md "
           >
             Add Another Ticket +
-          </button>
-          <button
-            onClick={addRow}
-            className="w-[15rem] h-[2.5rem] text-white bg-[#F40841] rounded-md "
-          >
-            Finish & Submit Ticket
           </button>
         </div>
       </div>

@@ -22,7 +22,6 @@ export class OrganizerRouter {
     this.route.put('/profile', this.organizerController.updateOrganizerById);
 
     this.route.post('/', verifyToken, uploader("/event", "EVENT").array("imgUrl"), this.organizerController.createEvent);
-    this.route.post('/ticket', this.organizerController.createTicket);
     this.route.get(
       '/events/:organizerId',
       this.organizerController.getEventsByOrganizerId,

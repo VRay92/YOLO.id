@@ -9,7 +9,6 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { setUser } from '@/lib/features/userSlice';
 import axios from 'axios';
 import Searchbar from './Searchbar';
-import { initDropdowns } from 'flowbite';
 import { logout } from '@/lib/features/userSlice';
 import { IoCalendarSharp } from 'react-icons/io5';
 import { ToastContainer } from 'react-toastify';
@@ -17,7 +16,9 @@ import { IoMdArrowDropleftCircle } from 'react-icons/io';
 import { IoMdArrowDroprightCircle } from 'react-icons/io';
 import Pagination from './Pagination';
 import { useDebounce } from 'use-debounce';
-
+import { BsTicketPerforatedFill } from 'react-icons/bs';
+import { ThreeDots } from 'react-loader-spinner';
+import { initDropdowns } from 'flowbite';
 
 interface IEvent {
   id: number;
@@ -39,11 +40,9 @@ export const Header = () => {
     username: '',
     email: '',
     role: '',
-
     imageProfile: '',
     token: '',
     isLoggedIn: false,
-
   });
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
@@ -53,7 +52,6 @@ export const Header = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [postsPerPage, setPostsPerPage] = React.useState(5);
   const [debouncedValue] = useDebounce(search, 3000);
-
 
   const router = useRouter();
   const isLoggedIn = useAppSelector((state) => state.userReducer.isLoggedIn);
@@ -65,7 +63,7 @@ export const Header = () => {
         const token =
           typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         console.log('Token from local storage:', token);
-        if (token && !isLoggedIn) {
+        if (token) {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_BASE_API_URL}auth/keeplogin`,
             { headers: { Authorization: `Bearer ${token}` } },
@@ -91,7 +89,6 @@ export const Header = () => {
               token,
               imageProfile,
               isLoggedIn: true,
-
             });
             console.log('Dispatched role:', role);
             console.log('imageprofile:', imageProfile);
@@ -123,8 +120,8 @@ export const Header = () => {
 
   useEffect(() => {
     getEventByFilter();
-    initDropdowns();
     setLoading(true);
+    initDropdowns();
     setTimeout(() => setLoading(false), 1500);
   }, [debouncedValue]);
 
@@ -137,31 +134,32 @@ export const Header = () => {
 
   return (
     <nav className={`w-full max-w-[1920px] relative z-[30] `}>
-
       {/* LOADING SCREEN */}
 
       {loading && (
         <div className="absolute left-0 top-0 z-[36] h-screen w-screen bg-black bg-opacity-50 backdrop-blur-sm backdrop-filter">
           <span className="absolute left-1/2 top-2/4 -translate-x-1/2 -translate-y-1/2  p-0.5 px-2 text-center text-xs font-medium leading-none text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-            <div className="flex h-56 w-56 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
-              <div role="status">
-                <svg
-                  aria-hidden="true"
-                  className="h-8 w-8 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
-                  viewBox="0 0 100 101"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="currentColor"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="currentFill"
-                  />
-                </svg>
-                <span className="sr-only">Loading...</span>
+            <div className="flex flex-col  items-center justify-center rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+              <div className="mt-28 mx-20">
+                <Image
+                  width={300}
+                  height={300}
+                  src="/yoloblack.png"
+                  alt="logo"
+                  className="animate-pulse"
+                ></Image>
+              </div>
+              <div className="mb-20">
+                <ThreeDots
+                  visible={true}
+                  height="60"
+                  width="60"
+                  color="#282828"
+                  radius="9"
+                  ariaLabel="three-dots-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                />
               </div>
             </div>
           </span>
@@ -221,7 +219,6 @@ export const Header = () => {
               <input
                 type="text"
                 id="floating_filled"
-
                 className="block rounded-r-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-[#d9d9d9] dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=""
                 onChange={(e) => setSearch(e.target.value)}
@@ -264,7 +261,6 @@ export const Header = () => {
                 )}
               </div>
             </div>
-
           </div>
 
           <div className="absolute -bottom-7 left-[410px] flex flex-col"></div>
@@ -338,7 +334,6 @@ export const Header = () => {
                     setMenuOpen(false);
                   }
                 }}
-
               >
                 <h1>Dashboard Customer</h1>
               </div>
@@ -354,7 +349,6 @@ export const Header = () => {
                 }}
               >
                 <h1>Vouchers</h1>
-
               </div>
               <div
                 className={`bg-slate-300 pt-4 h-[50px] text-center cursor-pointer hover:bg-blue-500 ${
@@ -376,7 +370,6 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
-
                     router.push(`/customer/${data.token}/review`);
                     setMenuOpen(false);
                   }
@@ -391,21 +384,18 @@ export const Header = () => {
 
           {data.role === 'organizer' && (
             <div>
-
               <div
                 className={`bg-slate-300 pt-4 h-[50px] text-center cursor-pointer hover:bg-blue-500 ${
                   isLoggedIn && menuOpen ? 'block' : 'hidden'
                 }`}
                 onClick={() => {
                   {
-
                     router.push(`/organizer/${data.token}/profile`);
 
                     setMenuOpen(false);
                   }
                 }}
               >
-
                 <h1>Dashboard Organizer</h1>
               </div>
               <div
@@ -446,7 +436,6 @@ export const Header = () => {
                 }}
               >
                 <h1>Events</h1>
-
               </div>
             </div>
           )}
@@ -481,18 +470,26 @@ export const Header = () => {
               <h1 className="text-lg">Create Event</h1>
             </div>
           )}
+          {data.role === 'customer' && (
+            <div
+              className="text-white flex items-center mr-10 cursor-pointer"
+              onClick={() =>
+                router.push(`/customer/${data.token}/purchased-event`)
+              }
+            >
+              <BsTicketPerforatedFill className=" text-3xl mr-2" />
+              <h1 className="text-lg">Purchased Event</h1>
+            </div>
+          )}
           <div className="mr-2 md:mr-20 mt-2 md:mt-4">
             <button
               id="dropdownUserAvatarButton"
               data-dropdown-toggle="dropdownAvatar"
-
               className="flex text-sm bg-gray-800 w-[65px] h-[65px] rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-
               type="button"
             >
               <span className="sr-only">Open user menu</span>
               <img
-
                 sizes="100vw"
                 className="object-cover rounded-full w-full h-full"
                 src={`http://localhost:8000/assets/${data.imageProfile}`}

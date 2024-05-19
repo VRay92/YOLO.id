@@ -15,13 +15,19 @@ export class EventRouter {
         this.route.get(
             '/', this.eventController.getAllEvent,
         )
+        this.route.get(
+            '/lastId', this.eventController.getLastEventId,
+        )
 
         this.route.get(
             '/filter', this.eventController.getEventByFilter
         )
+
+        this.route.get('/fetch/by-title', this.eventController.getEventByTitle);
         this.route.get(
             '/:id', this.eventController.getEventDetail
         )
+
     }
 
     getRouter(): Router {
