@@ -174,6 +174,8 @@ const EventDetailCustomer: React.FunctionComponent<
     }
   };
 
+  const url = `http://localhost:8000/assets/${event?.organizer?.imageProfile}`;
+
   return (
     <CustomerRoute>
       <div className="bg-white">
@@ -469,6 +471,7 @@ const EventDetailCustomer: React.FunctionComponent<
               pointsToUse={pointsToUse}
               onPointsToUseChange={setPointsToUse}
               onClose={() => setShowPaymentModal(false)}
+              imageurl={url}
             />
           )}
         </div>
@@ -718,6 +721,7 @@ const EventDetailCustomer: React.FunctionComponent<
               pointsToUse={pointsToUse}
               onPointsToUseChange={setPointsToUse}
               onClose={() => setShowPaymentModal(false)}
+              imageurl={url}
             />
           )}
         </div>

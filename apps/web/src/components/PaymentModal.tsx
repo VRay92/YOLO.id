@@ -15,6 +15,7 @@ interface PaymentModalProps {
   pointsToUse: number;
   onPointsToUseChange: (points: number) => void;
   onClose: () => void;
+  imageurl: string;
 }
 
 interface Voucher {
@@ -23,15 +24,18 @@ interface Voucher {
   expiresAt: string;
 }
 
-const PaymentModal: React.FC<PaymentModalProps> = ({
-  event,
-  selectedTickets,
-  vouchers,
-  points,
-  pointsToUse,
-  onPointsToUseChange,
-  onClose,
-}) => {
+const PaymentModal: React.FC<PaymentModalProps> = (
+  {
+    event,
+    selectedTickets,
+    vouchers,
+    points,
+    pointsToUse,
+    onPointsToUseChange,
+    onClose,
+  },
+  imageurl,
+) => {
   const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(900);
