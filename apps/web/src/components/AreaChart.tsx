@@ -10,7 +10,7 @@ const AreaChart: React.FC<IAreaChartProps> = ({ data }) => {
   const options: ApexOptions = {
     chart: {
       height: 350,
-      type: 'area',
+      type: 'line',
       animations: {
         enabled: true,
         easing: 'easeinout',
@@ -30,28 +30,36 @@ const AreaChart: React.FC<IAreaChartProps> = ({ data }) => {
       categories: data.map((item: any) => item.date),
       labels: {
         style: {
-          colors: '#f3f4f6',
+          colors: '#000000',
         },
       },
     },
     yaxis: {
       labels: {
         style: {
-          colors: '#f3f4f6',
+          colors: '#000000',
+        },
+        formatter: (value) => {
+          return `${new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+          }).format(value).replace('IDR', '').trim()}`;
         },
       },
     },
     fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'dark',
-        gradientToColors: ['#FDD835'],
-        shadeIntensity: 1,
-        type: 'horizontal',
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 100, 100, 100],
-      },
+      type: 'solid',
+      opacity: 0,
+      // gradient: {
+      //   shade: 'dark',
+      //   gradientToColors: ['#FDD835'],
+      //   shadeIntensity: 1,
+      //   type: 'horizontal',
+      //   opacityFrom: 1,
+      //   opacityTo: 1,
+      //   stops: [0, 100, 100, 100],
+      // },
     },
     dataLabels: {
       enabled: false,
@@ -69,6 +77,10 @@ const AreaChart: React.FC<IAreaChartProps> = ({ data }) => {
     },
   };
 
+  if (data.length === 0) {
+    return <div className='text-center py-32 font-semibold'>No data available</div>;
+  }
+
   const series = [
     {
       name: 'Revenue',
@@ -76,7 +88,7 @@ const AreaChart: React.FC<IAreaChartProps> = ({ data }) => {
     },
   ];
 
-  return <Chart options={options} series={series} type="area" height={350} />;
+  return <Chart options={options} series={series} type="area" height={320} />;
 };
 
 export default AreaChart;

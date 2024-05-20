@@ -27,21 +27,16 @@ export class OrganizerRouter {
       this.organizerController.getEventsByOrganizer,
     );
     this.route.get(
-      '/events/sorted-by-date',
-      this.organizerController.getEventsSortedByDate,
+      '/customers-count',
+      this.organizerController.getCustomerCountByDate,
     );
     this.route.get(
       '/transactions/filter',
       this.organizerController.getTransactionsByFilter,
     );
     this.route.get(
-      '/events/:eventId/customers/gender',
-      this.organizerController.getCustomersByGender,
-    );
-
-    this.route.get(
-      '/events/:eventId/customers/age-group',
-      this.organizerController.getCustomersByAgeGroup,
+      '/:eventId/customers/demographics',
+      this.organizerController.getCustomerDemographics,
     );
   }
   getRouter(): Router {

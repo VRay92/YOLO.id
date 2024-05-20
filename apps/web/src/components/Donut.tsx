@@ -51,6 +51,9 @@ const Donut: React.FC<IDonutProps> = ({ data }) => {
     ],
   };
 
+  if (data.length === 0) {
+    return <div className='text-center py-20 font-semibold'>No data available</div>;
+  }
   const series = data.map((item) => item.value);
 
   return <Chart options={options} series={series} type="donut" width="100%" height={350} />;

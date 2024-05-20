@@ -198,7 +198,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div>
             <Image
-              src={'/' + event?.imageUrl || ''}
+              src={'' + event?.imageUrl || ''}
               alt="Event Banner"
               width={600}
               height={400}
