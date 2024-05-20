@@ -9,72 +9,161 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import OrganizerRoute from '@/components/OrganizerRoute';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
-import { fetchEvents } from '@/lib/features/eventSlice';
+import { fetchCustomerDemographics } from '@/lib/features/eventSlice';
+import { useRouter } from 'next/navigation';
+import { Transaction, fetchCustomerCount } from '@/lib/features/transactionSlice';
 
 interface IDashboardEOProps {
   label: string;
   value: number;
 }
 
+interface Event {
+  id: number;
+  title: string;
+}
+
 const DashboardEO: React.FunctionComponent<IDashboardEOProps> = (props) => {
   const dispatch = useAppDispatch();
-  const { events } = useAppSelector((state) => state.eventReducer);
-  const [revenueData, setRevenueData] = useState([]);
-  const [visitorsData, setVisitorsData] = useState([]);
-  const [genderData, setGenderData] = useState<IDashboardEOProps[]>([]);
-  const [ageData, setAgeData] = useState<IDashboardEOProps[]>([]);
+  const router = useRouter();
+  const [transactionData, setTransactionData] = useState([]);
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const { genderData, ageGroupData } = useAppSelector(
+    (state) => state.eventReducer,
+  );
+  console.log('genderData:', genderData);
+console.log('ageGroupData:', ageGroupData);
+  const [events, setEvents] = useState<Event[]>([]);
+  const { customerCountData } = useAppSelector((state) => state.transactionReducer);
+  console.log('customerCountData from Redux:', customerCountData);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      dispatch(fetchEvents());
+    const eventId = selectedEventId;
+    if (eventId) {
+      console.log('Fetching customer demographics with:', {
+        eventId,
+        startDate,
+        endDate,
+      });
+      dispatch(fetchCustomerDemographics(eventId, startDate, endDate))
+        .then(() => {
+          console.log('genderData:', genderData);
+          console.log('ageGroupData:', ageGroupData);
+        })
+        .catch((error) => {
+          console.error('Error fetching customer demographics:', error);
+        });
     }
-  }, [dispatch]);
+  }, [dispatch, selectedEventId, startDate, endDate]);
+  const token = localStorage.getItem('token');
 
-  const fetchFilteredData = async () => {
+  useEffect(() => {
+    if (token) {
+      fetchEvents(token);
+    } else {
+      router.push('/signin');
+    }
+  }, [dispatch, router]);
+
+  const fetchEvents = async (token: string) => {
     try {
-      const params = {
-        eventId: selectedEventId,
-        startDate: startDate,
-        endDate: endDate,
-      };
-
-      if (selectedEventId) {
-        const revenueResponse = await axios.get('/api/revenue', { params });
-        setRevenueData(revenueResponse.data);
-
-        const visitorsResponse = await axios.get('/api/visitors', { params });
-        setVisitorsData(visitorsResponse.data);
-
-        const genderResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}events/${selectedEventId}/customers/gender`,
-        );
-        const genderData: IDashboardEOProps[] = Object.entries(
-          genderResponse.data,
-        ).map(([label, value]) => ({
-          label,
-          value: value as number,
-        }));
-        setGenderData(genderData);
-
-        const ageResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}events/${selectedEventId}/customers/age-group`,
-        );
-        const ageData: IDashboardEOProps[] = Object.entries(ageResponse.data).map(
-          ([label, value]) => ({
-            label,
-            value: value as number,
-          }),
-        );
-        setAgeData(ageData);
-      }
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/events`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      setEvents(response.data.data);
     } catch (error) {
-      console.error('Error fetching filtered data:', error);
+      console.error('Error fetching events:', error);
     }
   };
+
+  const fetchTransactionData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const params = {
+          eventId: selectedEventId,
+          startDate: startDate,
+          endDate: endDate,
+        };
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/transactions/filter`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params,
+        });
+        const transactions = response.data.data;
+        const formattedData = transactions.map((transaction: Transaction) => ({
+          date: transaction.createdAt,
+          revenue: transaction.totalPrice - transaction.discountAmount,
+        }));
+        setTransactionData(formattedData);
+      }
+    } catch (error) {
+      console.error('Error fetching transaction data:', error);
+    }
+  };
+
+  const fetchCustomerCountData = async (eventId?: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(fetchCustomerCount(token, eventId, startDate, endDate));
+    }
+  } catch (error) {
+    console.error('Error fetching customer count data:', error);
+  }
+};
+
+  useEffect(() => {
+    fetchTransactionData();
+    fetchCustomerCountData();
+  }, [selectedEventId, startDate, endDate]);
+
+  if (events.length === 0) {
+    return (
+      <OrganizerRoute>
+        <div className="flex bg-[#282828] min-h-screen">
+          <div className="mx-12 mt-28 hidden md:block">
+            <SideBarEO />
+          </div>
+          <section className="w-full md:h-[710px] rounded-none md:mr-16 md:rounded-lg md:my-14 relative">
+            <Image
+              fill
+              sizes="100vw"
+              src="/background.jpg"
+              alt="hero"
+              className="object-cover rounded-lg"
+            />
+            <div className="absolute inset-0 flex flex-col">
+              <div className="relative z-10 p-8 flex-grow">
+                <h1 className="text-3xl text-black mb-8">Dashboard</h1>
+                <div className="flex flex-col items-center justify-center h-64">
+                  <p className="text-lg text-gray-500 mb-4">
+                    Anda belum memiliki event.
+                  </p>
+                  <button
+                    className="bg-red-600 text-white font-bold py-2 px-6 rounded-2xl"
+                    onClick={() =>
+                      router.push(`/organizer/${token}/create-event`)
+                    }
+                  >
+                    Buat Event
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </OrganizerRoute>
+    );
+  }
 
   return (
     <OrganizerRoute>
@@ -97,23 +186,25 @@ const DashboardEO: React.FunctionComponent<IDashboardEOProps> = (props) => {
               <div className="grid grid-cols-2 gap-8">
                 <div className="bg-black bg-opacity-35 p-4 rounded-lg shadow">
                   <h2 className="text-xl text-black font-semibold mb-2">
-                    Area Chart
+                    Revenue Chart
                   </h2>
                   <div className="h-80 overflow-hidden">
-                    <AreaChart data={revenueData} />
+                    <AreaChart data={transactionData} />
                   </div>
                 </div>
                 <div className="bg-black bg-opacity-35 p-4 rounded-lg shadow">
                   <h2 className="text-xl text-black font-semibold mb-2">
-                    Bar Chart
+                    Customer Buy Ticket
                   </h2>
                   <div className="h-80 overflow-hidden">
-                    <BarChart data={visitorsData} />
+                    <BarChart data={customerCountData} />
                   </div>
                 </div>
                 <div className="col-span-2 grid grid-cols-2 gap-8">
                   <div className="bg-black bg-opacity-35 p-4 rounded-lg shadow">
-                    <h2 className="text-xl text-black font-semibold mb-2">Filter Event</h2>
+                    <h2 className="text-xl text-black font-semibold mb-2">
+                      Filter Event
+                    </h2>
                     <div className="flex justify-center items-center">
                       <div className="w-auto flex flex-col justify-center items-center text-center space-y-4">
                         <div>
@@ -125,7 +216,9 @@ const DashboardEO: React.FunctionComponent<IDashboardEOProps> = (props) => {
                             value={selectedEventId || ''}
                             onChange={(e) =>
                               setSelectedEventId(
-                                e.target.value ? parseInt(e.target.value) : null,
+                                e.target.value
+                                  ? parseInt(e.target.value)
+                                  : null,
                               )
                             }
                             className="px-2 py-1 rounded"
@@ -162,27 +255,27 @@ const DashboardEO: React.FunctionComponent<IDashboardEOProps> = (props) => {
                             className="px-2 py-1 rounded"
                           />
                         </div>
-                        <div>
+                        {/* <div>
                           <button
                             onClick={fetchFilteredData}
                             className="px-4 py-2 bg-red-600 text-white rounded-2xl"
                           >
                             Filter
                           </button>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
                   <div className="bg-black bg-opacity-35 p-4 rounded-lg shadow">
                     <h2 className="text-xl text-black font-semibold mb-6">
-                      Donut Chart
+                      Customer Demographic
                     </h2>
                     <div className="flex justify-center items-center">
                       <div className="w-1/2">
                         <Donut data={genderData} />
                       </div>
                       <div className="w-1/2">
-                        <Donut data={ageData} />
+                        <Donut data={ageGroupData} />
                       </div>
                     </div>
                   </div>

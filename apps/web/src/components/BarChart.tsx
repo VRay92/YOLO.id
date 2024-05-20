@@ -3,10 +3,15 @@ import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 
 interface IBarChartProps {
-  data: any;
+  data: {
+    date: string;
+    count: number;
+  }[];
 }
 
 const BarChart: React.FC<IBarChartProps> = ({ data }) => {
+  const maxCount = Math.max(...data.map((item) => item.count));
+  const tickAmount = Math.ceil(maxCount) * 1;
   const options: ApexOptions = {
     chart: {
       height: 350,
@@ -41,7 +46,7 @@ const BarChart: React.FC<IBarChartProps> = ({ data }) => {
     },
     xaxis: {
       type: 'datetime',
-      categories: data.map((item: any) => item.date),
+      categories: data.map((item) => item.date),
       labels: {
         style: {
           colors: '#f3f4f6',
@@ -49,9 +54,13 @@ const BarChart: React.FC<IBarChartProps> = ({ data }) => {
       },
     },
     yaxis: {
+      tickAmount: tickAmount,
       labels: {
         style: {
           colors: '#f3f4f6',
+        },
+        formatter: function (val) {
+          return val.toFixed(0);
         },
       },
     },
@@ -62,21 +71,25 @@ const BarChart: React.FC<IBarChartProps> = ({ data }) => {
       theme: 'dark',
       y: {
         formatter: function (val: any) {
-          return val + ' visitors';
+          return val + ' customers';
         },
       },
     },
     colors: ['#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#34495e'],
   };
 
+  if (data.length === 0) {
+    return <div className="text-center py-32 font-semibold">No data available</div>;
+  }
+
   const series = [
     {
-      name: 'Visitors',
-      data: data.map((item: any) => item.visitors),
+      name: 'Customers',
+      data: data.map((item) => item.count),
     },
   ];
 
-  return <Chart options={options} series={series} type="bar" height={350} />;
+  return <Chart options={options} series={series} type="bar" height={320} />;
 };
 
 export default BarChart;
