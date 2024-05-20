@@ -19,7 +19,7 @@ export default function Home() {
   const [category, setCategory] = useState('music');
   const [city, setCity] = useState('Bandung');
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(8);
+  const [postsPerPage, setPostsPerPage] = useState(3);
 
   const filterByCategory = EventTestingData.filter(
     (val, index) => val.category === category,

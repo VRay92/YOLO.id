@@ -236,7 +236,7 @@ export const Header = () => {
                     <div
                       key={index}
                       className="hover:bg-blue-500 bg-white w-[685px] cursor-pointer h-[3rem] pl-10 pt-2 z-30"
-                      onClick={() => router.push(`/${val.title}`)}
+                      onClick={() => router.push(`/event-detail/${val.id}`)}
                     >
                       {val.title}
                     </div>
@@ -330,7 +330,7 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
-                    router.push(`/customer/${data.token}/profile`);
+                    router.push(`/customer/profile`);
                     setMenuOpen(false);
                   }
                 }}
@@ -343,7 +343,7 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
-                    router.push(`/customer/${data.token}/voucher`);
+                    router.push(`/customer/voucher`);
                     setMenuOpen(false);
                   }
                 }}
@@ -356,7 +356,7 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
-                    router.push(`/customer/${data.token}/purchased-event`);
+                    router.push(`/customer/purchased-event`);
 
                     setMenuOpen(false);
                   }
@@ -370,7 +370,7 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
-                    router.push(`/customer/${data.token}/review`);
+                    router.push(`/customer/review`);
                     setMenuOpen(false);
                   }
                 }}
@@ -390,7 +390,7 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
-                    router.push(`/organizer/${data.token}/profile`);
+                    router.push(`/organizer/profile`);
 
                     setMenuOpen(false);
                   }
@@ -404,7 +404,7 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
-                    router.push(`/organizer/${data.token}/create-event`);
+                    router.push(`/organizer/create-event`);
                     setMenuOpen(false);
                   }
                 }}
@@ -417,7 +417,7 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
-                    router.push(`/organizer/${data.token}/transaction`);
+                    router.push(`/organizer/transaction`);
                     setMenuOpen(false);
                   }
                 }}
@@ -430,7 +430,7 @@ export const Header = () => {
                 }`}
                 onClick={() => {
                   {
-                    router.push(`/organizer/${data.token}/events`);
+                    router.push(`/organizer/events`);
                     setMenuOpen(false);
                   }
                 }}
@@ -463,7 +463,7 @@ export const Header = () => {
             <div
               className="text-white flex items-center mr-10 cursor-pointer"
               onClick={() =>
-                router.push(`/organizer/${data.token}/create-event`)
+                router.push(`/organizer/create-event`)
               }
             >
               <IoCalendarSharp className=" text-3xl mr-2" />
@@ -474,7 +474,7 @@ export const Header = () => {
             <div
               className="text-white flex items-center mr-10 cursor-pointer"
               onClick={() =>
-                router.push(`/customer/${data.token}/purchased-event`)
+                router.push(`/customer/purchased-event`)
               }
             >
               <BsTicketPerforatedFill className=" text-3xl mr-2" />
@@ -514,7 +514,7 @@ export const Header = () => {
                   <a
                     className={`block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white `}
                     onClick={() => {
-                      router.push(`/${data.role}/${data.token}/profile`);
+                      router.push(`/${data.role}/profile`);
                       setMenuOpen(false);
                     }}
                   >
