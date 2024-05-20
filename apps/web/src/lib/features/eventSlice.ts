@@ -130,30 +130,30 @@ export const fetchEvents = () => async (dispatch: any) => {
   }
 };
 
-export const fetchEventGenderData =
-  (eventId: number) => async (dispatch: any) => {
-    try {
-      dispatch(getEventsStart());
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}events/${eventId}/customers/gender`,
-      );
-      dispatch(getGenderDataSuccess(response.data));
-    } catch (error: any) {
-      dispatch(getEventsFailure(error.message));
+export const fetchCustomerDemographics = (eventId: number, startDate: string, endDate: string) => async (dispatch: any) => {
+  try {
+    dispatch(getEventsStart());
+    const token = localStorage.getItem('token');
+    if (token) {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/${eventId}/customers/demographics`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          startDate,
+          endDate,
+        },
+      });
+      const { genderCounts, ageGroups } = response.data;
+      dispatch(getGenderDataSuccess(genderCounts));
+      dispatch(getAgeGroupDataSuccess(ageGroups));
+    } else {
+      // Handle case when token is not available
+      dispatch(getEventsFailure('No token found'));
     }
-  };
-
-export const fetchEventAgeGroupData =
-  (eventId: number) => async (dispatch: any) => {
-    try {
-      dispatch(getEventsStart());
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}events/${eventId}/customers/age-group`,
-      );
-      dispatch(getAgeGroupDataSuccess(response.data));
-    } catch (error: any) {
-      dispatch(getEventsFailure(error.message));
-    }
-  };
+  } catch (error: any) {
+    dispatch(getEventsFailure(error.message));
+  }
+};
 
 export default eventSlice.reducer;

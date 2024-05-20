@@ -404,7 +404,7 @@ const EventDetailCustomer: React.FunctionComponent<
                         <p className="text-lg font-bold text-green-500">Free</p>
                       ) : (
                         <p className="text-lg font-bold">
-                          Rp{' '}
+                          {' '}
                           {new Intl.NumberFormat('id-ID', {
                             style: 'currency',
                             currency: 'IDR',
@@ -595,7 +595,7 @@ const EventDetailCustomer: React.FunctionComponent<
                               </p>
                             ) : (
                               <p className="text-lg font-bold">
-                                Rp{' '}
+                                {' '}
                                 {new Intl.NumberFormat('id-ID', {
                                   style: 'currency',
                                   currency: 'IDR',
