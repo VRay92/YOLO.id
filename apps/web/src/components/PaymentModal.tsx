@@ -58,7 +58,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     script.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
     script.setAttribute(
       'data-client-key',
-      'SB-Mid-server-MGf96LYUGjD-sY7rJQ9FymBl',
+      'SB-Mid-server-Bjq9V2ze_hvjg0og3ahhmSMv',
     );
     document.body.appendChild(script);
 
@@ -192,13 +192,16 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto">
+    <div className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto h-screen w-screen bg-black bg-opacity-70 ">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl mx-auto">
         <h2 className="text-2xl font-bold mb-6">Detail Pemesanan</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div>
             <Image
-              src={'' + event?.imageUrl || ''}
+              src={
+                `http://localhost:8000/assets/${event?.imageUrl}` ||
+                `/blank.jpg`
+              }
               alt="Event Banner"
               width={600}
               height={400}
@@ -285,7 +288,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             <div className="mb-8">
               <script
                 src="https://app.sandbox.midtrans.com/snap/snap.js"
-                data-client-key="SB-Mid-server-MGf96LYUGjD-sY7rJQ9FymBl"
+                data-client-key="SB-Mid-server-Bjq9V2ze_hvjg0og3ahhmSMv"
               ></script>
             </div>
 

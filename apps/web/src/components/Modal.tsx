@@ -4,6 +4,7 @@ import * as React from 'react';
 
 interface IModalProps {
   eventId: number;
+  maxSeat: number;
   onEventDataChange: (data: any[]) => void;
   onEventOpenModal: (data: boolean) => void;
 }
@@ -11,6 +12,7 @@ interface IModalProps {
 const Modal: React.FunctionComponent<IModalProps> = ({
   eventId,
   onEventDataChange,
+  maxSeat,
 }) => {
   const [dataEvent, setDataEvent] = React.useState([
     { id: 1, eventId: eventId, ticketTypeId: 0, price: 0, quantity: 0 },
@@ -57,7 +59,22 @@ const Modal: React.FunctionComponent<IModalProps> = ({
     onEventDataChange(updatedData);
   };
 
+  const totalQuantity = dataEvent.reduce(
+    (total, row) => total + row.quantity,
+    0,
+  );
+
+  const validateQuantity = (): void => {
+    if (totalQuantity > maxSeat) {
+      alert('Error: Seat quantity exceeds the limit');
+    }
+  };
+
+  React.useEffect(() => {
+    validateQuantity();
+  }, [dataEvent]);
   console.log(dataEvent);
+
   return (
     <div className="">
       <div className="w-[1000px]p-10  ">
@@ -128,6 +145,11 @@ const Modal: React.FunctionComponent<IModalProps> = ({
           >
             Add Another Ticket +
           </button>
+          <span className="ml-[200px]">
+            Maximum quantity = {maxSeat}
+            <br />
+            <i>(inserting value more than maximum can cause error)</i>
+          </span>
         </div>
       </div>
     </div>

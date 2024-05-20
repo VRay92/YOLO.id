@@ -19,7 +19,7 @@ export default function Home() {
   const [category, setCategory] = useState('music');
   const [city, setCity] = useState('Bandung');
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(8);
+  const [postsPerPage, setPostsPerPage] = useState(4);
 
   const filterByCategory = EventTestingData.filter(
     (val, index) => val.category === category,
@@ -229,7 +229,7 @@ export default function Home() {
 
       {/* event card for desktop (with pagination) */}
 
-      <div className="hidden overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:grid-rows-2 gap-10 mx-4 md:mx-20 mt-20">
+      <div className="hidden overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:auto-rows-auto gap-10 mx-4 md:mx-20 mt-20">
         {paginationCategory.length ? (
           paginationCategory.map((val, idx) => (
             <Card
@@ -246,7 +246,19 @@ export default function Home() {
         )}
       </div>
 
-      <div className="hidden md:flex justify-end pr-16 pt-10">
+      <div className="hidden md:flex justify-between px-16 pt-10">
+        <div className="items-center flex">
+          <h1 className="text-white mr-4">Show Events</h1>
+          <select
+            id="pagination"
+            className=" text-xl  border-none h-10"
+            value={postsPerPage}
+            onChange={(e) => setPostsPerPage(parseInt(e.target.value))}
+          >
+            <option value={4}>4</option>
+            <option value={8}>8</option>
+          </select>
+        </div>
         <Pagination
           postsPerPage={postsPerPage}
           totalPosts={filterByCategory.length}
@@ -287,7 +299,7 @@ export default function Home() {
           <option value={'Bali'}>Bali</option>
         </select>
       </div>
-      <div className="flex overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:grid-rows-2 gap-10 mx-4 md:mx-20 mt-10  md:mt-20">
+      <div className="flex overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:auto-rows-auto gap-10 mx-4 md:mx-20 mt-10  md:mt-20">
         {filterByCityAndCategory.map((val, idx) => (
           <Card
             key={idx}

@@ -201,7 +201,10 @@ const EventDetailCustomer: React.FunctionComponent<
           <div className="flex mb-8">
             <div className="md:w-2/3 ">
               <img
-                src={`http://localhost:8000/assets/${event?.imageUrl}`}
+                src={
+                  `http://localhost:8000/assets/${event?.imageUrl}` ||
+                  '/blank.jpg'
+                }
                 alt="Event Banner"
                 className="md:w-full md:h-full w-[600px] h-[400px]"
               />
@@ -237,7 +240,10 @@ const EventDetailCustomer: React.FunctionComponent<
                 <div className="flex items-center">
                   <div className="mr-4">
                     <img
-                      src={`http://localhost:8000/assets/${event?.organizer?.imageProfile}`}
+                      src={
+                        `http://localhost:8000/assets/${event?.organizer?.imageProfile}` ||
+                        '/blank.jpg'
+                      }
                       alt="Organizer"
                       width={50}
                       height={50}

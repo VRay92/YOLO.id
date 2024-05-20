@@ -48,6 +48,7 @@ export const Header = () => {
   const [search, setSearch] = React.useState('');
   const [event, setEvent] = React.useState<IEvent[]>([]);
   const [loading, setLoading] = React.useState(false);
+  const [initialLoading, setInitialLoading] = React.useState(true);
 
   const [currentPage, setCurrentPage] = React.useState(1);
   const [postsPerPage, setPostsPerPage] = React.useState(5);
@@ -119,11 +120,19 @@ export const Header = () => {
   };
 
   useEffect(() => {
-    getEventByFilter();
     setLoading(true);
     initDropdowns();
-    setTimeout(() => setLoading(false), 1500);
-  }, [debouncedValue]);
+    setTimeout(() => {
+      setLoading(false);
+      setInitialLoading(false);
+    }, 1500);
+  }, []);
+
+  useEffect(() => {
+    if (!initialLoading) {
+      getEventByFilter();
+    }
+  }, [debouncedValue, initialLoading]);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -236,7 +245,7 @@ export const Header = () => {
                     <div
                       key={index}
                       className="hover:bg-blue-500 bg-white w-[685px] cursor-pointer h-[3rem] pl-10 pt-2 z-30"
-                      onClick={() => router.push(`/${val.title}`)}
+                      onClick={() => router.push(`/event-detail/${val.id}`)}
                     >
                       {val.title}
                     </div>

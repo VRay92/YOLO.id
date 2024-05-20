@@ -2,7 +2,7 @@ import axios from 'axios';
 const base64 = require('base-64');
 
 export async function initiatePayment(orderId: string, amount: number) {
-  const serverKey = 'SB-Mid-server-MGf96LYUGjD-sY7rJQ9FymBl';
+  const serverKey = 'SB-Mid-server-Bjq9V2ze_hvjg0og3ahhmSMv';
   const authString = base64.encode(`${serverKey}:`);
 
   const options = {
