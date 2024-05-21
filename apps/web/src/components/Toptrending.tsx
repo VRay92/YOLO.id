@@ -9,13 +9,11 @@ interface IToptrendingProps {
 const Toptrending: React.FunctionComponent<IToptrendingProps> = (props) => {
   return (
     <div className="h-[150px] md:h-[300px] md:min-w-[510px] relative">
-      <Image
-        fill
-        sizes="100"
-        src={props.url}
+      <img
+        src={`http://localhost:8000/assets/` + props.url}
         alt="toptrending"
-        style={{ objectFit: 'cover' }}
-      ></Image>
+        className="object-cover md:h-[300px]"
+      ></img>
       <div className="bg-[#F40841] size-[60px] text-white absolute bottom-0 left-0">
         <h1 className="py-3 text-center text-white">
           <span className="text-2xl">#</span>

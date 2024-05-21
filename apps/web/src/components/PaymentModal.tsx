@@ -15,6 +15,7 @@ interface PaymentModalProps {
   pointsToUse: number;
   onPointsToUseChange: (points: number) => void;
   onClose: () => void;
+  imageurl: string;
 }
 
 interface Voucher {
@@ -23,15 +24,18 @@ interface Voucher {
   expiresAt: string;
 }
 
-const PaymentModal: React.FC<PaymentModalProps> = ({
-  event,
-  selectedTickets,
-  vouchers,
-  points,
-  pointsToUse,
-  onPointsToUseChange,
-  onClose,
-}) => {
+const PaymentModal: React.FC<PaymentModalProps> = (
+  {
+    event,
+    selectedTickets,
+    vouchers,
+    points,
+    pointsToUse,
+    onPointsToUseChange,
+    onClose,
+  },
+  imageurl,
+) => {
   const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(900);
@@ -57,7 +61,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     script.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
     script.setAttribute(
       'data-client-key',
-      'SB-Mid-server-MGf96LYUGjD-sY7rJQ9FymBl',
+      'SB-Mid-server-Bjq9V2ze_hvjg0og3ahhmSMv',
     );
     document.body.appendChild(script);
 
@@ -184,7 +188,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto">
+    <div className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto h-screen w-screen bg-black bg-opacity-70 ">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl mx-auto">
         <h2 className="text-2xl font-bold mb-6">Detail Pemesanan</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -277,7 +281,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             <div className="mb-8">
               <script
                 src="https://app.sandbox.midtrans.com/snap/snap.js"
-                data-client-key="SB-Mid-server-MGf96LYUGjD-sY7rJQ9FymBl"
+                data-client-key="SB-Mid-server-Bjq9V2ze_hvjg0og3ahhmSMv"
               ></script>
             </div>
 

@@ -4,12 +4,42 @@ import prisma from '@/prisma';
 export class EventController {
   async getAllEvent(req: Request, res: Response) {
     try {
-      const query = req.query
-      console.log(query)
-      const dataEvent = await prisma.event.findMany()
-      return res.status(201).send(dataEvent)
+      const query = req.query;
+      console.log(query);
+
+      const dataEvent = await prisma.event.findMany({
+        include: {
+          organizer: {
+            select: {
+              username: true
+            }
+          },
+          transactions: {
+            select: {
+              totalPrice: true
+            }
+          }
+        }
+      });
+
+      // Formatting the data to include the username and totalPrice directly at the event level
+      const formattedEvents = dataEvent.map(event => {
+        const totalPrice = event.transactions.length > 0
+          ? event.transactions.reduce((acc, transaction) => acc + transaction.totalPrice.toNumber(), 0)
+          : 0;
+
+        return {
+          ...event,
+          username: event.organizer?.username,
+          totalPrice,
+          additionalProperty: { [event.title]: event.availableSeats } as { [key: string]: number }
+        };
+      });
+
+      return res.status(200).send(formattedEvents);
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      return res.status(500).send({ error: 'Internal server error' });
     }
   }
 
@@ -93,3 +123,4 @@ export class EventController {
   }
 
 }
+

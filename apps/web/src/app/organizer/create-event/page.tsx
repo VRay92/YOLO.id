@@ -85,7 +85,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
       alert('Fill in the blanks');
     }
   };
-  console.log(file);
+  console.log('apaa', file);
   console.log('nilai file', file?.name);
   const submitEvent = async () => {
     try {
@@ -93,9 +93,10 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
       const token = localStorage.getItem('token');
       console.log('location', dataEvent.location);
       console.log('nilai file', file?.name);
-      const lastEventId = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/lastId`,
-      );
+      console.log('ssssssss token', token);
+      // const lastEventId = await axios.get(
+      //   `${process.env.NEXT_PUBLIC_BASE_API_URL}event/lastId`,
+      // );
       const timenow = new Date();
       // Menyematkan file
       if (file) {
@@ -121,25 +122,40 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
         formData.append('organizerId', organizer.id.toString());
 
         // Tambahkan tiket ke FormData
-        eventData.forEach((ticket: any, index: number) => {
-          formData.append(`tickets[${index}][price]`, ticket.price.toString());
+        if (showTicket === true) {
+          eventData.forEach((ticket: any, index: number) => {
+            formData.append(
+              `tickets[${index}][price]`,
+              ticket.price.toString(),
+            );
 
+            formData.append(
+              `tickets[${index}][ticketTypeId]`,
+              ticket.ticketTypeId.toString(),
+            );
+            formData.append(
+              `tickets[${index}][quantity]`,
+              ticket.quantity.toString(),
+            );
+            console.log('ticket.price.toString()', ticket.price.toString());
+            console.log(
+              'ticket.price.toString()',
+              ticket.ticketTypeId.toString(),
+            );
+            console.log(
+              `ticket.quantity.toString()`,
+              ticket.quantity.toString(),
+            );
+          });
+        } else if (showTicket === false) {
+          formData.append('tickets[0][price]', '0');
+          formData.append('tickets[0][ticketTypeId]', '10');
           formData.append(
-            `tickets[${index}][ticketTypeId]`,
-            ticket.ticketTypeId.toString(),
+            'tickets[0][quantity]',
+            dataEvent.availableSeats.toString(),
           );
-          formData.append(
-            `tickets[${index}][quantity]`,
-            ticket.quantity.toString(),
-          );
-          console.log('ticket.price.toString()', ticket.price.toString());
-          console.log(
-            'ticket.price.toString()',
-            ticket.ticketTypeId.toString(),
-          );
-          console.log(`ticket.quantity.toString()`, ticket.quantity.toString());
-        });
-
+        }
+        console.log('form data', formData);
         const submitEvent = await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/`,
           formData,
@@ -149,6 +165,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
             },
           },
         );
+
         if (submitEvent.data.success) {
           console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}organizer/`);
           console.log('Login submitEvent:', submitEvent.data.success);
@@ -192,19 +209,6 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
       return false;
     } else {
       return true;
-    }
-  };
-
-  const fetchEventId = async () => {
-    try {
-      console.log(`${process.env.NEXT_PUBLIC_BASE_API_URL}event/by-title`);
-      const data = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}event/fetch/by-title?title=${dataEvent.title}`,
-      );
-      console.log('fetch event data', data);
-      setEventId(data.data.id);
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -292,10 +296,10 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
     console.log('user', user);
   }, []);
 
-  console.log('file', file);
-  console.log('object event', dataEvent);
-  console.log('date', `${dataEvent.startTime} - ${dataEvent.endTime}`);
-  console.log('nilai location', selectedLocation);
+  // console.log('file', file);
+  // console.log('object event', dataEvent);
+  // console.log('date', `${dataEvent.startTime} - ${dataEvent.endTime}`);
+  // console.log('nilai location', selectedLocation);
 
   return (
     <OrganizerRoute>
@@ -320,7 +324,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
               }}
             ></input>
           </div>
-          <div className="relative w-full h-[400px] border-2 rounded-lg overflow-hidden">
+          <div className="relative w-full h-[200px] md:h-[400px] border-2 rounded-lg overflow-hidden">
             <img
               src={imgURL || '/blank.jpg'}
               alt=""
@@ -586,7 +590,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
 
             {/* CHOOSE CATEGORY */}
 
-            <div className="flex justify-between md:mx-10 mt-4 mb-10">
+            <div className="md:flex-row flex flex-col justify-between md:mx-10 mt-4 mb-10">
               <div>
                 <h1>Category</h1>
                 <select
@@ -657,7 +661,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
 
           <div className={`${menu === 'TICKETS' ? '' : 'hidden'}`}>
             {/* FREE OR PAID */}
-            <div className="flex justify-between">
+            <div className="md:flex-row flex flex-col justify-between">
               <h1 className="text-3xl font-semibold mt-10 ml-10">
                 Create New Ticket
               </h1>
@@ -671,7 +675,13 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                   <input
                     id="free-paid"
                     type="checkbox"
-                    onChange={() => setShowTicket(!showTicket)}
+                    onChange={() => {
+                      setShowTicket(!showTicket);
+                      setDataEvent((prevState) => ({
+                        ...prevState,
+                        isFree: false,
+                      }));
+                    }}
                     className="sr-only peer"
                   />
                   <div className="relative w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
@@ -686,21 +696,56 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                 showTicket ? 'flex' : 'hidden'
               }`}
             >
+              {}
               <Modal
                 eventId={eventId}
                 onEventDataChange={handleEventDataChange}
                 onEventOpenModal={handleOpenModal}
+                maxSeat={dataEvent.availableSeats}
               ></Modal>
               <ToastContainer />
             </div>
-            <div className="flex justify-end mt-20 gap-10">
+
+            <div
+              className={`gap-10 mr-10 mx-10 ${showTicket ? 'hidden' : 'flex'}`}
+            >
+              {' '}
+              <article className="md:flex-row flex flex-col md:items-end gap-10">
+                <div className="flex flex-col mt-10">
+                  <label htmlFor="price">Free Ticket</label>
+                  <div className="flex opacity-50">
+                    <div className="w-[50px] h-[2.5rem] rounded-l-md bg-gray-300 text-center pt-2">
+                      IDR
+                    </div>
+                    <input
+                      id="price"
+                      type="number"
+                      className="md:w-[300px] h-[2.5rem] border-gray-300"
+                      value={0}
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div className="flex-col flex opacity-50">
+                  <label htmlFor="price">Set Quantity</label>
+                  <input
+                    id="quantity"
+                    type="number"
+                    className="md:w-[300px] h-[2.5rem] border-gray-300"
+                    value={dataEvent.availableSeats}
+                    disabled
+                  />
+                </div>
+              </article>
+            </div>
+            <div className="flex justify-end mt-20 gap-2 md:gap-10">
               <PreviousButton
                 name="Previous Form"
                 onClick={() => setMenu('DESCRIPTION')}
               ></PreviousButton>
               <button
                 onClick={submitEvent}
-                className="text-white w-[10rem] h-[2.5rem] bg-orange-500 rounded-lg font-semibold active:translate-y-[1px]"
+                className="text-white w-[10rem] h-[2.5rem] mt-8 md:mt-0 bg-orange-500 rounded-lg font-semibold active:translate-y-[1px]"
               >
                 SUBMIT
               </button>

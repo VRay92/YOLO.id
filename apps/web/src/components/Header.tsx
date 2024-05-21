@@ -19,6 +19,7 @@ import { useDebounce } from 'use-debounce';
 import { BsTicketPerforatedFill } from 'react-icons/bs';
 import { ThreeDots } from 'react-loader-spinner';
 import { initDropdowns } from 'flowbite';
+import { Spinner } from 'flowbite-react';
 
 interface IEvent {
   id: number;
@@ -48,10 +49,12 @@ export const Header = () => {
   const [search, setSearch] = React.useState('');
   const [event, setEvent] = React.useState<IEvent[]>([]);
   const [loading, setLoading] = React.useState(false);
+  const [loading2, setLoading2] = React.useState(false);
+  const [initialLoading, setInitialLoading] = React.useState(true);
 
   const [currentPage, setCurrentPage] = React.useState(1);
   const [postsPerPage, setPostsPerPage] = React.useState(5);
-  const [debouncedValue] = useDebounce(search, 3000);
+  const [debouncedValue] = useDebounce(search, 2000);
 
   const router = useRouter();
   const isLoggedIn = useAppSelector((state) => state.userReducer.isLoggedIn);
@@ -110,20 +113,29 @@ export const Header = () => {
         `${process.env.NEXT_PUBLIC_BASE_API_URL}event/filter?title=${query}`,
       );
       console.log('getEvent response:', response.data);
-
       setEvent(response.data.data);
       console.log('nilai event', event);
     } catch (error) {
       console.error('Error fetching events:', error);
+    } finally {
+      setLoading2(false);
     }
   };
 
   useEffect(() => {
-    getEventByFilter();
     setLoading(true);
     initDropdowns();
-    setTimeout(() => setLoading(false), 1500);
-  }, [debouncedValue]);
+    setTimeout(() => {
+      setLoading(false);
+      setInitialLoading(false);
+    }, 1500);
+  }, []);
+
+  useEffect(() => {
+    if (!initialLoading) {
+      getEventByFilter();
+    }
+  }, [debouncedValue, initialLoading]);
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -140,7 +152,7 @@ export const Header = () => {
         <div className="absolute left-0 top-0 z-[36] h-screen w-screen bg-black bg-opacity-50 backdrop-blur-sm backdrop-filter">
           <span className="absolute left-1/2 top-2/4 -translate-x-1/2 -translate-y-1/2  p-0.5 px-2 text-center text-xs font-medium leading-none text-blue-800 dark:bg-blue-900 dark:text-blue-200">
             <div className="flex flex-col  items-center justify-center rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
-              <div className="mt-28 mx-20">
+              <div className="mt-20  mx-14 w-[150px] h-[60px] md:w-[300px] md:h-[120px]">
                 <Image
                   width={300}
                   height={300}
@@ -149,7 +161,7 @@ export const Header = () => {
                   className="animate-pulse"
                 ></Image>
               </div>
-              <div className="mb-20">
+              <div className="mb-10 mt-4">
                 <ThreeDots
                   visible={true}
                   height="60"
@@ -215,13 +227,23 @@ export const Header = () => {
             <span className="w-[50px] h-[52px] bg-white mt-5 rounded-l-md">
               <SlMagnifier className="m-auto my-3 text-2xl" />
             </span>
-            <div className="relative w-[685px] h-[40px] mt-5 mr-20 ">
+            <div className="relative w-[300px] xl:w-[685px] h-[40px] mt-5 mr-20 ">
               <input
                 type="text"
                 id="floating_filled"
-                className="block rounded-r-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-[#d9d9d9] dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                className="block relative rounded-r-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-[#d9d9d9] dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=""
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setLoading2(true);
+                }}
+              />
+              <Spinner
+                color="failure"
+                className={`absolute top-3 right-5 ml-10 ${
+                  loading2 ? 'block' : 'hidden'
+                }`}
+                aria-label="Default status example"
               />
               <label
                 htmlFor="floating_filled"

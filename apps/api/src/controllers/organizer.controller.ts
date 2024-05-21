@@ -54,19 +54,28 @@ export class OrganizerController {
         console.log('input data setelah parsing', inputDataEvent);
         console.log('tipe cityId', typeof inputDataEvent.cityId);
         console.log('ticket', tickets);
+        const ticketTypes = tickets && Array.isArray(tickets)
+          ? {
+            create: tickets.map((ticket: any) => ({
+              ticketTypeId: parseInt(ticket.ticketTypeId),
+              price: parseInt(ticket.price),
+              quantity: parseInt(ticket.quantity),
+            })),
+          }
+          : {
+            create: {
+              ticketTypeId: 10,
+              price: 0,
+              quantity: inputDataEvent.availableSeats,
+            },
+          };
+
+        // Combine event data with ticket types
         const data = {
           ...inputDataEvent,
-          ticketTypes:
-            tickets && Array.isArray(tickets)
-              ? {
-                  create: tickets.map((ticket: any) => ({
-                    ticketTypeId: parseInt(ticket.ticketTypeId),
-                    price: parseInt(ticket.price),
-                    quantity: parseInt(ticket.quantity),
-                  })),
-                }
-              : undefined,
+          ticketTypes,
         };
+
 
         console.log('yukbisayuk', data);
         const eventWithTicketTypes = await prisma.event.create({
@@ -74,9 +83,9 @@ export class OrganizerController {
         });
       }
 
-      const findEvent = await getUniqueEvent({ title: req.body.title });
+      // const findEvent = await getUniqueEvent({ title: req.body.title });
 
-      console.log(findEvent);
+      // console.log(findEvent);
       // if (fs.existsSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`))) {
       //   fs.unlinkSync(join(__dirname, "../../public", `/${findEvent?.imageUrl}`));
       //   console.log("File deleted successfully.");
@@ -273,7 +282,7 @@ export class OrganizerController {
         {},
       );
 
-    console.log('customerCountByDate:', customerCountByDate);
+      console.log('customerCountByDate:', customerCountByDate);
 
       return res.status(200).json({ data: customerCountByDate });
     } catch (error) {
