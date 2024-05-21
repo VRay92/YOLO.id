@@ -39,7 +39,6 @@ const PaymentModal: React.FC<PaymentModalProps> = (
   const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null);
   const [isTermsChecked, setIsTermsChecked] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(900);
-  const [usePoints, setUsePoints] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -75,33 +74,26 @@ const PaymentModal: React.FC<PaymentModalProps> = (
     };
   }, []);
 
+  useEffect(() => {
+    if (points > 0) {
+      onPointsToUseChange(points);
+    } else {
+      onPointsToUseChange(0);
+    }
+  }, [points, onPointsToUseChange]);
+
   const handleVoucherChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedVoucherId = parseInt(e.target.value, 10); // Convert to number
     const voucher = vouchers.find((v) => v.id === selectedVoucherId);
     setSelectedVoucher(voucher || null);
   };
 
-  const handlePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsePoints(e.target.checked);
-    if (!e.target.checked) {
-      onPointsToUseChange(0);
-    }
-  };
-
-  const handlePointsToUseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = parseInt(e.target.value, 10);
-
-    if (value > points) {
-      value = points;
-    }
-
-    value = Math.floor(value / 10000) * 10000;
-
-    onPointsToUseChange(value);
-  };
-
   const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsTermsChecked(e.target.checked);
+  };
+
+  const handlePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onPointsToUseChange(e.target.checked ? points : 0);
   };
 
   const handlePayment = async () => {
@@ -122,7 +114,7 @@ const PaymentModal: React.FC<PaymentModalProps> = (
       ticketTypes,
       useVoucher: selectedVoucher !== null,
       voucherId: selectedVoucher ? selectedVoucher.id : null,
-      usePoints,
+      usePoints: points > 0,
       pointsToUse,
     };
 
@@ -201,15 +193,12 @@ const PaymentModal: React.FC<PaymentModalProps> = (
         <h2 className="text-2xl font-bold mb-6">Detail Pemesanan</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div>
-            <Image
-              src={
-                `http://localhost:8000/assets/${event?.imageUrl}` ||
-                `/blank.jpg`
-              }
+            <img
+              src={`http://localhost:8000/assets/${event?.imageUrl}`}
               alt="Event Banner"
               width={600}
               height={400}
-              layout="responsive"
+              // layout="responsive"
               className="rounded-lg"
             />
           </div>
@@ -309,31 +298,22 @@ const PaymentModal: React.FC<PaymentModalProps> = (
                 <h3 className="text-xl font-semibold mb-4">
                   Gunakan Point atau Voucher
                 </h3>
-                <div className="flex items-center">
-                  <label className="flex items-center mr-4">
-                    <input
-                      type="checkbox"
-                      checked={usePoints}
-                      onChange={handlePointsChange}
-                      className="mr-2"
-                    />
-                    Gunakan Poin
-                  </label>
-                  {usePoints && (
-                    <input
-                      type="number"
-                      value={pointsToUse}
-                      onChange={handlePointsToUseChange}
-                      step={10000}
-                      min={0}
-                      max={points}
-                      className="border border-gray-300 rounded-lg px-4 py-2 mr-4"
-                    />
+                <div className="flex items-center justify-end">
+                  {points > 0 && (
+                    <label className="flex items-center mr-4">
+                      <input
+                        type="checkbox"
+                        checked={pointsToUse > 0}
+                        onChange={handlePointsChange}
+                        className="mr-2"
+                      />
+                      Gunakan Poin
+                    </label>
                   )}
                   <select
                     value={selectedVoucher?.id || ''}
                     onChange={handleVoucherChange}
-                    className="border border-gray-300 rounded-lg px-4 py-2"
+                    className="border border-gray-300 rounded-lg px-4 py-2 ml-auto"
                   >
                     <option value="">Pilih Voucher</option>
                     {vouchers.map((voucher) => (
@@ -357,7 +337,7 @@ const PaymentModal: React.FC<PaymentModalProps> = (
                   <span>Rp {totalDiscount.toLocaleString('id-ID')}</span>
                 </div>
               )}
-              {usePoints && pointsToUse > 0 && (
+              {points > 0 && (
                 <div className="flex justify-between mb-2">
                   <span className="font-semibold">Potongan Poin</span>
                   <span>Rp {pointsToUse.toLocaleString('id-ID')}</span>

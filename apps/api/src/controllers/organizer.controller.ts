@@ -5,6 +5,7 @@ import { getLastEventId, getUniqueEvent } from '@/services/auth';
 import { Prisma } from '@prisma/client';
 import { genSalt, hash } from 'bcrypt';
 import { Bounce, toast } from 'react-toastify';
+import { calculateAge, getAgeGroup } from '@/utils/customerDemographic';
 
 export class OrganizerController {
   async createEvent(req: Request, res: Response) {
@@ -190,31 +191,6 @@ export class OrganizerController {
     }
   }
 
-  // async getEventsSortedByDate(req: Request, res: Response) {
-  //   try {
-  //     const { startDate, endDate } = req.query;
-
-  //     const events = await prisma.event.findMany({
-  //       where: {
-  //         startDate: {
-  //           gte: new Date(startDate as string),
-  //         },
-  //         endDate: {
-  //           lte: new Date(endDate as string),
-  //         },
-  //       },
-  //       orderBy: {
-  //         startDate: 'asc',
-  //       },
-  //     });
-
-  //     return res.status(200).json(events);
-  //   } catch (error) {
-  //     console.error('Error getting events sorted by date:', error);
-  //     return res.status(500).json({ message: 'Internal server error' });
-  //   }
-  // }
-
   async getTransactionsByFilter(req: Request, res: Response) {
     try {
       const { eventId, startDate, endDate } = req.query;
@@ -253,91 +229,6 @@ export class OrganizerController {
       return res.status(200).json({ data: transactions });
     } catch (error) {
       console.error('Error getting transactions by filter:', error);
-      return res.status(500).json({ message: 'Internal server error' });
-    }
-  }
-
-  async getCustomerDemographics(req: Request, res: Response) {
-    try {
-      const { eventId, startDate, endDate } = req.query;
-      console.log('Event ID:', eventId);
-      console.log('Start Date:', startDate);
-      console.log('End Date:', endDate);
-      // Validasi dan konversi tipe data
-      if (!eventId || typeof eventId !== 'string') {
-        return res.status(400).json({ message: 'Invalid eventId' });
-      }
-
-      const parsedStartDate =
-        startDate && typeof startDate === 'string' ? startDate : undefined;
-      const parsedEndDate =
-        endDate && typeof endDate === 'string' ? endDate : undefined;
-
-      const parsedEventId = parseInt(eventId);
-      if (isNaN(parsedEventId)) {
-        return res.status(400).json({ message: 'Invalid eventId' });
-      }
-
-      const whereClause = {
-        transactions: {
-          some: {
-            eventId: parsedEventId,
-            status: 'success' as STATUS,
-            createdAt: {
-              gte: parsedStartDate,
-              lte: parsedEndDate,
-            },
-          },
-        },
-      };
-
-      const customers = await prisma.user.findMany({
-        where: whereClause,
-        select: {
-          age: true,
-          gender: true,
-        },
-      });
-      console.log('Customers:', customers);
-
-      const genderCounts = {
-        male: 0,
-        female: 0,
-        unknown: 0,
-      };
-
-      const ageGroups = {
-        '17-25': 0,
-        '25-40': 0,
-        '40+': 0,
-      };
-
-      customers.forEach((customer) => {
-        if (customer.gender === 'male') {
-          genderCounts.male++;
-        } else if (customer.gender === 'female') {
-          genderCounts.female++;
-        } else {
-          genderCounts.unknown++;
-        }
-
-        if (customer.age !== null) {
-          if (customer.age >= 17 && customer.age <= 25) {
-            ageGroups['17-25']++;
-          } else if (customer.age > 25 && customer.age <= 40) {
-            ageGroups['25-40']++;
-          } else if (customer.age > 40) {
-            ageGroups['40+']++;
-          }
-        }
-      });
-
-      console.log('Gender Counts:', genderCounts);
-      console.log('Age Groups:', ageGroups);
-
-      return res.status(200).json({ genderCounts, ageGroups });
-    } catch (error) {
-      console.error('Error getting customer demographics:', error);
       return res.status(500).json({ message: 'Internal server error' });
     }
   }
@@ -400,17 +291,45 @@ export class OrganizerController {
     }
   }
 
-  // async getTransactionByIdCustomer(req: Request, res: Response) {
-  //   const { id } = req.params;
-
-  //   const sample = await prisma.user.findUnique({
-  //     where: { id: Number(id) },
-  //   });
-
-  //   if (!sample) {
-  //     return res.send(404);
-  //   }
-
-  //   return res.status(200).send(sample);
-  // }
+  async getOrganizerSummary(req: Request, res: Response) {
+    try {
+      const organizerId = res.locals.user.id;
+  
+      const transactions = await prisma.transaction.findMany({
+        where: {
+          event: { organizerId: organizerId },
+          status: 'success',
+        },
+      });
+  
+      const totalRevenue = transactions.reduce((sum, transaction) => {
+        return sum + (transaction.totalPrice.toNumber() - transaction.discountAmount.toNumber());
+      }, 0);
+  
+      const completedEvents = await prisma.event.count({
+        where: {
+          organizerId: organizerId,
+          endDate: { lte: new Date() },
+        },
+      });
+  
+      const successfulTransactions = await prisma.transaction.count({
+        where: {
+          event: { organizerId: organizerId },
+          status: 'success',
+        },
+      });
+  
+      const summary = {
+        totalRevenue,
+        completedEvents,
+        successfulTransactions,
+      };
+  
+      return res.status(200).json({ data: summary });
+    } catch (error) {
+      console.error('Error getting organizer summary:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
 }

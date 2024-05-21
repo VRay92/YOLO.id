@@ -55,7 +55,7 @@ const EventsEO: React.FunctionComponent<IEventsEOProps> = (props) => {
             className="object-cover rounded-lg"
           />
           <div className="absolute inset-0 flex flex-col">
-            <div className="relative z-10 p-8 flex-grow">
+            <div className="relative z-10 p-8 flex-grow overflow-y-hidden">
               <h1 className="text-3xl text-black mb-8">List of Events</h1>
               {currentEvents.length > 0 ? (
                 <div className="flex flex-col h-full">
@@ -108,10 +108,10 @@ const EventsEO: React.FunctionComponent<IEventsEOProps> = (props) => {
                           </div>
                         </div>
                         <div className="relative w-[300px] h-[200px] my-auto md:block hidden">
-                          <Image
-                            fill
+                          <img
+                            // fill
                             sizes="100vw"
-                            src={event.imageUrl}
+                            src={`http://localhost:8000/assets/${event?.imageUrl}`}
                             alt="hero"
                             className="object-cover"
                           />

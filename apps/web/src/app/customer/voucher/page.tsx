@@ -21,6 +21,7 @@ const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
   const [voucher, setVoucher] = useState<Voucher[]>([]);
   const [referralCode, setReferralCode] = useState('');
   const [points, setPoints] = useState(0);
+  const [latestPointExpiry, setLatestPointExpiry] = useState<string | null>(null);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -37,7 +38,7 @@ const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data.voucher)
+          console.log(data.voucher);
           setVoucher(data.voucher);
           setReferralCode(data.referralCode);
           setPoints(
@@ -47,15 +48,19 @@ const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
               0,
             ),
           );
+          setLatestPointExpiry(data.latestPointExpiry);
+
           // Update Redux state
-          dispatch(updateUser({
-            points: data.points.reduce(
-              (total: number, point: { points: number }) =>
-                total + point.points,
-              0,
-            ),
-            vouchers: data.voucher,
-          }));
+          dispatch(
+            updateUser({
+              points: data.points.reduce(
+                (total: number, point: { points: number }) =>
+                  total + point.points,
+                0,
+              ),
+              vouchers: data.voucher,
+            }),
+          );
         } else {
           console.error('Failed to fetch data');
         }
@@ -73,45 +78,47 @@ const Voucher: React.FunctionComponent<IVoucherProps> = (props) => {
         <div className="mx-12 mt-28 hidden md:block">
           <Sidebar></Sidebar>
         </div>
-        <section className=" w-full md:h-[710px] rounded-none md:rounded-lg  md:mr-16 md:my-14 relative">
+        <section className="w-full md:h-[710px] rounded-none md:rounded-lg md:mr-16 md:my-14 relative">
           <Image
             fill
             sizes="100vw"
             src="/background.jpg"
             alt="hero"
             className="object-cover rounded-none md:rounded-lg hidden md:block"
-          ></Image>
-
+          />
           <Image
             fill
             sizes="100vw"
             src="/background2.jpg"
             alt="hero"
             className="rounded-none md:rounded-lg block md:hidden w-fit"
-          ></Image>
+          />
           <div className="flex md:flex-row flex-col relative font-semibold text-center justify-between md:text-left mt-10 md:ml-16 md:mr-16">
             <div className="md:items-end flex md:order-1 order-2 mx-auto md:mx-0 mt-10">
-              <h1 className=" text-3xl text-black ">Vouchers</h1>
+              <h1 className="text-3xl text-black">Vouchers</h1>
             </div>
 
             <div className="flex flex-col md:flex-row rounded-lg md:items-end mx-4 md:mx-0 md:w-30 p-6 md:p-0 md:bg-transparent bg-gray-400 bg-opacity-30 border-2 md:border-none border-gray-500 order-1 md:order-2">
               <div className="flex mx-auto items-end">
-                <h1 className="h-6 md:items-end mr-2 md:mr-4">
-                  Your Refferal Code
-                </h1>
-                <h1 className="text-3xl md:mr-14">{referralCode}</h1>
+                <h1 className="h-6 md:items-end mr-2 md:mr-4">Your Referral Code</h1>
+                <h1 className="text-3xl md:mr-10">{referralCode}</h1>
               </div>
 
               <div className="flex items-end justify-center mt-4">
                 <div className="text-[#f8c34f] text-3xl flex justify-center items-center h-10 w-10">
-                  <FaCoins></FaCoins>
+                  <FaCoins />
                 </div>
                 <h1 className="text-3xl mr-2">{points}</h1>
-                <h1 className=" h-6">Points</h1>
+                <h1 className="mr-10 h-6">Points</h1>
               </div>
+              {points > 0 && latestPointExpiry && (
+                <div className="flex items-end justify-center mt-4">
+                  <h1 className="h-6 mr-2">Point expiry at</h1>
+                  <h1 className="text-3xl mr-2">{latestPointExpiry}</h1>
+                </div>
+              )}
             </div>
           </div>
-
           {/* TABLE MOBILE */}
           <div className="overflow-x-auto mx-4 md:ml-12 md:mr-16 mt-7 mb-20">
             <table className="relative  w-full">

@@ -81,18 +81,23 @@ export class CustomerController {
 
       const formattedVoucher = voucher.map((v) => ({
         ...v,
-        expiresAt: format(v.expiresAt, 'dd MMMM yyyy'),
+        expiresAt: v.expiresAt.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }),
       }));
 
       const formattedPoints = points.map((p) => ({
         ...p,
-        expiresAt: format(p.expiresAt, 'dd MMMM yyyy'),
+        expiresAt: p.expiresAt.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }),
       }));
+
+      const latestPointExpiry = points.length > 0
+        ? new Date(Math.max(...points.map(p => new Date(p.expiresAt).getTime()))).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
+        : null;
 
       res.status(200).json({
         referralCode,
         voucher: formattedVoucher,
         points: formattedPoints,
+        latestPointExpiry,
       });
     } catch (error) {
       console.error(error);

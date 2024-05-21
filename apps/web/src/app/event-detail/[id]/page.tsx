@@ -18,7 +18,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PaymentModal from '@/components/PaymentModal';
 import { Event } from '@/lib/features/eventSlice';
-import { Voucher } from '@/app/customer/[token]/voucher/page';
+import { Voucher } from '@/app/customer/voucher/page';
 import CustomerRoute from '@/components/CustomerRoute';
 import parse from 'html-react-parser';
 import axios from 'axios';
@@ -36,6 +36,7 @@ const EventDetailCustomer: React.FunctionComponent<
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
   const [pointsToUse, setPointsToUse] = useState(0);
   const [selectedLocation, setSelectedLocation] = useState<number | null>(null);
+  const role = useAppSelector((state: RootState) => state.userReducer.role);
 
   const handleSelectLocation = (locationId: number | null) => {
     setSelectedLocation(locationId);
@@ -287,17 +288,18 @@ const EventDetailCustomer: React.FunctionComponent<
                 </button>
               </div>
 
-              {activeTab === 'description' && (
-                <div ref={descriptionRef}>
-                  <h2 className="text-4xl font-bold my-6">Deskripsi</h2>
-                </div>
-              )}
-              {activeTab === 'ticket' && (
-                <div ref={ticketRef}>
-                  <h2 className="text-4xl font-bold my-6">Tiket</h2>
-                </div>
-              )}
-            </div>
+            {activeTab === 'description' && (
+              <div ref={descriptionRef}>
+                <h2 className="text-4xl font-bold pt-6 pb-20">Deskripsi</h2>
+              </div>
+            )}
+            {activeTab === 'ticket' && (
+              <div ref={ticketRef}>
+                <h2 className="text-4xl font-bold pt-6 pb-20">Tiket</h2>
+              </div>
+            )}
+          </div>
+          {role !== 'organizer' && (
             <div className="w-1/3 pl-8">
               <div className="mt-8">
                 <h3 className="text-xl font-semibold mb-4">
@@ -342,83 +344,68 @@ const EventDetailCustomer: React.FunctionComponent<
                   Beli Tiket
                 </button>
               </div>
-              <div>
-                <h3 className="text-sm my-2">Bagikan Event</h3>
-                <div className="flex items-center">
-                  <a href="#" className="mr-4 text-black">
-                    <FaFacebook size={18} />
-                  </a>
-                  <a href="#" className="mr-4 text-black">
-                    <FaTwitter size={18} />
-                  </a>
-                  <a href="#" className="mr-4 text-black">
-                    <FaInstagram size={18} />
-                  </a>
-                  <a href="#" className="text-black">
-                    <FaLink size={18} />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-          {activeTab === 'description' && (
-            <div className="w-2/3 -mt-16">
-              <p>
-                {event?.description
-                  ? parse(event?.description)
-                  : 'no description'}
-              </p>
             </div>
           )}
-          {activeTab === 'ticket' && event && event.ticketTypes && (
-            <div className="w-2/3 -mt-16">
-              {event.ticketTypes.map((ticketType) => {
-                const isAvailable = ticketType.quantity > 0;
-                const isSoldOut = ticketType.quantity === 0;
-                const isExpired = new Date(event.startDate) <= new Date();
-                const maxTicketPerPerson = event.maxTicket;
-                const selectedQuantity =
-                  selectedTickets[ticketType.ticketTypeId.toString()] || 0;
-                const totalSelectedQuantity = Object.values(
-                  selectedTickets,
-                ).reduce((sum, quantity) => sum + quantity, 0);
+        </div>
+        {activeTab === 'description' && (
+          <div className="w-2/3 -mt-16">
+            <p>
+              {event?.description
+                ? parse(event?.description)
+                : 'no description'}
+            </p>
+          </div>
+        )}
+        {activeTab === 'ticket' && event && event.ticketTypes && (
+          <div className="w-2/3 -mt-16">
+            {event.ticketTypes.map((ticketType) => {
+              const isAvailable = ticketType.quantity > 0;
+              const isSoldOut = ticketType.quantity === 0;
+              const isExpired = new Date(event.startDate) <= new Date();
+              const maxTicketPerPerson = event.maxTicket;
+              const selectedQuantity =
+                selectedTickets[ticketType.ticketTypeId.toString()] || 0;
+              const totalSelectedQuantity = Object.values(
+                selectedTickets,
+              ).reduce((sum, quantity) => sum + quantity, 0);
 
-                return (
-                  <div
-                    key={ticketType.ticketTypeId}
-                    className="bg-white rounded-lg shadow-md p-6 mb-6"
-                  >
-                    <div className="mb-4">
-                      <h3 className="text-2xl font-semibold mb-2">
-                        {ticketType.ticketType.name}
-                      </h3>
-                      <p className="text-gray-500 text-md mb-4">
-                        Berakhir{' '}
-                        {event.startDate &&
-                          new Date(
-                            new Date(event.startDate).getTime() -
-                              24 * 60 * 60 * 1000,
-                          ).toLocaleDateString('id-ID', {
-                            weekday: 'long',
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
-                          })}
+              return (
+                <div
+                  key={ticketType.ticketTypeId}
+                  className="bg-white rounded-lg shadow-md p-6 mb-6"
+                >
+                  <div className="mb-4">
+                    <h3 className="text-2xl font-semibold mb-2">
+                      {ticketType.ticketType.name}
+                    </h3>
+                    <p className="text-gray-500 text-md mb-4">
+                      Berakhir{' '}
+                      {event.startDate &&
+                        new Date(
+                          new Date(event.startDate).getTime() -
+                            24 * 60 * 60 * 1000,
+                        ).toLocaleDateString('id-ID', {
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                    </p>
+                    <div className="border-b-2 border-dashed border-gray-300 mb-4"></div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    {ticketType.price == 0 ? (
+                      <p className="text-lg font-bold text-green-500">Free</p>
+                    ) : (
+                      <p className="text-lg font-bold">
+                        {' '}
+                        {new Intl.NumberFormat('id-ID', {
+                          style: 'currency',
+                          currency: 'IDR',
+                        }).format(Number(ticketType.price))}
                       </p>
-                      <div className="border-b-2 border-dashed border-gray-300 mb-4"></div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      {ticketType.price == 0 ? (
-                        <p className="text-lg font-bold text-green-500">Free</p>
-                      ) : (
-                        <p className="text-lg font-bold">
-                          {' '}
-                          {new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                          }).format(Number(ticketType.price))}
-                        </p>
-                      )}
+                    )}
+                    {role !== 'organizer' && (
                       <div className="flex items-center">
                         <button
                           className="px-2 py-1 bg-gray-200 rounded-l hover:bg-gray-300 focus:outline-none"
@@ -574,43 +561,44 @@ const EventDetailCustomer: React.FunctionComponent<
                       selectedTickets,
                     ).reduce((sum, quantity) => sum + quantity, 0);
 
-                    return (
-                      <div
-                        key={ticketType.ticketTypeId}
-                        className="bg-white rounded-lg shadow-md p-4 mb-4"
-                      >
-                        <div className="mb-4">
-                          <h3 className="text-lg font-semibold mb-2">
-                            {ticketType.ticketType.name}
-                          </h3>
-                          <p className="text-gray-500 text-sm mb-2">
-                            Berakhir{' '}
-                            {event.startDate &&
-                              new Date(
-                                new Date(event.startDate).getTime() -
-                                  24 * 60 * 60 * 1000,
-                              ).toLocaleDateString('id-ID', {
-                                weekday: 'long',
-                                day: 'numeric',
-                                month: 'long',
-                                year: 'numeric',
-                              })}
-                          </p>
-                          <div className="border-b-2 border-dashed border-gray-300 mb-4"></div>
-                          <div className="flex justify-between items-center">
-                            {ticketType.price == 0 ? (
-                              <p className="text-lg font-bold text-green-500">
-                                Free
-                              </p>
-                            ) : (
-                              <p className="text-lg font-bold">
-                                {' '}
-                                {new Intl.NumberFormat('id-ID', {
-                                  style: 'currency',
-                                  currency: 'IDR',
-                                }).format(Number(ticketType.price))}
-                              </p>
-                            )}
+                  return (
+                    <div
+                      key={ticketType.ticketTypeId}
+                      className="bg-white rounded-lg shadow-md p-4 mb-4"
+                    >
+                      <div className="mb-4">
+                        <h3 className="text-lg font-semibold mb-2">
+                          {ticketType.ticketType.name}
+                        </h3>
+                        <p className="text-gray-500 text-sm mb-2">
+                          Berakhir{' '}
+                          {event.startDate &&
+                            new Date(
+                              new Date(event.startDate).getTime() -
+                                24 * 60 * 60 * 1000,
+                            ).toLocaleDateString('id-ID', {
+                              weekday: 'long',
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                            })}
+                        </p>
+                        <div className="border-b-2 border-dashed border-gray-300 mb-4"></div>
+                        <div className="flex justify-between items-center">
+                          {ticketType.price == 0 ? (
+                            <p className="text-lg font-bold text-green-500">
+                              Free
+                            </p>
+                          ) : (
+                            <p className="text-lg font-bold">
+                              {' '}
+                              {new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                              }).format(Number(ticketType.price))}
+                            </p>
+                          )}
+                          {role !== 'organizer' && (
                             <div className="flex items-center">
                               <button
                                 className="px-2 py-1 bg-gray-200 rounded-l hover:bg-gray-300 focus:outline-none"
@@ -648,20 +636,22 @@ const EventDetailCustomer: React.FunctionComponent<
                                 +
                               </button>
                             </div>
-                          </div>
+                          )}
                         </div>
-                        {isSoldOut && (
-                          <p className="text-red-500 mt-2">Sold Out</p>
-                        )}
-                        {isExpired && (
-                          <p className="text-red-500 mt-2">Expired</p>
-                        )}
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+                      {isSoldOut && (
+                        <p className="text-red-500 mt-2">Sold Out</p>
+                      )}
+                      {isExpired && (
+                        <p className="text-red-500 mt-2">Expired</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          {role !== 'organizer' && (
             <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 py-4 px-4">
               <div>
                 <p className="text-sm text-gray-500">

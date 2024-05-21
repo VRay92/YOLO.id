@@ -10,7 +10,6 @@ import { MdPhotoCamera } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 interface IProfileEOProps {}
 
 const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
@@ -143,7 +142,7 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
   return (
     <OrganizerRoute>
       <div className="flex bg-[#282828] min-h-screen">
-      <div className="mx-12 mt-28 hidden md:block">
+        <div className="mx-12 mt-28 hidden md:block">
           <SideBarEO />
         </div>
         <section className="w-full md:h-[710px] rounded-none md:mr-16 md:rounded-lg md:my-14 relative">
@@ -182,7 +181,7 @@ const ProfileEO: React.FunctionComponent<IProfileEOProps> = (props) => {
                 name="email"
                 value={organizer.email}
                 onChange={handleChange}
-                className="w-auto md:w-[350px] h-[50px] rounded-lg border-gray-200 mb-2"
+                className="mr-8 2xl:w-[350px] h-[50px] rounded-lg border-gray-200 mb-2"
               />
             </div>
             <div

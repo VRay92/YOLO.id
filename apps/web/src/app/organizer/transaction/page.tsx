@@ -99,7 +99,7 @@ const TransactionEO: React.FunctionComponent<ITransactionEOProps> = (props) => {
           <div className="absolute inset-0 flex flex-col">
             <div className="relative z-10 p-8 flex-grow overflow-y-auto">
               <h1 className="text-3xl text-black mb-8">Transaction</h1>
-              <div className="flex items-center mb-4">
+              <div className="flex flex-col md:flex-row md:items-center mb-4">
                 <label htmlFor="eventFilter" className="mr-2">
                   Filter by Event:
                 </label>
@@ -107,7 +107,7 @@ const TransactionEO: React.FunctionComponent<ITransactionEOProps> = (props) => {
                   id="eventFilter"
                   value={selectedEventId}
                   onChange={handleEventFilter}
-                  className="mr-4 text-center"
+                  className="mb-4 md:mb-0 md:mr-4 text-center"
                 >
                   <option value="">All Events</option>
                   {events.map((event) => (
@@ -124,7 +124,7 @@ const TransactionEO: React.FunctionComponent<ITransactionEOProps> = (props) => {
                   id="startDate"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="mr-4"
+                  className="mb-4 md:mb-0 md:mr-4"
                 />
                 <label htmlFor="endDate" className="mr-2">
                   End Date:
@@ -134,7 +134,7 @@ const TransactionEO: React.FunctionComponent<ITransactionEOProps> = (props) => {
                   id="endDate"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="mr-4"
+                  className="mb-4 md:mb-0 md:mr-4"
                 />
                 <button
                   className="px-6 py-2 rounded-2xl bg-red-600 text-white"
@@ -145,54 +145,61 @@ const TransactionEO: React.FunctionComponent<ITransactionEOProps> = (props) => {
               </div>
               {currentTransactions.length > 0 ? (
                 <>
-                  <table className="w-full bg-white bg-opacity-40 mt-10">
-                    <thead className="bg-gray-600 bg-opacity-25">
-                      <tr>
-                        <th className="px-4 py-2">Event</th>
-                        <th className="px-4 py-2">Transaction Code</th>
-                        <th className="px-4 py-2">Total Price</th>
-                        <th className="px-4 py-2">Discount</th>
-                        <th className="px-4 py-2">Date</th>
-                        <th className="px-4 py-2">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentTransactions.map((transaction) => (
-                        <tr key={transaction.id}>
-                          <td className="border text-center px-4 py-2">
-                            {transaction.event.title}
-                          </td>
-                          <td className="border px-4 py-2 text-center">
-                            {transaction.receiptUrl.length > 20
-                              ? `${transaction.receiptUrl.slice(0, 20)}...`
-                              : transaction.receiptUrl}
-                          </td>
-                          <td className="border px-4 py-2 text-center">
-                            {transaction.totalPrice == 0
-                              ? 'Free'
-                              : new Intl.NumberFormat('id-ID', {
-                                  style: 'currency',
-                                  currency: 'IDR',
-                                }).format(Number(transaction.totalPrice - transaction.discountAmount))}
-                          </td>
-                          <td className="border px-4 py-2 text-center">
-                            {new Intl.NumberFormat('id-ID', {
-                              style: 'currency',
-                              currency: 'IDR',
-                            }).format(Number(transaction.discountAmount))}
-                          </td>
-                          <td className="border px-4 py-2 text-center">
-                            {new Date(
-                              transaction.createdAt,
-                            ).toLocaleDateString()}
-                          </td>
-                          <td className="border px-4 py-2 text-center">
-                            {transaction.status}
-                          </td>
+                  <div className="overflow-x-auto">
+                    <table className="w-full bg-white bg-opacity-40 mt-10">
+                      <thead className="bg-gray-600 bg-opacity-25">
+                        <tr>
+                          <th className="px-4 py-2">Event</th>
+                          <th className="px-4 py-2">Transaction Code</th>
+                          <th className="px-4 py-2">Total Price</th>
+                          <th className="px-4 py-2">Discount</th>
+                          <th className="px-4 py-2">Date</th>
+                          <th className="px-4 py-2">Status</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {currentTransactions.map((transaction) => (
+                          <tr key={transaction.id}>
+                            <td className="border text-center px-4 py-2">
+                              {transaction.event.title}
+                            </td>
+                            <td className="border px-4 py-2 text-center">
+                              {transaction.receiptUrl.length > 20
+                                ? `${transaction.receiptUrl.slice(0, 20)}...`
+                                : transaction.receiptUrl}
+                            </td>
+                            <td className="border px-4 py-2 text-center">
+                              {transaction.totalPrice == 0
+                                ? 'Free'
+                                : new Intl.NumberFormat('id-ID', {
+                                    style: 'currency',
+                                    currency: 'IDR',
+                                  }).format(
+                                    Number(
+                                      transaction.totalPrice -
+                                        transaction.discountAmount,
+                                    ),
+                                  )}
+                            </td>
+                            <td className="border px-4 py-2 text-center">
+                              {new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                              }).format(Number(transaction.discountAmount))}
+                            </td>
+                            <td className="border px-4 py-2 text-center">
+                              {new Date(
+                                transaction.createdAt,
+                              ).toLocaleDateString()}
+                            </td>
+                            <td className="border px-4 py-2 text-center">
+                              {transaction.status}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </>
               ) : (
                 <div className="flex flex-col items-center justify-center h-64">
@@ -200,7 +207,7 @@ const TransactionEO: React.FunctionComponent<ITransactionEOProps> = (props) => {
                 </div>
               )}
             </div>
-            <div className="mb-10">
+            <div className="md:mb-10">
               <PaginationEO
                 currentPage={currentPage}
                 totalPages={totalPages}

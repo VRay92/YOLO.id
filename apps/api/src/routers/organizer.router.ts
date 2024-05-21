@@ -1,11 +1,10 @@
 import express, { Router } from 'express';
 import { OrganizerController } from '../controllers/organizer.controller';
 
-import { verifyToken } from "../middleware/verifyToken";
+import { verifyToken } from '../middleware/verifyToken';
 import { uploader } from '@/middleware/uploader';
 
 import { regisValidation } from '@/middleware/vaidator/regis';
-
 
 export class OrganizerRouter {
   private route: Router;
@@ -21,11 +20,13 @@ export class OrganizerRouter {
     this.route.get('/profile', this.organizerController.getOrganizerById);
     this.route.put('/profile', this.organizerController.updateOrganizerById);
 
-    this.route.post('/', verifyToken, uploader("/event", "EVENT").array("imgUrl"), this.organizerController.createEvent);
-    this.route.get(
-      '/events',
-      this.organizerController.getEventsByOrganizer,
+    this.route.post(
+      '/',
+      verifyToken,
+      uploader('/event', 'EVENT').array('imgUrl'),
+      this.organizerController.createEvent,
     );
+    this.route.get('/events', this.organizerController.getEventsByOrganizer);
     this.route.get(
       '/customers-count',
       this.organizerController.getCustomerCountByDate,
@@ -34,10 +35,7 @@ export class OrganizerRouter {
       '/transactions/filter',
       this.organizerController.getTransactionsByFilter,
     );
-    this.route.get(
-      '/:eventId/customers/demographics',
-      this.organizerController.getCustomerDemographics,
-    );
+    this.route.get('/summary', this.organizerController.getOrganizerSummary);
   }
   getRouter(): Router {
     return this.route;
