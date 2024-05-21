@@ -10,7 +10,7 @@ interface ISidebarProps {}
 const Sidebar: React.FunctionComponent<ISidebarProps> = (props) => {
   const router = useRouter();
   const [active, setActive] = useState('');
-  
+
   console.log(active);
 
   return (

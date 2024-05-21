@@ -47,6 +47,7 @@ export const Header = () => {
   });
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
+  const [openSearch, setOpenSearch] = React.useState(false);
   const [event, setEvent] = React.useState<IEvent[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [loading2, setLoading2] = React.useState(false);
@@ -55,7 +56,6 @@ export const Header = () => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [postsPerPage, setPostsPerPage] = React.useState(5);
   const [debouncedValue] = useDebounce(search, 2000);
-
   const router = useRouter();
   const isLoggedIn = useAppSelector((state) => state.userReducer.isLoggedIn);
   const dispatch = useAppDispatch();
@@ -143,7 +143,7 @@ export const Header = () => {
 
   console.log('value search', search);
   console.log('image profile:', data.imageProfile);
-
+  console.log('nilai open search', openSearch);
   return (
     <nav className={`w-full max-w-[1920px] relative z-[30] `}>
       {/* LOADING SCREEN */}
@@ -231,11 +231,13 @@ export const Header = () => {
               <input
                 type="text"
                 id="floating_filled"
+                value={search}
                 className="block relative rounded-r-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-[#d9d9d9] dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=""
                 onChange={(e) => {
                   setSearch(e.target.value);
                   setLoading2(true);
+                  e.target.value ? setOpenSearch(true) : setOpenSearch(false);
                 }}
               />
               <Spinner
@@ -252,13 +254,16 @@ export const Header = () => {
                 search here..
               </label>
 
-              <div className={`${search ? '' : 'hidden'}`}>
+              <div className={`${openSearch ? '' : 'hidden'}`}>
                 {paginationCategory.length ? (
                   paginationCategory.map((val, index) => (
                     <div
                       key={index}
                       className="hover:bg-blue-500 bg-white w-[685px] cursor-pointer h-[3rem] pl-10 pt-2 z-30"
-                      onClick={() => router.push(`/event-detail/${val.id}`)}
+                      onClick={() => {
+                        router.push(`/event-detail/${val.id}`);
+                        setOpenSearch(false);
+                      }}
                     >
                       {val.title}
                     </div>
@@ -484,9 +489,7 @@ export const Header = () => {
           {data.role === 'organizer' && (
             <div
               className="text-white flex items-center mr-10 cursor-pointer"
-              onClick={() =>
-                router.push(`/organizer/create-event`)
-              }
+              onClick={() => router.push(`/organizer/create-event`)}
             >
               <IoCalendarSharp className=" text-3xl mr-2" />
               <h1 className="text-lg">Create Event</h1>
@@ -495,9 +498,7 @@ export const Header = () => {
           {data.role === 'customer' && (
             <div
               className="text-white flex items-center mr-10 cursor-pointer"
-              onClick={() =>
-                router.push(`/customer/purchased-event`)
-              }
+              onClick={() => router.push(`/customer/purchased-event`)}
             >
               <BsTicketPerforatedFill className=" text-3xl mr-2" />
               <h1 className="text-lg">Purchased Event</h1>
