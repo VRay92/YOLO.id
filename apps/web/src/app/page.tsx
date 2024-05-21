@@ -34,6 +34,7 @@ interface IDataEvent {
   categoryId: number;
   username: string;
   price: string;
+  id: number;
 }
 
 export default function Home() {
@@ -309,6 +310,7 @@ export default function Home() {
               date={formatDate(val.startDate)}
               price={val.price}
               username={val.username}
+              eventid={val.id}
             />
           ))
         ) : (
@@ -348,6 +350,7 @@ export default function Home() {
             date={formatDate(val.startDate)}
             price={val.price}
             username={val.username}
+            eventid={val.id}
           />
         ))}
       </div>
@@ -378,6 +381,7 @@ export default function Home() {
             date={formatDate(val.startDate)}
             username={val.username}
             price={val.price}
+            eventid={val.id}
           />
         ))}
       </div>

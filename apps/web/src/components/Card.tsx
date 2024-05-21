@@ -7,6 +7,7 @@ interface ICardProps {
   date: string;
   price: string;
   username: string;
+  eventid: number;
 }
 
 const Card: React.FunctionComponent<ICardProps> = (props) => {
@@ -14,7 +15,7 @@ const Card: React.FunctionComponent<ICardProps> = (props) => {
   return (
     <div
       className="2xl:h-[380px] w-[280px] 2xl:w-[380px] rounded-xl shadow-xl bg-[#d9d9d9] cursor-pointer"
-      onClick={() => router.push('/event_detail_cu')}
+      onClick={() => router.push(`/event-detail/${props.eventid}`)}
     >
       <img
         src={`http://localhost:8000/assets/` + props.url}
