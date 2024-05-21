@@ -25,7 +25,7 @@ export class EventRouter {
 
         this.route.get('/fetch/by-title', this.eventController.getEventByTitle);
         this.route.get(
-            '/:id', this.eventController.getEventDetail
+            '/coba/:id', this.eventController.getEventDetail
         )
 
     }
