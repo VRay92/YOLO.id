@@ -14,19 +14,49 @@ import Pagination from '@/components/Pagination';
 import { current } from '@reduxjs/toolkit';
 import { divide } from 'cypress/types/lodash';
 import EventTestingData from './testingdata';
+import axios from 'axios';
+
+interface IDataEvent {
+  title: string;
+  imageUrl: string;
+  description: string;
+  startDate: string;
+  startTime: string;
+  endTime: string;
+  organizerId: number;
+  endDate: string;
+  availableSeats: number;
+  isFree: boolean;
+  updatedAt: string;
+  maxTicket: number;
+  cityId: any;
+  location: string;
+  categoryId: number;
+  username: string;
+  price: string;
+}
 
 export default function Home() {
-  const [category, setCategory] = useState('music');
-  const [city, setCity] = useState('Bandung');
+  const [category, setCategory] = useState(1);
+  const [city, setCity] = useState(181);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(8);
+  const [postsPerPage, setPostsPerPage] = useState(4);
+  const [dataEvent, setDataEvent] = useState<IDataEvent[]>([]);
 
-  const filterByCategory = EventTestingData.filter(
-    (val, index) => val.category === category,
+  const filterByCategory = dataEvent.filter(
+    (val, index) => val.categoryId === category,
   );
 
-  const filterByCityAndCategory = EventTestingData.filter(
-    (val, index) => val.location === city && val.category === category,
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const filterByCityAndCategory = dataEvent.filter(
+    (val, index) => val.cityId === city && val.categoryId === category,
   );
   console.log('nilai filter', filterByCityAndCategory);
 
@@ -41,11 +71,21 @@ export default function Home() {
     indexOfLastPost,
   );
 
+  const getAllEvent = async () => {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_API_URL}event/`,
+    );
+    setDataEvent(response.data);
+    console.log('response', response.data);
+  };
+
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   useEffect(() => {
-    initCarousels;
+    getAllEvent();
   }, []);
+
+  console.log('DATA', dataEvent);
 
   return (
     <main className="w-full bg-[#282828]">
@@ -142,41 +182,41 @@ export default function Home() {
         <ul className="flex gap-4 text-lg text-white md:gap-10">
           <li
             className={`cursor-pointer ${
-              category === 'music' ? 'border-b-2 border-white' : ''
+              category === 1 ? 'border-b-2 border-white' : ''
             }`}
-            onClick={() => setCategory('music')}
+            onClick={() => setCategory(1)}
           >
             Music
           </li>
           <li
             className={`cursor-pointer ${
-              category === 'festival' ? 'border-b-2 border-white' : ''
+              category === 2 ? 'border-b-2 border-white' : ''
             }`}
-            onClick={() => setCategory('festival')}
+            onClick={() => setCategory(2)}
           >
             Festival&Bazaar
           </li>
           <li
             className={`cursor-pointer ${
-              category === 'sports' ? 'border-b-2 border-white' : ''
+              category === 3 ? 'border-b-2 border-white' : ''
             }`}
-            onClick={() => setCategory('sports')}
+            onClick={() => setCategory(3)}
           >
             Sports
           </li>
           <li
             className={`cursor-pointer ${
-              category === 'expo' ? 'border-b-2 border-white' : ''
+              category === 4 ? 'border-b-2 border-white' : ''
             }`}
-            onClick={() => setCategory('expo')}
+            onClick={() => setCategory(4)}
           >
             Exhibition&Expo
           </li>
           <li
             className={`cursor-pointer ${
-              category === 'seminar' ? 'border-b-2 border-white' : ''
+              category === 5 ? 'border-b-2 border-white' : ''
             }`}
-            onClick={() => setCategory('seminar')}
+            onClick={() => setCategory(5)}
           >
             Seminar
           </li>
@@ -194,34 +234,64 @@ export default function Home() {
 
         {/* top trending music */}
 
-        {category === 'music' && (
+        {category === 1 && (
           <div
             id="top-trending"
             className="md:flex-row flex-col flex max-w-[1920px] gap-6 md:gap-10 mx-4 md:mx-10 mt-4 md:mt-10 md:ml-40 md:overflow-x-scroll no-scrollbar"
           >
-            <Toptrending url={filterByCategory[0].url} rank={1}></Toptrending>
-            <Toptrending url={filterByCategory[1].url} rank={2}></Toptrending>
-            <Toptrending url={filterByCategory[2].url} rank={3}></Toptrending>
+            <Toptrending
+              url={filterByCategory[0]?.imageUrl}
+              rank={1}
+            ></Toptrending>
+            <Toptrending
+              url={filterByCategory[1]?.imageUrl}
+              rank={2}
+            ></Toptrending>
+            <Toptrending
+              url={filterByCategory[2]?.imageUrl}
+              rank={3}
+            ></Toptrending>
             <div className="hidden gap-10 md:flex">
-              <Toptrending url={filterByCategory[3].url} rank={4}></Toptrending>
-              <Toptrending url={filterByCategory[4].url} rank={5}></Toptrending>
+              <Toptrending
+                url={filterByCategory[3]?.imageUrl}
+                rank={4}
+              ></Toptrending>
+              <Toptrending
+                url={filterByCategory[4]?.imageUrl}
+                rank={5}
+              ></Toptrending>
             </div>
           </div>
         )}
 
         {/* top trending festival */}
 
-        {category === 'festival' && (
+        {category === 2 && (
           <div
             id="top-trending"
             className="md:flex-row flex-col flex max-w-[1920px] gap-6 md:gap-10 mx-4 md:mx-10 mt-4 md:mt-10 md:ml-40 md:overflow-x-scroll no-scrollbar"
           >
-            <Toptrending url={filterByCategory[0].url} rank={1}></Toptrending>
-            <Toptrending url={filterByCategory[1].url} rank={2}></Toptrending>
-            <Toptrending url={filterByCategory[2].url} rank={3}></Toptrending>
+            <Toptrending
+              url={filterByCategory[0]?.imageUrl}
+              rank={1}
+            ></Toptrending>
+            <Toptrending
+              url={filterByCategory[1]?.imageUrl}
+              rank={2}
+            ></Toptrending>
+            <Toptrending
+              url={filterByCategory[2]?.imageUrl}
+              rank={3}
+            ></Toptrending>
             <div className="hidden gap-10 md:flex">
-              <Toptrending url={filterByCategory[3].url} rank={4}></Toptrending>
-              <Toptrending url={filterByCategory[4].url} rank={5}></Toptrending>
+              <Toptrending
+                url={filterByCategory[3]?.imageUrl}
+                rank={4}
+              ></Toptrending>
+              <Toptrending
+                url={filterByCategory[4]?.imageUrl}
+                rank={5}
+              ></Toptrending>
             </div>
           </div>
         )}
@@ -229,14 +299,14 @@ export default function Home() {
 
       {/* event card for desktop (with pagination) */}
 
-      <div className="hidden overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:grid-rows-2 gap-10 mx-4 md:mx-20 mt-20">
+      <div className="hidden overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:auto-rows-auto gap-10 mx-4 md:mx-20 mt-20">
         {paginationCategory.length ? (
           paginationCategory.map((val, idx) => (
             <Card
               key={idx}
-              url={val.url}
+              url={val.imageUrl}
               title={val.title}
-              date={val.date}
+              date={formatDate(val.startDate)}
               price={val.price}
               username={val.username}
             />
@@ -246,7 +316,19 @@ export default function Home() {
         )}
       </div>
 
-      <div className="hidden md:flex justify-end pr-16 pt-10">
+      <div className="hidden md:flex justify-between px-16 pt-10">
+        <div className="items-center flex">
+          <h1 className="text-white mr-4">Show Events</h1>
+          <select
+            id="pagination"
+            className=" text-xl  border-none h-10"
+            value={postsPerPage}
+            onChange={(e) => setPostsPerPage(parseInt(e.target.value))}
+          >
+            <option value={4}>4</option>
+            <option value={8}>8</option>
+          </select>
+        </div>
         <Pagination
           postsPerPage={postsPerPage}
           totalPosts={filterByCategory.length}
@@ -261,9 +343,9 @@ export default function Home() {
         {filterByCategory.map((val, idx) => (
           <Card
             key={idx}
-            url={val.url}
+            url={val.imageUrl}
             title={val.title}
-            date={val.date}
+            date={formatDate(val.startDate)}
             price={val.price}
             username={val.username}
           />
@@ -278,24 +360,24 @@ export default function Home() {
           id="city"
           className="bg-[#282828] text-white text-xl  border-none h-[3rem]"
           value={city}
-          onChange={(e) => setCity(e.target.value)}
+          onChange={(e) => setCity(parseInt(e.target.value))}
         >
-          <option value={'Jakarta'}>Jakarta</option>
+          <option value={160}>Jakarta</option>
           <option value={'Surabaya'}>Surabaya</option>
-          <option value={'Bandung'}>Bandung</option>
-          <option value={'Tangerang'}>Tangerang</option>
-          <option value={'Bali'}>Bali</option>
+          <option value={181}>Bandung</option>
+          <option value={270}>Tangerang</option>
+          <option value={282}>Bali</option>
         </select>
       </div>
-      <div className="flex overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:grid-rows-2 gap-10 mx-4 md:mx-20 mt-10  md:mt-20">
+      <div className="flex overflow-x-scroll no-scrollbar md:grid md:grid-cols-4 md:auto-rows-auto gap-10 mx-4 md:mx-20 mt-10  md:mt-20">
         {filterByCityAndCategory.map((val, idx) => (
           <Card
             key={idx}
-            url={val.url}
+            url={val.imageUrl}
             title={val.title}
-            date={val.date}
-            price={val.price}
+            date={formatDate(val.startDate)}
             username={val.username}
+            price={val.price}
           />
         ))}
       </div>

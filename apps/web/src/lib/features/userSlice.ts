@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Voucher } from '@/app/customer/[token]/voucher/page';
+import { Voucher } from '@/app/customer/voucher/page';
 import { decode } from 'jsonwebtoken';
 
 export interface IUserState {

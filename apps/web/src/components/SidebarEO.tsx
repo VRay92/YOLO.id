@@ -10,21 +10,13 @@ interface ISideBarEOProps {}
 const SideBarEO: React.FunctionComponent<ISideBarEOProps> = (props) => {
   const router = useRouter();
   const pathname = usePathname();
-  const [token, setToken] = useState('');
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken) {
-      setToken(storedToken);
-    }
-  }, []);
 
   const menuItems = [
-    { icon: <FaUser size={24} />, label: 'Profile', path: `/organizer/${token}/profile` },
-    { icon: <FaChartPie size={24} />, label: 'Dashboard', path: `/organizer/${token}/dashboard` },
-    { icon: <FaPercentage size={24} />, label: 'Create Event', path: `/organizer/${token}/create-event` },
-    { icon: <FaTicketAlt size={24} />, label: 'Transaction', path: `/organizer/${token}/transaction` },
-    { icon: <FaStar size={24} />, label: 'List of Events', path: `/organizer/${token}/events` },
+    { icon: <FaUser size={24} />, label: 'Profile', path: `/organizer/profile` },
+    { icon: <FaChartPie size={24} />, label: 'Dashboard', path: `/organizer/dashboard` },
+    { icon: <FaPercentage size={24} />, label: 'Create Event', path: `/organizer/create-event` },
+    { icon: <FaTicketAlt size={24} />, label: 'Transaction', path: `/organizer/transaction` },
+    { icon: <FaStar size={24} />, label: 'List of Events', path: `/organizer/events` },
   ];
 
   const isActive = (path: string) => {

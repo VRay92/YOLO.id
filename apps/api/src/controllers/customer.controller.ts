@@ -81,19 +81,85 @@ export class CustomerController {
 
       const formattedVoucher = voucher.map((v) => ({
         ...v,
-        expiresAt: format(v.expiresAt, 'dd MMMM yyyy'),
+        expiresAt: v.expiresAt.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }),
       }));
 
       const formattedPoints = points.map((p) => ({
         ...p,
-        expiresAt: format(p.expiresAt, 'dd MMMM yyyy'),
+        expiresAt: p.expiresAt.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }),
       }));
+
+      const latestPointExpiry = points.length > 0
+        ? new Date(Math.max(...points.map(p => new Date(p.expiresAt).getTime()))).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
+        : null;
 
       res.status(200).json({
         referralCode,
         voucher: formattedVoucher,
         points: formattedPoints,
+        latestPointExpiry,
       });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  async getCustomerPurchasedEventByUserId(req: Request, res: Response) {
+    interface EventTicketCount {
+      [key: number]: number;
+    }
+    try {
+      // First query: Get all transactions for the given userId
+      const userId = res.locals.user.id;
+      console.log("userId", userId);
+
+      const transactions = await prisma.transaction.findMany({
+        where: {
+          userId: userId,
+        },
+        select: {
+          eventId: true,
+          status: true, // Include the status field
+        },
+      });
+      console.log("transactions", transactions);
+
+      // Group transactions by eventId and count tickets
+      const eventTicketCount: EventTicketCount = transactions.reduce((acc, transaction) => {
+        acc[transaction.eventId] = (acc[transaction.eventId] || 0) + 1;
+        return acc;
+      }, {} as { [key: string]: number },
+      );
+
+      // Extract unique eventIds and convert them to numbers
+      const eventIds = Object.keys(eventTicketCount).map(id => Number(id));
+
+      if (eventIds.length === 0) {
+        return res.json([]); // No events found for the user
+      }
+
+      // Second query: Get events by eventIds
+      const events = await prisma.event.findMany({
+        where: {
+          id: {
+            in: eventIds, // Use the extracted unique eventIds
+          },
+        },
+        orderBy: {
+          startDate: 'asc', // Order events by startDate in ascending order
+        },
+      });
+      console.log("events", events);
+
+      // Combine events with their ticket counts and status
+      const eventsWithTicketCountsAndStatus = events.map(event => ({
+        ...event,
+        ticketCount: eventTicketCount[event.id],
+        status: transactions.find(t => t.eventId === event.id)?.status || null,
+      }));
+
+      return res.json(eventsWithTicketCountsAndStatus);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal server error' });

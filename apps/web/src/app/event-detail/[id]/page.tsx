@@ -18,7 +18,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PaymentModal from '@/components/PaymentModal';
 import { Event } from '@/lib/features/eventSlice';
-import { Voucher } from '@/app/customer/[token]/voucher/page';
+import { Voucher } from '@/app/customer/voucher/page';
 import CustomerRoute from '@/components/CustomerRoute';
 import parse from 'html-react-parser';
 import axios from 'axios';
@@ -174,6 +174,8 @@ const EventDetailCustomer: React.FunctionComponent<
     }
   };
 
+  const url = `http://localhost:8000/assets/${event?.organizer?.imageProfile}`;
+
   return (
     <CustomerRoute>
       <div className="bg-white">
@@ -201,7 +203,10 @@ const EventDetailCustomer: React.FunctionComponent<
           <div className="flex mb-8">
             <div className="md:w-2/3 ">
               <img
-                src={`http://localhost:8000/assets/${event?.imageUrl}`}
+                src={
+                  `http://localhost:8000/assets/${event?.imageUrl}` ||
+                  '/blank.jpg'
+                }
                 alt="Event Banner"
                 className="md:w-full md:h-full w-[600px] h-[400px]"
               />
@@ -237,7 +242,10 @@ const EventDetailCustomer: React.FunctionComponent<
                 <div className="flex items-center">
                   <div className="mr-4">
                     <img
-                      src={`http://localhost:8000/assets/${event?.organizer?.imageProfile}`}
+                      src={
+                        `http://localhost:8000/assets/${event?.organizer?.imageProfile}` ||
+                        '/blank.jpg'
+                      }
                       alt="Organizer"
                       width={50}
                       height={50}
@@ -463,6 +471,7 @@ const EventDetailCustomer: React.FunctionComponent<
               pointsToUse={pointsToUse}
               onPointsToUseChange={setPointsToUse}
               onClose={() => setShowPaymentModal(false)}
+              imageurl={url}
             />
           )}
         </div>
@@ -712,6 +721,7 @@ const EventDetailCustomer: React.FunctionComponent<
               pointsToUse={pointsToUse}
               onPointsToUseChange={setPointsToUse}
               onClose={() => setShowPaymentModal(false)}
+              imageurl={url}
             />
           )}
         </div>

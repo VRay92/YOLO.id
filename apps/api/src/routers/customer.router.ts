@@ -17,6 +17,7 @@ export class CustomerRouter {
     this.route.get('/profile', this.customerController.getCustomerById);
     this.route.put('/profile', this.customerController.updateCustomerById);
     this.route.get('/voucher', this.customerController.getCustomerVoucherById);
+    this.route.get('/purchasedEvent', this.customerController.getCustomerPurchasedEventByUserId)
   }
 
   getRouter(): Router {
