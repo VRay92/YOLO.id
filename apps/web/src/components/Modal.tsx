@@ -77,9 +77,9 @@ const Modal: React.FunctionComponent<IModalProps> = ({
 
   return (
     <div className="">
-      <div className="w-[1000px]p-10  ">
+      <div className="w-[1000px]p-10 md:flex-row flex flex-col ">
         {dataEvent.map((row: any) => (
-          <div key={row.id}>
+          <div key={row.id} className="">
             <select
               id="ticket-type"
               className="border-none text-3xl font-semibold mt-10"
@@ -98,7 +98,7 @@ const Modal: React.FunctionComponent<IModalProps> = ({
               <option value={8}>VIP 3</option>
               <option value={9}>VVIP</option>
             </select>
-            <article className="flex items-end gap-10">
+            <article className="md:flex-row flex flex-col md:items-end gap-10">
               <div className="flex flex-col">
                 <label htmlFor="price">Price</label>
                 <div className="flex">
@@ -108,7 +108,7 @@ const Modal: React.FunctionComponent<IModalProps> = ({
                   <input
                     id="price"
                     type="number"
-                    className="w-[300px] h-[2.5rem] border-gray-300"
+                    className="md:w-[300px] h-[2.5rem] border-gray-300"
                     onChange={(e) =>
                       handlePriceChange(row.id, parseInt(e.target.value))
                     }
@@ -120,7 +120,7 @@ const Modal: React.FunctionComponent<IModalProps> = ({
                 <input
                   id="price"
                   type="number"
-                  className="w-[300px] h-[2.5rem] border-gray-300"
+                  className="w-full md:w-[300px] h-[2.5rem] border-gray-300"
                   onChange={(e) =>
                     handleQuantityChange(row.id, parseInt(e.target.value))
                   }
@@ -129,7 +129,7 @@ const Modal: React.FunctionComponent<IModalProps> = ({
 
               {row.id >= 2 && (
                 <button
-                  className="w-[10rem] h-[2.5rem] rounded-lg bg-orange-500 text-white"
+                  className="w-full md:w-[10rem] h-[2.5rem] rounded-lg bg-orange-500 text-white"
                   onClick={() => removeRow(row.id)}
                 >
                   Delete Row
@@ -138,14 +138,14 @@ const Modal: React.FunctionComponent<IModalProps> = ({
             </article>
           </div>
         ))}
-        <div className="flex items-center gap-2 mt-10">
+        <div className="md:flex-row flex flex-col items-center gap-2 mt-10">
           <button
             onClick={addRow}
-            className="w-[12rem] h-[2.5rem] text-white bg-black rounded-md "
+            className="w-full md:w-[12rem] h-[2.5rem] text-white bg-black rounded-md "
           >
             Add Another Ticket +
           </button>
-          <span className="ml-[200px]">
+          <span className="md:ml-[200px]">
             Maximum quantity = {maxSeat}
             <br />
             <i>(inserting value more than maximum can cause error)</i>

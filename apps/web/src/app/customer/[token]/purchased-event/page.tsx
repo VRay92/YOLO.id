@@ -86,7 +86,6 @@ const Purchasedevent: React.FunctionComponent<IPurchasedeventProps> = (
                 />
               ))}
           </div>
-          {/* TABLE */}
         </section>
       </div>
     </CustomerRoute>

@@ -324,7 +324,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
               }}
             ></input>
           </div>
-          <div className="relative w-full h-[400px] border-2 rounded-lg overflow-hidden">
+          <div className="relative w-full h-[200px] md:h-[400px] border-2 rounded-lg overflow-hidden">
             <img
               src={imgURL || '/blank.jpg'}
               alt=""
@@ -590,7 +590,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
 
             {/* CHOOSE CATEGORY */}
 
-            <div className="flex justify-between md:mx-10 mt-4 mb-10">
+            <div className="md:flex-row flex flex-col justify-between md:mx-10 mt-4 mb-10">
               <div>
                 <h1>Category</h1>
                 <select
@@ -661,7 +661,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
 
           <div className={`${menu === 'TICKETS' ? '' : 'hidden'}`}>
             {/* FREE OR PAID */}
-            <div className="flex justify-between">
+            <div className="md:flex-row flex flex-col justify-between">
               <h1 className="text-3xl font-semibold mt-10 ml-10">
                 Create New Ticket
               </h1>
@@ -710,7 +710,7 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
               className={`gap-10 mr-10 mx-10 ${showTicket ? 'hidden' : 'flex'}`}
             >
               {' '}
-              <article className="flex items-end gap-10">
+              <article className="md:flex-row flex flex-col md:items-end gap-10">
                 <div className="flex flex-col mt-10">
                   <label htmlFor="price">Free Ticket</label>
                   <div className="flex opacity-50">
@@ -720,32 +720,32 @@ const CreateEvent: React.FunctionComponent<ICreateEventProps> = (props) => {
                     <input
                       id="price"
                       type="number"
-                      className="w-[300px] h-[2.5rem] border-gray-300"
+                      className="md:w-[300px] h-[2.5rem] border-gray-300"
                       value={0}
                       disabled
                     />
                   </div>
                 </div>
-                <div className="flex-col flex  opacity-50">
+                <div className="flex-col flex opacity-50">
                   <label htmlFor="price">Set Quantity</label>
                   <input
                     id="quantity"
                     type="number"
-                    className="w-[300px] h-[2.5rem] border-gray-300"
+                    className="md:w-[300px] h-[2.5rem] border-gray-300"
                     value={dataEvent.availableSeats}
                     disabled
                   />
                 </div>
               </article>
             </div>
-            <div className="flex justify-end mt-20 gap-10">
+            <div className="flex justify-end mt-20 gap-2 md:gap-10">
               <PreviousButton
                 name="Previous Form"
                 onClick={() => setMenu('DESCRIPTION')}
               ></PreviousButton>
               <button
                 onClick={submitEvent}
-                className="text-white w-[10rem] h-[2.5rem] bg-orange-500 rounded-lg font-semibold active:translate-y-[1px]"
+                className="text-white w-[10rem] h-[2.5rem] mt-8 md:mt-0 bg-orange-500 rounded-lg font-semibold active:translate-y-[1px]"
               >
                 SUBMIT
               </button>

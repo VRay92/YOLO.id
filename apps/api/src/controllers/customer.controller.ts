@@ -141,6 +141,9 @@ export class CustomerController {
             in: eventIds, // Use the extracted unique eventIds
           },
         },
+        orderBy: {
+          startDate: 'asc', // Order events by startDate in ascending order
+        },
       });
       console.log("events", events);
 
