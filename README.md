@@ -1,4 +1,27 @@
-# Purwadhika Final Project Repository
+YOLO.id is a a simple and functional event management platform that allows event organizers to create and
+promote events, while attendees can browse and buy ticket for those events (involves CRUD function)
+
+Features:
+* Homepage:
+- Filters events by category or location
+- Search bar with debounce
+- Pagination to limit displayed events.
+  
+* Event Detail:
+- Shows time, date, location, ticket price.
+- Data stored in MySQL.UseEffect and REST API for data fetching.
+  
+* Event Transaction and Promotion:
+- Organizers create events with details: name, price, date, time, location, description, ticket types.
+- Uses React-Quill for text-input (WYSIWYG editor). Uses HTML-React Parser for displaying descriptions.
+- Payment simulation with Midtrans Gateway (QRIS/Virtual Account).
+
+* Authentication and Authorization:
+- JWT and BCrypt for user sign-in and registration.
+  
+Tech Stack: REST API, Next.js, TypeScript, Tailwind CSS, Prisma ORM, Midtrans Payment Gateway.
+
+# Purwadhika Project Repository
 
 This project uses React.js with NextJS for the frontend, Express.js for the backend, and TurboRepo for monorepo management, facilitating rapid development of a scalable web application with streamlined collaboration and efficient server-client interactions.
 
