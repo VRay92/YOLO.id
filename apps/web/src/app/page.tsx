@@ -87,6 +87,7 @@ export default function Home() {
   }, []);
 
   console.log('DATA', dataEvent);
+  console.log('filter by category', filterByCategory);
 
   return (
     <main className="w-full bg-[#282828]">
@@ -243,23 +244,28 @@ export default function Home() {
             <Toptrending
               url={filterByCategory[0]?.imageUrl}
               rank={1}
+              eventid={filterByCategory[0]?.id}
             ></Toptrending>
             <Toptrending
               url={filterByCategory[1]?.imageUrl}
               rank={2}
+              eventid={filterByCategory[1]?.id}
             ></Toptrending>
             <Toptrending
               url={filterByCategory[2]?.imageUrl}
               rank={3}
+              eventid={filterByCategory[2]?.id}
             ></Toptrending>
             <div className="hidden gap-10 md:flex">
               <Toptrending
                 url={filterByCategory[3]?.imageUrl}
                 rank={4}
+                eventid={filterByCategory[3]?.id}
               ></Toptrending>
               <Toptrending
                 url={filterByCategory[4]?.imageUrl}
                 rank={5}
+                eventid={filterByCategory[4]?.id}
               ></Toptrending>
             </div>
           </div>
@@ -275,23 +281,28 @@ export default function Home() {
             <Toptrending
               url={filterByCategory[0]?.imageUrl}
               rank={1}
+              eventid={filterByCategory[0]?.id}
             ></Toptrending>
             <Toptrending
               url={filterByCategory[1]?.imageUrl}
               rank={2}
+              eventid={filterByCategory[1]?.id}
             ></Toptrending>
             <Toptrending
               url={filterByCategory[2]?.imageUrl}
               rank={3}
+              eventid={filterByCategory[2]?.id}
             ></Toptrending>
             <div className="hidden gap-10 md:flex">
               <Toptrending
                 url={filterByCategory[3]?.imageUrl}
                 rank={4}
+                eventid={filterByCategory[3]?.id}
               ></Toptrending>
               <Toptrending
                 url={filterByCategory[4]?.imageUrl}
                 rank={5}
+                eventid={filterByCategory[4]?.id}
               ></Toptrending>
             </div>
           </div>

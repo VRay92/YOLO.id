@@ -1,14 +1,20 @@
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 interface IToptrendingProps {
   url: string;
   rank: number;
+  eventid: number;
 }
 
 const Toptrending: React.FunctionComponent<IToptrendingProps> = (props) => {
+  const router = useRouter();
   return (
-    <div className="h-[150px] md:h-[300px] md:min-w-[510px] relative">
+    <div
+      className="h-[150px] md:h-[300px] md:min-w-[510px] relative cursor-pointer"
+      onClick={() => router.push(`/event-detail/${props.eventid}`)}
+    >
       <img
         src={`http://localhost:8000/assets/` + props.url}
         alt="toptrending"
