@@ -149,7 +149,7 @@ export const Header = () => {
       {/* LOADING SCREEN */}
 
       {loading && (
-        <div className="absolute left-0 top-0 z-[36] h-screen w-screen bg-black bg-opacity-50 backdrop-blur-sm backdrop-filter">
+        <div className="fixed left-0 top-0 z-50 h-screen w-screen bg-black bg-opacity-50 backdrop-blur-sm backdrop-filter">
           <span className="absolute left-1/2 top-2/4 -translate-x-1/2 -translate-y-1/2  p-0.5 px-2 text-center text-xs font-medium leading-none text-blue-800 dark:bg-blue-900 dark:text-blue-200">
             <div className="flex flex-col  items-center justify-center rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
               <div className="mt-20  mx-14 w-[150px] h-[60px] md:w-[300px] md:h-[120px]">
