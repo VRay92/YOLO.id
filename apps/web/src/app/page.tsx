@@ -39,7 +39,7 @@ interface IDataEvent {
 
 export default function Home() {
   const [category, setCategory] = useState(1);
-  const [city, setCity] = useState(181);
+  const [city, setCity] = useState(158);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(4);
   const [dataEvent, setDataEvent] = useState<IDataEvent[]>([]);
@@ -376,7 +376,7 @@ export default function Home() {
           value={city}
           onChange={(e) => setCity(parseInt(e.target.value))}
         >
-          <option value={160}>Jakarta</option>
+          <option value={158}>Jakarta</option>
           <option value={'Surabaya'}>Surabaya</option>
           <option value={181}>Bandung</option>
           <option value={270}>Tangerang</option>
