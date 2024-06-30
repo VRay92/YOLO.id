@@ -20,6 +20,23 @@ Features:
 - JWT and BCrypt for user sign-in and registration.
   
 Tech Stack: REST API, Next.js, TypeScript, Tailwind CSS, Prisma ORM, Midtrans Payment Gateway.
+<br/>
+<img src="https://img.shields.io/badge/-HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" height="50">
+<img src="https://img.shields.io/badge/-CSS3-1572B6?style=flat-square&logo=css3"  height="50">
+<img src="https://img.shields.io/badge/-TypeScript-007ACC?style=flat-square&logo=typescript"  height="50">
+<img src="https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=black" height="50">
+<img src="https://img.shields.io/badge/-Next.js-000000?style=flat-square&logo=nextdotjs" height="50">
+<img src="https://img.shields.io/badge/-Node.js-339933?style=flat-square&logo=nodedotjs" height="50">
+<img src="https://img.shields.io/badge/-MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white" height="50">
+<img src="https://img.shields.io/badge/-Express.js-000000?style=flat-square&logo=express&logoColor=white" height="50">
+
+## Contributors
+
+| Name                  | Role               |
+|-----------------------|--------------------|
+| Adrian Irawan         | Front-end Engineer |
+| Trian Verson Tumanan  | Back-end Engineer  |
+
 
 # Purwadhika Project Repository
 
