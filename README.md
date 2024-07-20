@@ -1,5 +1,5 @@
 YOLO.id is a a simple and functional event management platform that allows event organizers to create and
-promote events, while attendees can browse and buy ticket for those events (involves CRUD function)
+promote events, while attendees can browse and buy ticket for those events (involves CRUD function.)
 
 Features:
 * Homepage:
