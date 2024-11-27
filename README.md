@@ -4,7 +4,7 @@ promote events, while attendees can browse and buy tickets for those events (inv
 Features:
 * Homepage:
 - Filters events by category or location
-- Search bar with debounce
+- Search bar with debounce.
 - Pagination to limit displayed events.
   
 * Event Detail:
